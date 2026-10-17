@@ -95,8 +95,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-064](DEC-064-consentimiento-una-grabacion.md) | Un consentimiento de grabación vale para una sola grabación (`unique` sobre `consent_id`) | 2026-10-10 | Propuesta |
 | [DEC-065](DEC-065-datasets-externos-alcance-academico.md) | Datasets externos: licencias de MM-Fit corregidas (código MIT, video CC BY 4.0, etiquetas sin licencia pública) y alcance solo académico | 2026-10-13 | Propuesta |
 | [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Propuesta |
+| [DEC-067](DEC-067-coste-ia-rankings-antitrampa-privacidad.md) | Tope de costo del asistente IA (USD 2/usuario/mes, modo simulado por defecto), rankings cada 15 min, reglas anti-trampa v1 y aviso de privacidad versionado | 2026-10-17 | Propuesta |
 
-Próximo número libre: **DEC-067** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-068** (provisional hasta el merge, ver DEC-062).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 
