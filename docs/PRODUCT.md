@@ -1,22 +1,22 @@
-# Fitnet — Producto
+# MovexNet — Producto
 
 > Responsabilidad de este archivo: visión, alcance formal, fuera de alcance, modelo freemium y roadmap. Arquitectura en `ARCHITECTURE.md`; métricas en `METRICS.md`; entidades en `DOMAIN.md`; estado actual en `STATUS.md`.
 
 ## Visión
 
-Fitnet convierte el celular en un entrenador que ve y entiende el movimiento. Cualquier persona con un smartphone obtiene, sin hardware adicional, conteo de repeticiones, corrección de técnica, medición de fatiga y progreso, y acceso a entrenadores reales que trabajan sobre datos objetivos en lugar de videos enviados por chat. El análisis de movimiento ocurre en el dispositivo (el video nunca sale de él); la nube guarda métricas, rutinas y relaciones, y un asistente de IA redacta coaching sobre esas métricas.
+MovexNet convierte el celular en un entrenador que ve y entiende el movimiento. Cualquier persona con un smartphone obtiene, sin hardware adicional, conteo de repeticiones, corrección de técnica, medición de fatiga y progreso, y acceso a entrenadores reales que trabajan sobre datos objetivos en lugar de videos enviados por chat. El análisis de movimiento ocurre en el dispositivo (el video nunca sale de él); la nube guarda métricas, rutinas y relaciones, y un asistente de IA redacta coaching sobre esas métricas.
 
-Origen: MVP del curso IA26 (UMG, mayo 2026) con tres ejercicios y análisis por reglas angulares. Fitnet amplía el alcance (`DEC-026`) manteniendo la PWA mobile-first, React + TypeScript + MediaPipe y la regla de privacidad.
+Origen: MVP del curso IA26 (UMG, mayo 2026) con tres ejercicios y análisis por reglas angulares. MovexNet amplía el alcance (`DEC-026`) manteniendo la PWA mobile-first, React + TypeScript + MediaPipe y la regla de privacidad.
 
 Línea paralela: **fitnetv2** (`ecaldcc/07-FitNet`, desplegada en fitnetv2.netlify.app), del mismo grupo, aportó análisis 3D, validación temporal, fatiga, catálogo de 60 ejercicios, rutinas, modo manual, perfil con logros y visor 3D. Este repositorio es la base y fitnetv2 se integra por pasos (`DEC-054`); mientras tanto conviven ambas versiones desplegadas.
 
-Nombre: existe una app de rutinas comercial llamada fitnetapp.com; el diferenciador de Fitnet es el asistente en tiempo real (`DEC-056`), y la colisión de nombre refuerza el renombre pendiente (#19).
+Nombre: el producto se llama MovexNet (`DEC-068`). Antes se llamaba Fitnet, que chocaba con la app de rutinas comercial fitnetapp.com; el diferenciador es el asistente en tiempo real (`DEC-056`).
 
 ## Alcance formal: 8 épicas
 
 Cada épica se descompone en historias etiquetadas en GitHub. Los criterios de aceptación son de alto nivel; cada historia añade los suyos.
 
-**Mapeo con las issues de GitHub** (etiqueta `epic`): el tablero corta el alcance en 10 épicas, separando lo que aquí va junto. E1 → [#1](https://github.com/govandoh/entrenador-personal-ia/issues/1); E2 → [#2](https://github.com/govandoh/entrenador-personal-ia/issues/2); E3 → [#3](https://github.com/govandoh/entrenador-personal-ia/issues/3); E4 (métodos de entrenamiento) → parte de [#3](https://github.com/govandoh/entrenador-personal-ia/issues/3); E5 → [#4](https://github.com/govandoh/entrenador-personal-ia/issues/4) (planes de entrenadores) y [#5](https://github.com/govandoh/entrenador-personal-ia/issues/5) (marketplace y coaching); E6 → [#6](https://github.com/govandoh/entrenador-personal-ia/issues/6); E7 (comunidad) → parte de [#6](https://github.com/govandoh/entrenador-personal-ia/issues/6); E8 → [#7](https://github.com/govandoh/entrenador-personal-ia/issues/7) (freemium) y [#8](https://github.com/govandoh/entrenador-personal-ia/issues/8) (fee de entrenadores). Las transversales son [#9](https://github.com/govandoh/entrenador-personal-ia/issues/9) (Núcleo de IA) y [#10](https://github.com/govandoh/entrenador-personal-ia/issues/10) (Plataforma y DevEx).
+**Mapeo con las issues de GitHub** (etiqueta `epic`): el tablero corta el alcance en 10 épicas, separando lo que aquí va junto. E1 → [#1](https://github.com/govandoh/movexnet/issues/1); E2 → [#2](https://github.com/govandoh/movexnet/issues/2); E3 → [#3](https://github.com/govandoh/movexnet/issues/3); E4 (métodos de entrenamiento) → parte de [#3](https://github.com/govandoh/movexnet/issues/3); E5 → [#4](https://github.com/govandoh/movexnet/issues/4) (planes de entrenadores) y [#5](https://github.com/govandoh/movexnet/issues/5) (marketplace y coaching); E6 → [#6](https://github.com/govandoh/movexnet/issues/6); E7 (comunidad) → parte de [#6](https://github.com/govandoh/movexnet/issues/6); E8 → [#7](https://github.com/govandoh/movexnet/issues/7) (freemium) y [#8](https://github.com/govandoh/movexnet/issues/8) (fee de entrenadores). Las transversales son [#9](https://github.com/govandoh/movexnet/issues/9) (Núcleo de IA) y [#10](https://github.com/govandoh/movexnet/issues/10) (Plataforma y DevEx).
 
 ### E1. Perfiles de usuario
 
@@ -73,7 +73,7 @@ Criterios: todo lo social es opt-in; por defecto nada del usuario es visible a t
 
 Suscripción premium para usuarios y fee mensual para entrenadores; entitlements derivados de la suscripción y aplicados en RLS (`DEC-029`).
 
-**El cobro es simulado** (`DEC-035`): Fitnet es un proyecto de seminario y no factura. Se implementa el puerto `PaymentProvider` con `MockPaymentProvider`, que genera sesiones de checkout ficticias y permite forzar los estados de suscripción desde una pantalla de demostración. Todo lo demás se construye como en producción.
+**El cobro es simulado** (`DEC-035`): MovexNet es un proyecto de seminario y no factura. Se implementa el puerto `PaymentProvider` con `MockPaymentProvider`, que genera sesiones de checkout ficticias y permite forzar los estados de suscripción desde una pantalla de demostración. Todo lo demás se construye como en producción.
 
 Criterios: el estado premium lo escribe únicamente el manejador de webhooks con clave de servicio; al vencer la suscripción las funciones premium se degradan sin perder datos; los pagos a entrenadores se registran en un ledger liquidable; la interfaz indica de forma inequívoca que el pago es simulado. Sustituir el proveedor simulado por uno real debe ser cambiar una implementación del puerto, nada más.
 
@@ -81,7 +81,7 @@ Criterios: el estado premium lo escribe únicamente el manejador de webhooks con
 
 ## Fuera de alcance
 
-- **App nativa** (iOS/Android). Fitnet es una PWA; si alguna capacidad exige nativo se evalúa con DEC.
+- **App nativa** (iOS/Android). MovexNet es una PWA; si alguna capacidad exige nativo se evalúa con DEC.
 - **Procesamiento de video en servidor.** Ni para análisis ni para "segunda opinión": el video no sale del dispositivo. La única excepción prevista es una imagen clave por rep enviada bajo demanda explícita del usuario premium (`DEC-027`), y aun así nunca como fuente de métricas.
 - Wearables y sensores externos.
 - Nutrición y planes alimenticios.
@@ -107,7 +107,7 @@ Los precios y la forma de la cuota de entrenador dejan de ser pendientes de impl
 
 ## Naturaleza del proyecto y análisis de negocio
 
-Fitnet es un **proyecto de seminario universitario**. Ninguna versión sale a la venta, no hay clientes y no se factura (`DEC-035`). El modelo de negocio existe como objeto de estudio, y el trabajo incluye un análisis formal de mercado, costos, rentabilidad y proyección, que vive **fuera de este repositorio**.
+MovexNet es un **proyecto de seminario universitario**. Ninguna versión sale a la venta, no hay clientes y no se factura (`DEC-035`). El modelo de negocio existe como objeto de estudio, y el trabajo incluye un análisis formal de mercado, costos, rentabilidad y proyección, que vive **fuera de este repositorio**.
 
 El repositorio le aporta los insumos técnicos verificables:
 

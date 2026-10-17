@@ -1,4 +1,4 @@
-# Arquitectura de Fitnet
+# Arquitectura de MovexNet
 
 > Documento vivo. Última actualización: 2026-09-24 (integración de fitnetv2, paso I-1). Las decisiones que sustentan cada parte están en `docs/adr/`; las métricas en `docs/METRICS.md`; el pipeline de datos y modelos en `docs/ML-PIPELINE.md`.
 
@@ -72,28 +72,28 @@ El paso I-1 trajo el motor puro de fitnetv2 (workstream B), con tests Vitest per
 
 ```
                         ┌──────────────────────┐
-                        │  @fitnet/contracts   │  tipos + zod, semver, schemaVersion
+                        │  @movexnet/contracts   │  tipos + zod, semver, schemaVersion
                         └──────────┬───────────┘
               ┌────────────────────┼─────────────────────┐
               ▼                    │                     ▼
    ┌──────────────────┐            │           ┌──────────────────┐
-   │ @fitnet/pose-    │            │           │  @fitnet/domain  │  entidades, puertos, casos de uso
+   │ @movexnet/pose-    │            │           │  @movexnet/domain  │  entidades, puertos, casos de uso
    │ engine           │            │           └────────┬─────────┘
    │ (MediaPipe aquí) │            │                    ▼
    └────────┬─────────┘            │           ┌──────────────────┐
-            ▼                      │           │ @fitnet/api-     │  Supabase, CoachAssistant HTTP,
+            ▼                      │           │ @movexnet/api-     │  Supabase, CoachAssistant HTTP,
    ┌──────────────────┐            │           │ client           │  cola offline
-   │ @fitnet/analysis-│            │           └──────────────────┘
+   │ @movexnet/analysis-│            │           └──────────────────┘
    │ core             │            │
    └────────┬─────────┘            │
             ▼                      │
    ┌──────────────────┐            │
-   │ @fitnet/ml-      │            │
+   │ @movexnet/ml-      │            │
    │ runtime (ONNX)   │            │
    └──────────────────┘            │
                                    ▼
                     ┌──────────────────────────┐
-                    │  @fitnet/ui   +  apps/web │  importa todo; nadie la importa
+                    │  @movexnet/ui   +  apps/web │  importa todo; nadie la importa
                     └──────────────────────────┘
 ```
 
@@ -216,7 +216,7 @@ PoseSource ──frame──► SkeletonRenderer.draw
 
 ### 2.6 Backend y nube
 
-Supabase `us-east-1` (`DEC-029`): Postgres con RLS, Auth, Storage (grabaciones de landmarks con consentimiento), Realtime (chat 1:1 por Broadcast desde trigger), Edge Functions (`coach` con Claude, webhooks de Recurrente/Paddle), `pg_cron` (rankings materializados, agregados nocturnos, ping anti-pausa). Solo `@fitnet/api-client` conoce al proveedor; `@fitnet/domain` define los puertos. Modelo de dominio en `docs/DOMAIN.md`.
+Supabase `us-east-1` (`DEC-029`): Postgres con RLS, Auth, Storage (grabaciones de landmarks con consentimiento), Realtime (chat 1:1 por Broadcast desde trigger), Edge Functions (`coach` con Claude, webhooks de Recurrente/Paddle), `pg_cron` (rankings materializados, agregados nocturnos, ping anti-pausa). Solo `@movexnet/api-client` conoce al proveedor; `@movexnet/domain` define los puertos. Modelo de dominio en `docs/DOMAIN.md`.
 
 ## 3. Decisiones de diseño que se mantienen del MVP
 

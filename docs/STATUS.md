@@ -1,4 +1,4 @@
-# Fitnet — Estado del proyecto
+# MovexNet — Estado del proyecto
 
 > Solo lo vigente. Lo actualiza el líder (o `docs-keeper` a su pedido) en la review semanal; los PRs de los workstreams no lo editan (DEC-062). Máximo 4 KB. Historial: `docs/CHANGELOG.md`. Decisiones: `docs/adr/README.md`.
 
@@ -37,7 +37,6 @@ Una persona por workstream y carpetas exclusivas. Cada issue tiene su brief (qu�
 | Pendiente | Issue |
 |---|---|
 | Que ChejoUMG, ecaldcc y eliasgregoriomp-svg acepten la invitación al repositorio (sin eso CODEOWNERS no los cuenta ni se les puede asignar issues) | #18 |
-| Renombrar el repo (existe fitnetapp.com) y decidir público o privado | #19 |
 | Crear el GitHub Project (`gh auth refresh -s project`) | #21 |
 | Tope de costo del asistente IA, frescura de rankings, anti-trampa y aviso de privacidad | #22 |
 | Precios teóricos y comisión para el análisis de rentabilidad (pagos simulados por DEC-035) | #20 |

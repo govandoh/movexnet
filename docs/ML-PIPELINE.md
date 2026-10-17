@@ -1,4 +1,4 @@
-# Fitnet — Pipeline de datos y modelos (`ml/`)
+# MovexNet — Pipeline de datos y modelos (`ml/`)
 
 > Responsabilidad de este archivo: cómo se capturan los datos, cómo se transforman en features, cómo se entrenan, evalúan, publican y despliegan los modelos. Decisión de fondo: `DEC-027` (arquitectura híbrida) y `DEC-031` (ONNX Runtime Web + Hugging Face Hub). Métricas y metas: `METRICS.md`. Consentimiento y licencias: `DATA-GOVERNANCE.md`. Propiedad: workstream C (`ml/`, reportes, artefactos) y B (`ml-runtime`, `models/manifest.json`).
 
@@ -46,7 +46,7 @@ Hay **dos esquemas y no compiten**: v1 congela comportamiento, v2 entrena modelo
 ```
 Nombre de archivo: `fixtures/landmarks/<ejercicio>-<vista>-<calidad>-<nn>.json`, con vistas `side` | `front` | `45`.
 
-**v2 — objetivo del dataset de entrenamiento.** Extiende v1 con lo que el ML necesita y los golden no: `labels[]`, `consentId`, `subjectId`, `rpe`, `seq`, metadatos de dispositivo y de versión de MediaPipe, y codificación compacta de landmarks como tuplas. Un fixture v1 es un v2 sin etiquetas. La conversión v1 → v2 es mecánica y vive en `ml/schemas.py`; **no se mezclan ambos en el mismo archivo**. Se define en `@fitnet/contracts` (zod) y `ml/schemas.py` (pydantic) con test de paridad, antes del PR 9.
+**v2 — objetivo del dataset de entrenamiento.** Extiende v1 con lo que el ML necesita y los golden no: `labels[]`, `consentId`, `subjectId`, `rpe`, `seq`, metadatos de dispositivo y de versión de MediaPipe, y codificación compacta de landmarks como tuplas. Un fixture v1 es un v2 sin etiquetas. La conversión v1 → v2 es mecánica y vive en `ml/schemas.py`; **no se mezclan ambos en el mismo archivo**. Se define en `@movexnet/contracts` (zod) y `ml/schemas.py` (pydantic) con test de paridad, antes del PR 9.
 
 ```json
 {
@@ -106,7 +106,7 @@ Aplicada de forma idéntica en `analysis-core` (TS; hoy `src/geometry/`) y `ml/f
 
 ## 5. Datasets externos y licencias
 
-| Dataset | Licencia | Uso permitido en Fitnet |
+| Dataset | Licencia | Uso permitido en MovexNet |
 |---|---|---|
 | MM-Fit | Código MIT; video RGB CC BY 4.0; etiquetas y sensores sin licencia pública verificada (`DEC-065`) | Identificar el ejercicio: se convierte offline (Kaggle) a landmarks de MediaPipe y se añade como ejemplos al k-NN (`DEC-055`); cubre ejercicios de las olas 1 y 2 de `DEC-056`. Formato de keypoints y etiquetas por verificar antes de convertir. Video RGB: producto con atribución. Etiquetas y sensores: solo uso académico por autorización del responsable (`DEC-065`). |
 | InfiniteRep | CC BY 4.0 | Preentrenar el clasificador; producto, con atribución en `DATA-GOVERNANCE.md` y en la app. |
@@ -114,7 +114,7 @@ Aplicada de forma idéntica en `analysis-core` (TS; hoy `src/geometry/`) y `ml/f
 | REHAB24-6 | No comercial | Solo prototipos y benchmarks. |
 | Fitness-AQA | No comercial | Solo prototipos y benchmarks; fuente de ejemplos de errores en gimnasio real (`DEC-055`, permitido por `DEC-035`). |
 | FLEX | No comercial, acceso por solicitud | Solo prototipos y benchmarks. |
-| **Checkpoints preentrenados sobre NTU RGB+D** (ST-GCN++, CTR-GCN, HD-GCN, SkateFormer, ProtoGCN…) | Código Apache-2.0 o MIT; los **pesos** derivan de datos de uso académico y de investigación | **Permitidos en el prototipo** (`DEC-035`: Fitnet no se comercializa). Este repositorio no los redistribuye: se descargan de su origen al entrenar. Todo modelo derivado se marca `provenance: "academic-pretrained"` y `commercialUse: false` en `models/manifest.json`. Prohibidos en un hipotético producto comercial. |
+| **Checkpoints preentrenados sobre NTU RGB+D** (ST-GCN++, CTR-GCN, HD-GCN, SkateFormer, ProtoGCN…) | Código Apache-2.0 o MIT; los **pesos** derivan de datos de uso académico y de investigación | **Permitidos en el prototipo** (`DEC-035`: MovexNet no se comercializa). Este repositorio no los redistribuye: se descargan de su origen al entrenar. Todo modelo derivado se marca `provenance: "academic-pretrained"` y `commercialUse: false` en `models/manifest.json`. Prohibidos en un hipotético producto comercial. |
 
 Cada entrada de `ml/datasets/` declara `license` y `allowedFor: ["prototype"] | ["academic"] | ["product"]`. `academic` es para datos sin licencia pública verificada que se usan amparados por la autorización del responsable del proyecto (`DEC-065`); `ml/train` rechaza mezclar datasets `prototype` o `academic` en un run marcado `--for-product`. La misma regla aplica a pesos de partida: un run `--for-product` solo admite inicialización aleatoria o checkpoints propios. Mientras el proyecto sea académico no hay runs `--for-product`; la bandera existe para que la frontera quede explícita y para poder cuantificar el costo de comercializar (`DEC-035` §4).
 
@@ -194,7 +194,7 @@ La skill `/promote-model` automatiza la verificación local; el CI la repite.
 
 Los cambios de modo son cambios en `models/manifest.json` (mismo gate). Cada ejercicio avanza por separado; el clasificador de ejercicio solo reemplaza el chip manual cuando esté en `primary` para los tres ejercicios.
 
-## 11. Inferencia en el cliente (`@fitnet/ml-runtime`)
+## 11. Inferencia en el cliente (`@movexnet/ml-runtime`)
 
 **Artefactos JSON sin ONNX (`DEC-055`).** El k-NN y el MLP se publican como JSON (ejemplos o pesos, con `embeddingVersion`) y se ejecutan en TypeScript puro en el hilo de análisis; no cargan runtime de inferencia. `KnnPoseClassifier` rechaza un modelo cuyo `embeddingVersion` no coincida con `POSE_EMBEDDING_VERSION`. Lo que sigue aplica solo si el experimento con preentrenado (§6) llega a producción.
 

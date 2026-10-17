@@ -1,4 +1,4 @@
-# Fitnet — Métricas
+# MovexNet — Métricas
 
 > Responsabilidad de este archivo: definición formal (fórmula, unidad, fuente de datos, ventana) de cada métrica que calcula `analysis-core`, persiste el backend y muestra la UI. Es la fuente de verdad: si un valor se muestra en pantalla o se envía al `CoachAssistant`, su nombre y fórmula están aquí. Las metas de éxito del núcleo de IA (§8) se reflejan en `ml/thresholds.yaml`.
 

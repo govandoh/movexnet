@@ -1,10 +1,10 @@
-# Fitnet
+# MovexNet
 
 Entrenador personal en el navegador del celular: la cámara alimenta MediaPipe Pose, y la app cuenta repeticiones, evalúa la técnica y te habla en español, sin que el video salga de tu dispositivo.
 
 - **Demo (PWA en Vercel):** _(URL de producción pendiente de publicar; ver `docs/STATUS.md`)_
 - **Video demo:** https://youtu.be/SCQXUJRCDiE
-- **Repositorio:** https://github.com/govandoh/entrenador-personal-ia (nombre heredado del MVP; renombrado a `fitnet` pendiente)
+- **Repositorio:** https://github.com/govandoh/movexnet (antes `entrenador-personal-ia`; el producto se llamó Fitnet hasta `DEC-068`)
 
 ## Qué hace hoy
 
@@ -15,7 +15,7 @@ Entrenador personal en el navegador del celular: la cámara alimenta MediaPipe P
 
 ## Hacia dónde va
 
-Fitnet evoluciona a una app de gimnasio completa: análisis de fatiga, velocidad y consistencia con modelos propios en el dispositivo; perfiles, rutinas y calendario; planes de entrenadores, marketplace y coaching 1:1 asistido por IA; métricas, rankings, retos y comunidad; modelo freemium. Visión y roadmap: `docs/PRODUCT.md`. Estado actual: `docs/STATUS.md`.
+MovexNet evoluciona a una app de gimnasio completa: análisis de fatiga, velocidad y consistencia con modelos propios en el dispositivo; perfiles, rutinas y calendario; planes de entrenadores, marketplace y coaching 1:1 asistido por IA; métricas, rankings, retos y comunidad; modelo freemium. Visión y roadmap: `docs/PRODUCT.md`. Estado actual: `docs/STATUS.md`.
 
 ## Stack
 
@@ -33,8 +33,8 @@ Fitnet evoluciona a una app de gimnasio completa: análisis de fatiga, velocidad
 ## Quickstart
 
 ```bash
-git clone https://github.com/govandoh/entrenador-personal-ia.git fitnet
-cd fitnet
+git clone https://github.com/govandoh/movexnet.git
+cd movexnet
 corepack enable    # Node 22+; activa pnpm 12 según packageManager
 pnpm install
 pnpm dev           # HTTPS local expuesto a la LAN: abre https://<ip-local>:5173 en el celular
@@ -56,7 +56,7 @@ docs/academico/    entregables del MVP del curso IA26 (histórico)
 scripts/           generación de los .docx académicos
 ```
 
-Layout objetivo (monorepo pnpm con `apps/web`, `packages/@fitnet/*`, `ml/`, `supabase/`): `ARCHITECTURE.md`.
+Layout objetivo (monorepo pnpm con `apps/web`, `packages/@movexnet/*`, `ml/`, `supabase/`): `ARCHITECTURE.md`.
 
 ## Documentación
 

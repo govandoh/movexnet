@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# CLAUDE.md — Fitnet (específico de Claude Code)
+# CLAUDE.md — MovexNet (específico de Claude Code)
 
 Todo el contexto del proyecto, las reglas duras, la propiedad por workstream y la regla de oro están en `AGENTS.md` (incluido arriba). Este archivo solo añade lo que aplica a Claude Code. El estado actual del proyecto está en `docs/STATUS.md`; no se duplica aquí.
 

@@ -1,7 +1,7 @@
 /**
  * Puerto de pagos y su implementación simulada (regla dura 8, DEC-035, DEC-056).
  *
- * Fitnet no cobra: el flujo Premium es completo y demostrable, pero `MockPaymentProvider`
+ * MovexNet no cobra: el flujo Premium es completo y demostrable, pero `MockPaymentProvider`
  * nunca pide ni recibe datos de tarjeta y la interfaz debe decir que el pago es simulado.
  * Una pasarela real necesitaría una DEC nueva y viviría en `api-client` y una Edge Function.
  */

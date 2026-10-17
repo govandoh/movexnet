@@ -1,4 +1,4 @@
-# Sistema de diseño de Fitnet
+# Sistema de diseño de MovexNet
 
 Fuente de verdad de la identidad visual, los tokens, los componentes y el movimiento de la app. La decisión que lo adopta es `DEC-058`. Las maquetas navegables están en el lienzo de diseño del equipo (enlace en `DEC-058`); si una maqueta y este documento no coinciden, manda este documento.
 
@@ -6,7 +6,7 @@ Referencias usadas: la skill ui-ux-pro-max (paleta y tipografía para apps de fi
 
 ## 1. Identidad: la red de 33 puntos
 
-Fitnet es *fit* más *net*: la cámara lee el cuerpo como una red de 33 puntos (MediaPipe Pose). Ese es el motivo visual de toda la app.
+MovexNet junta *move* (movimiento) y *net* (red): la cámara lee el cuerpo como una red de 33 puntos (MediaPipe Pose). Ese es el motivo visual de toda la app.
 
 - **Anillo de 33 nodos.** El progreso se dibuja como 33 puntos en círculo que se encienden, uno por punto del cuerpo. Sustituye a los anillos concéntricos: no se usan anillos de Apple.
 - **Nodos y líneas.** El esqueleto (líneas índigo, articulaciones en voltaje) aparece en la cámara y, como decoración tenue, en tarjetas destacadas.
@@ -83,7 +83,7 @@ Reglas:
 
 ## 6. Movimiento
 
-Aplicación de las reglas de Emil Kowalski (`.claude/skills/animate`, `review-animations`) a Fitnet. Solo se anima lo que confirma, orienta o celebra.
+Aplicación de las reglas de Emil Kowalski (`.claude/skills/animate`, `review-animations`) a MovexNet. Solo se anima lo que confirma, orienta o celebra.
 
 ### Tokens
 
@@ -144,9 +144,9 @@ Regla de diseño y de funcionalidad (`DEC-060`): la app es responsiva y funciona
 
 ## 8. Patrones de Cult UI, rehechos sin dependencias
 
-Cult UI depende de Tailwind, shadcn y la librería `motion`, que Fitnet no usa (regla dura 9 y `DEC-008`). Se toman sus ideas y se implementan con CSS y WAAPI:
+Cult UI depende de Tailwind, shadcn y la librería `motion`, que MovexNet no usa (regla dura 9 y `DEC-008`). Se toman sus ideas y se implementan con CSS y WAAPI:
 
-| Patrón de Cult UI | En Fitnet |
+| Patrón de Cult UI | En MovexNet |
 |---|---|
 | Dynamic Island | Isla de aviso de técnica sobre la cámara |
 | Texture Card | Tarjeta de borde doble con brillo superior |

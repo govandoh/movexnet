@@ -1,7 +1,7 @@
 /**
  * Puertos de persistencia del backend de producto (issue #17, DEC-029).
  *
- * `src/domain` solo define las interfaces; `@fitnet/api-client` las implementará con
+ * `src/domain` solo define las interfaces; `@movexnet/api-client` las implementará con
  * Supabase (regla de dependencias: el SDK de Supabase vive solo allí). Todos los métodos
  * operan sobre el usuario autenticado: el `userId` no se pasa, lo impone RLS en la base.
  * Las fechas viajan como ISO 8601, igual que en `payment.ts`. Módulo puro.

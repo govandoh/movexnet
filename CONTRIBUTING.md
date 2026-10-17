@@ -1,4 +1,4 @@
-# Contribuir a Fitnet
+# Contribuir a MovexNet
 
 Guía práctica. Las reglas del proyecto están en `AGENTS.md`; la propiedad por directorio y la Definition of Done en `docs/WORKSTREAMS.md`; el estado actual en `docs/STATUS.md`.
 
@@ -7,8 +7,8 @@ Guía práctica. Las reglas del proyecto están en `AGENTS.md`; la propiedad por
 Requisitos: **Node 22 o superior**, **pnpm 12** (`corepack enable` lo activa desde `packageManager` del `package.json`), Git, un celular Android o iOS en la misma red Wi-Fi que tu equipo.
 
 ```bash
-git clone https://github.com/govandoh/entrenador-personal-ia.git fitnet
-cd fitnet
+git clone https://github.com/govandoh/movexnet.git
+cd movexnet
 pnpm install          # instala dependencias y los hooks de husky (script "prepare")
 pnpm dev
 ```

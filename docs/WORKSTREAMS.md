@@ -1,4 +1,4 @@
-# Fitnet — Workstreams, propiedad y proceso
+# MovexNet — Workstreams, propiedad y proceso
 
 > Responsabilidad de este archivo: quién posee qué, cómo se cambian los contratos compartidos, rituales ágiles y Definition of Done. Reglas duras y regla de oro: `AGENTS.md`. Fronteras técnicas: `ARCHITECTURE.md` y `DEC-028`. Agentes: `DEC-032`.
 
@@ -20,7 +20,7 @@ Transversales: `architect-guardian` (revisión de fronteras, sin dueño de códi
 
 ## 2. `packages/contracts`: reglas de cambio
 
-`packages/contracts` (`@fitnet/contracts`) es **co-propiedad de B y D**. Es el único lugar donde se definen tipos y esquemas zod compartidos entre paquetes, con `ml/` (espejo pydantic) y con las Edge Functions.
+`packages/contracts` (`@movexnet/contracts`) es **co-propiedad de B y D**. Es el único lugar donde se definen tipos y esquemas zod compartidos entre paquetes, con `ml/` (espejo pydantic) y con las Edge Functions.
 
 1. Todo cambio va en rama `contracts/*` o `adr/*`. En Claude Code lo impone el hook `PreToolUse` `guard-protected-paths.mjs`, que bloquea con exit 2 las ediciones de `packages/contracts/**`, `src/contracts/**` y `models/manifest.json` fuera de esas ramas.
 2. Requiere la DEC correspondiente enlazada si el cambio nace de una decisión. La revisión de B y D es recomendada, no obligatoria (`DEC-070`).

@@ -1,4 +1,4 @@
-# Fitnet — Gobernanza de datos
+# MovexNet — Gobernanza de datos
 
 > Responsabilidad de este archivo: qué datos se recolectan y cuáles no, consentimiento, retención y borrado, seguridad de acceso (RLS), residencia y uso de datasets externos. Decisiones: `DEC-026` (regla de privacidad), `DEC-029` (Supabase `us-east-1`), `DEC-033` (qué recibe el LLM). Esquema JSON de grabaciones: `ML-PIPELINE.md` §2.
 
@@ -15,7 +15,7 @@
 | Perfil (nombre, año de nacimiento, altura, peso, nivel) | Opcional salvo nombre. | Postgres. | Editable y borrable por el usuario. |
 | RPE y notas de sesión | Opcional. | Postgres. | — |
 | Mensajes de coaching | Sí, entre entrenador, cliente y asistente. | Postgres + Realtime. | Visibles solo a las partes de la `CoachingRelationship`. |
-| Datos de pago (tarjeta) | **Nunca en Fitnet.** | Recurrente/Paddle (checkout alojado). | Fitnet guarda solo `externalId`, plan y estado. |
+| Datos de pago (tarjeta) | **Nunca en MovexNet.** | Recurrente/Paddle (checkout alojado). | MovexNet guarda solo `externalId`, plan y estado. |
 | Telemetría técnica (errores, latencias del pipeline, versiones de modelo) | Sí, anonimizada (sin landmarks ni identificadores directos). | Postgres (`daily_user_stats`) o proveedor de logs. | Para gates de modelo y soporte. |
 | Contenido enviado al `CoachAssistant` | Solo `Metric`/`RepSummary` agregados + perfil y objetivos. | Edge Function `coach` → API de Claude. | Nunca video ni landmarks crudos (`DEC-033`). |
 
@@ -24,7 +24,7 @@ Datos de actividad física y medidas corporales son datos sensibles de salud a e
 ## 2. Consentimiento
 
 - **Cuenta:** al registrarse, el usuario acepta términos y aviso de privacidad (versión registrada en `Profile.privacyVersion`).
-- **Grabación de landmarks para el dataset:** consentimiento **explícito y separado por grabación** (`RecordingConsent` con `textVersion`, `grantedAt`). La pantalla de captura explica qué se guarda (landmarks, etiquetas, dispositivo, RPE), qué no (video), para qué (entrenar modelos de Fitnet) y cómo borrarlo. Sin consentimiento, el modo captura no guarda nada.
+- **Grabación de landmarks para el dataset:** consentimiento **explícito y separado por grabación** (`RecordingConsent` con `textVersion`, `grantedAt`). La pantalla de captura explica qué se guarda (landmarks, etiquetas, dispositivo, RPE), qué no (video), para qué (entrenar modelos de MovexNet) y cómo borrarlo. Sin consentimiento, el modo captura no guarda nada.
 - **Compartir métricas con un entrenador:** implícito al aceptar la `CoachingRelationship`; revocable al terminarla (el entrenador pierde acceso a datos futuros y pasados salvo los reportes ya generados, que se anonimizan).
 - **Perfil público / comunidad / rankings:** opt-in explícito (`Profile.publicProfile`); por defecto nada es visible a terceros.
 - **Segunda opinión por imagen:** confirmación por petición, no persistente.

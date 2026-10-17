@@ -1,6 +1,6 @@
-# Fitnet — Dominio
+# MovexNet — Dominio
 
-> Responsabilidad de este archivo: glosario ES/EN y modelo de dominio (entidades, relaciones, métodos de entrenamiento). Las fórmulas de las métricas están en `METRICS.md`; el esquema físico (tablas, RLS) vive en `supabase/migrations` y se documenta en `DATA-GOVERNANCE.md`. Los tipos TypeScript de estas entidades se definen en `@fitnet/domain` y `@fitnet/contracts`.
+> Responsabilidad de este archivo: glosario ES/EN y modelo de dominio (entidades, relaciones, métodos de entrenamiento). Las fórmulas de las métricas están en `METRICS.md`; el esquema físico (tablas, RLS) vive en `supabase/migrations` y se documenta en `DATA-GOVERNANCE.md`. Los tipos TypeScript de estas entidades se definen en `@movexnet/domain` y `@movexnet/contracts`.
 
 ## Glosario
 

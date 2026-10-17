@@ -1,8 +1,8 @@
-# AGENTS.md — Fitnet
+# AGENTS.md — MovexNet
 
 Guía operativa para cualquier agente de IA (Claude Code, Codex, Cursor, Gemini CLI) y para desarrolladores nuevos. Es vendor-neutral; lo específico de Claude Code está en `CLAUDE.md`. Estado vivo del proyecto: `docs/STATUS.md`.
 
-## Qué es Fitnet
+## Qué es MovexNet
 
 PWA mobile-first de entrenamiento con análisis de movimiento en tiempo real. La cámara del celular alimenta MediaPipe Pose (33 landmarks); sobre esos landmarks se cuentan repeticiones, se evalúa la técnica y se dan retroalimentación visual y de voz en español. Nació como MVP del curso IA26 (UMG, mayo 2026) con tres ejercicios (sentadilla, curl de bíceps, press de hombro) y evoluciona hacia una app de gimnasio completa: perfiles, análisis de fatiga/velocidad/consistencia, rutinas y calendario, planes de entrenadores, coaching asistido por IA, rankings, comunidad y modelo freemium. Visión y alcance: `docs/PRODUCT.md`.
 
@@ -31,13 +31,13 @@ PWA mobile-first de entrenamiento con análisis de movimiento en tiempo real. La
 
 ```
 apps/web/            shell + features/{workout,capture,routines,profile,trainer}
-packages/contracts   @fitnet/contracts   tipos + zod (co-propiedad B y D)
-packages/pose-engine @fitnet/pose-engine cámara, detect-only, PoseSource, SkeletonRenderer
-packages/analysis-core @fitnet/analysis-core ángulos, features, trackers, analyzers, FeedbackPolicy, AnalysisPipeline
-packages/ml-runtime  @fitnet/ml-runtime  ModelRegistry, ONNX en Worker, MlAnalyzer
-packages/domain      @fitnet/domain      entidades, puertos, casos de uso
-packages/api-client  @fitnet/api-client  adaptadores Supabase, CoachAssistant HTTP, cola offline
-packages/ui          @fitnet/ui          componentes, tokens
+packages/contracts   @movexnet/contracts   tipos + zod (co-propiedad B y D)
+packages/pose-engine @movexnet/pose-engine cámara, detect-only, PoseSource, SkeletonRenderer
+packages/analysis-core @movexnet/analysis-core ángulos, features, trackers, analyzers, FeedbackPolicy, AnalysisPipeline
+packages/ml-runtime  @movexnet/ml-runtime  ModelRegistry, ONNX en Worker, MlAnalyzer
+packages/domain      @movexnet/domain      entidades, puertos, casos de uso
+packages/api-client  @movexnet/api-client  adaptadores Supabase, CoachAssistant HTTP, cola offline
+packages/ui          @movexnet/ui          componentes, tokens
 ml/                  Python: datasets, features (paridad con TS), train, eval, export ONNX
 models/manifest.json artefactos publicados (sha256, versión)
 fixtures/landmarks/  secuencias golden compartidas TS/Python
@@ -55,7 +55,7 @@ Hasta que exista `packages/`, las mismas fronteras aplican a `src/pose` (A), `sr
 4. **Español en UI y documentación entregable; identificadores de código en inglés.** Sin emojis en docs ni código.
 5. **No cambiar snapshots golden sin una DEC enlazada en el PR.** Los fixtures de `fixtures/landmarks/` congelan el comportamiento en producción.
 6. **`packages/contracts/**`, `src/contracts/**` y `models/manifest.json` solo se editan en ramas `adr/*` o `contracts/*`**, con bump semver y la DEC enlazada (`docs/WORKSTREAMS.md`). En Claude Code lo bloquea el hook `guard-protected-paths.mjs`.
-7. **Cero costo, sin excepciones.** Fitnet es un proyecto de seminario y no factura (`DEC-035`): todo va sobre planes gratuitos (Supabase Free, Vercel Hobby, Kaggle, GitHub Actions, Hugging Face). Cualquier gasto real requiere DEC y aprobación explícita.
+7. **Cero costo, sin excepciones.** MovexNet es un proyecto de seminario y no factura (`DEC-035`): todo va sobre planes gratuitos (Supabase Free, Vercel Hobby, Kaggle, GitHub Actions, Hugging Face). Cualquier gasto real requiere DEC y aprobación explícita.
 8. **Los pagos son simulados.** Se implementa el puerto `PaymentProvider` con `MockPaymentProvider`; el flujo es completo y demostrable, pero ningún cobro es real y la interfaz debe decirlo. Nunca integrar una pasarela real ni pedir datos de tarjeta.
 9. **No instalar dependencias ni introducir tecnologías sin discutirlo**; si hace falta, proponerlo como opción con su DEC.
 

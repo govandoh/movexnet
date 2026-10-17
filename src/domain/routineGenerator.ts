@@ -180,7 +180,7 @@ const DIFFICULTY_SCORE: Record<ExperienceLevel, Record<Difficulty, number>> = {
   intermediate: { bajo: 5, medio: 10, alto: 3 },
   advanced:     { bajo: 3, medio: 8, alto: 10 },
 };
-/** Peso de tener asistente por cámara: domina a la dificultad (el diferenciador de Fitnet). */
+/** Peso de tener asistente por cámara: domina a la dificultad (el diferenciador de MovexNet). */
 const ASSISTANT_SCORE = 100;
 
 function score(e: CatalogExercise, level: ExperienceLevel): number {
