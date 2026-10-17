@@ -1,5 +1,5 @@
-// v4: identidad de DEC-058 (manifest, ícono y fuentes nuevos); subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v4';
+// v5: nombre MovexNet en manifest y título (DEC-068); v4: identidad de DEC-058. Subir en cada cambio (DEC-025).
+const CACHE = 'entrenador-ia-v5';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

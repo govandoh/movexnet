@@ -1,6 +1,6 @@
 {
-  "name": "Fitnet",
-  "short_name": "Fitnet",
+  "name": "MovexNet",
+  "short_name": "MovexNet",
   "description": "Entrenamiento con asistente en tiempo real: la cámara lee tu cuerpo como una red de 33 puntos y te corrige en español.",
   "start_url": "/",
   "display": "standalone",

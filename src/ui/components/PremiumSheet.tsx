@@ -4,7 +4,7 @@ import { IconAlert, IconCheck } from './icons';
 import { MockPaymentProvider } from '../../domain/payment';
 import { appActions } from '../state/appStore';
 
-/** Único proveedor mientras Fitnet no factura (regla dura 8, DEC-035). */
+/** Único proveedor mientras MovexNet no factura (regla dura 8, DEC-035). */
 const payments = new MockPaymentProvider();
 
 export function PremiumSheet({ onClose }: { onClose: () => void }) {
@@ -22,9 +22,9 @@ export function PremiumSheet({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Sheet label="Fitnet Premium" onClose={onClose}>
+    <Sheet label="MovexNet Premium" onClose={onClose}>
       <div>
-        <p className="eyebrow is-volt">Fitnet Premium</p>
+        <p className="eyebrow is-volt">MovexNet Premium</p>
         <h2 className="card-title">{receipt ? 'Premium de prueba activo' : 'Desbloquea las 8 semanas'}</h2>
       </div>
       <ul className="benefits">
@@ -34,7 +34,7 @@ export function PremiumSheet({ onClose }: { onClose: () => void }) {
       </ul>
       <p className="notice notice--amber" role="note">
         <IconAlert />
-        Pago simulado: Fitnet es un proyecto académico. No se cobra nada ni se piden datos de tarjeta.
+        Pago simulado: MovexNet es un proyecto académico. No se cobra nada ni se piden datos de tarjeta.
       </p>
       {receipt ? (
         <p className="muted">Comprobante simulado {receipt}. Puedes desactivarlo desde tu perfil.</p>

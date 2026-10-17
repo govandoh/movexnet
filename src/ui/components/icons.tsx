@@ -94,7 +94,7 @@ export const IconChevron = () => (
   <Stroke width={2.2}><path d="M9 6l6 6-6 6" /></Stroke>
 );
 
-/** Logo de Fitnet: cinco nodos voltaje unidos por líneas índigo que forman una "F". */
+/** Logo de MovexNet: cinco nodos voltaje unidos por líneas índigo que forman una "F". */
 export function FitnetMark({ size = 32 }: { size?: number }) {
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true">
