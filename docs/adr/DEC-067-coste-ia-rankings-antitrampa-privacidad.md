@@ -2,7 +2,7 @@
 
 - **Estado:** Propuesta
 - **Fecha:** 2026-10-17
-- **Decisores:** @govandoh (responsable del proyecto, propone los valores por defecto); aprueban B, D y E (`docs/adr/README.md`)
+- **Decisores:** @govandoh (responsable del proyecto, decide en representación del equipo); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `coach-assistant`, `rankings`, `privacidad`, `proceso`
 - **Cierra:** issue #22. Desbloquea la activación de cuentas en producción (#60).
 
@@ -15,7 +15,7 @@ Cuatro pendientes de equipo del Sprint 0 llevan abiertos desde `DEC-033` y `docs
 3. **Anti-trampa.** Hoy nada garantiza que una sesión venga de análisis real: `set_logs` no distingue cámara de modo manual (`DEC-047`) y el cliente es no confiable. `METRICS.md` §7 exige definir las reglas antes de abrir rankings públicos.
 4. **Aviso de privacidad.** Supabase está en `us-east-1` (`DEC-029`), se guardan datos de actividad y medidas corporales y un tercero (Anthropic) procesa métricas (`DATA-GOVERNANCE.md` §5). Sin aviso no se activan cuentas, y #60 ya lo condiciona con `VITE_ENABLE_ACCOUNTS`.
 
-Se propone un valor por defecto para cada una para cerrarlas en una sola reunión de 30 minutos. Todas las cifras son un punto de partida, revisables con datos reales sin nueva DEC salvo que cambie el criterio.
+Cada una se cierra aquí con un valor por defecto, decidido por el responsable del proyecto en representación del equipo. Todas las cifras son un punto de partida, revisables con datos reales sin nueva DEC salvo que cambie el criterio.
 
 ## Opciones consideradas
 
