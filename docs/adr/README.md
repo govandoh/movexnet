@@ -95,7 +95,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-064](DEC-064-consentimiento-una-grabacion.md) | Un consentimiento de grabación vale para una sola grabación (`unique` sobre `consent_id`) | 2026-10-10 | Propuesta |
 | [DEC-065](DEC-065-datasets-externos-alcance-academico.md) | Datasets externos: licencias de MM-Fit corregidas (código MIT, video CC BY 4.0, etiquetas sin licencia pública) y alcance solo académico | 2026-10-13 | Propuesta |
 | [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Propuesta |
-| [DEC-068](DEC-068-nombre-y-visibilidad-del-repositorio.md) | Nombre y visibilidad del repositorio: renombrar a `fitnet` y mantenerlo público | 2026-10-17 | Propuesta |
+| [DEC-068](DEC-068-nombre-y-visibilidad-del-repositorio.md) | Nombre del producto MoveNet, repositorio `movenet` y visibilidad privada | 2026-10-17 | Propuesta |
 
 Próximo número libre: **DEC-069** (provisional hasta el merge, ver DEC-062).
 
