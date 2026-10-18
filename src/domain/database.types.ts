@@ -23,7 +23,21 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "exercises": {
+            "coach_usage": {
+                  Row: {
+                    "calls": number,"cost_micro_usd": number,"input_tokens": number,"output_tokens": number,"period": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "calls"?: number,"cost_micro_usd"?: number,"input_tokens"?: number,"output_tokens"?: number,"period": string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "calls"?: number,"cost_micro_usd"?: number,"input_tokens"?: number,"output_tokens"?: number,"period"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"exercises": {
                   Row: {
                     "assistant": string | null,"base_difficulty": string,"cues": string,"equipment": NonNullable<Json>,"equipment_label": string,"id": string,"movement_pattern": string,"muscle_group": string,"name_es": string,"secondary": (string)[],"tracking": string
                   }
@@ -127,14 +141,14 @@ isOneToOne: false
                   ]
                 },"set_logs": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -153,112 +167,112 @@ isOneToOne: false
                   ]
                 },"set_logs_default": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20260701": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20260801": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20260901": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20261001": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20261101": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20261201": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
                   ]
                 },"set_logs_p20270101": {
                   Row: {
-                    "exercise_id": string,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"started_at": string,"user_id": string
+                    "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "exercise_id": string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
                   }
                   Update: {
-                    "exercise_id"?: string,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"started_at"?: string,"user_id"?: string
+                    "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     

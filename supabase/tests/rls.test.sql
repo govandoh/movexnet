@@ -1,7 +1,7 @@
 -- Tests de RLS con pgTAP. Se ejecutan con `pnpm db:test` (supabase test db).
 -- Criterio de la issue #17: un usuario no lee ni escribe datos de otro.
 begin;
-select plan(35);
+select plan(47);
 
 -- Dos usuarios y un anónimo. Las filas se crean como superusuario (sin RLS).
 insert into auth.users (id, instance_id, aud, role, email)
@@ -126,6 +126,52 @@ select is((select count(*)::int from public.workout_sessions), 1, 'el DELETE de 
 select is((select count(*)::int from public.metrics), 1, 'B ve sus métricas');
 select is((select count(*)::int from public.recordings), 0, 'B no ve grabaciones de A');
 select is((select count(*)::int from public.set_logs), 1, 'B solo ve sus series');
+
+-- ── Anti-trampa y coach_usage (DEC-067, issue #65) ──────────────────────────
+reset role;
+insert into public.coach_usage (user_id, period, calls, cost_micro_usd) values
+  ('00000000-0000-0000-0000-00000000000a', date_trunc('month', now())::date, 3, 120000),
+  ('00000000-0000-0000-0000-00000000000b', date_trunc('month', now())::date, 9, 900000);
+
+set local role authenticated;
+set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+
+select is((select count(*)::int from public.coach_usage), 1, 'A solo ve su uso del asistente');
+select throws_ok($$insert into public.coach_usage (user_id, period) values ('00000000-0000-0000-0000-00000000000a', '2030-01-01')$$,
+  '42501', null, 'A no escribe su uso del asistente');
+select throws_ok($$update public.coach_usage set cost_micro_usd = 0$$,
+  '42501', null, 'A no edita su uso del asistente');
+
+insert into public.set_logs (id, user_id, session_id, exercise_id, reps, source, duration_ms) values
+  ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 10, 'camera', 20000),
+  ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 150, 'camera', 300000),
+  ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 10, 'camera', 5000);
+insert into public.set_logs (id, user_id, session_id, exercise_id, reps, flagged) values
+  ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 5, true);
+
+select is((select flagged from public.set_logs where id = '30000000-0000-0000-0000-000000000001'), false, 'una serie plausible no se marca');
+select is((select flag_reasons from public.set_logs where id = '30000000-0000-0000-0000-000000000002'), array['reps_gt_100'], 'más de 100 reps se marca');
+select is((select flag_reasons from public.set_logs where id = '30000000-0000-0000-0000-000000000003'), array['rep_lt_800ms'], 'menos de 800 ms por rep se marca');
+select is((select source from public.set_logs where id = '30000000-0000-0000-0000-000000000004'), 'manual', 'el origen por defecto es manual');
+select is((select flagged from public.set_logs where id = '30000000-0000-0000-0000-000000000004'), false, 'el cliente no puede fijar flagged al insertar');
+select throws_ok($$insert into public.set_logs (user_id, session_id, exercise_id, source) values ('00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 'otro')$$,
+  '23514', null, 'origen inválido rechazado');
+
+update public.set_logs set flagged = false, source = 'manual' where id = '30000000-0000-0000-0000-000000000002';
+select is((select flagged and source = 'camera' from public.set_logs where id = '30000000-0000-0000-0000-000000000002'), true, 'el cliente no libera una marca ni cambia el origen');
+
+insert into public.set_logs (user_id, session_id, exercise_id, reps, source, duration_ms) values
+  ('00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 100, 'camera', 11000000);
+select is((select 'day_gt_3h' = any(flag_reasons) from public.set_logs where duration_ms = 11000000), true, 'más de 3 h de actividad en el día se marca');
+
+insert into public.workout_sessions (id, user_id, started_at, ended_at) values
+  ('10000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-00000000000a', now() - interval '3 hours', now() - interval '1 hour');
+insert into public.workout_sessions (id, user_id, started_at) values
+  ('10000000-0000-0000-0000-0000000000a2', '00000000-0000-0000-0000-00000000000a', now() - interval '90 minutes');
+insert into public.set_logs (id, user_id, session_id, exercise_id, reps, source, duration_ms) values
+  ('30000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-0000000000a2', 'sentadilla', 10, 'camera', 20000);
+update public.workout_sessions set ended_at = now() - interval '30 minutes' where id = '10000000-0000-0000-0000-0000000000a2';
+select is((select 'sessions_overlap' = any(flag_reasons) from public.set_logs where id = '30000000-0000-0000-0000-000000000005'), true, 'sesiones solapadas marcan sus series');
 
 -- ── Anónimo ─────────────────────────────────────────────────────────────────
 set local role anon;
