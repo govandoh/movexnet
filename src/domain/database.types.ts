@@ -87,14 +87,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "birth_year": number | null,"created_at": string,"days_per_week": number,"display_name": string,"equipment": (string)[],"experience_level": string,"goal": string,"height_cm": number | null,"preferred_camera": string,"privacy_accepted_at": string | null,"privacy_version": string | null,"program_type": string,"public_profile": boolean,"session_minutes": number,"training_location": string,"updated_at": string,"user_id": string,"weight_kg": number | null
+                    "birth_month": number | null,"birth_year": number | null,"created_at": string,"days_per_week": number,"display_name": string,"equipment": (string)[],"experience_level": string,"goal": string,"height_cm": number | null,"preferred_camera": string,"privacy_accepted_at": string | null,"privacy_version": string | null,"program_type": string,"public_profile": boolean,"session_minutes": number,"training_location": string,"updated_at": string,"user_id": string,"weight_kg": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name": string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id": string,"weight_kg"?: number | null
+                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name": string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id": string,"weight_kg"?: number | null
                   }
                   Update: {
-                    "birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name"?: string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id"?: string,"weight_kg"?: number | null
+                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name"?: string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id"?: string,"weight_kg"?: number | null
                   }
                   Relationships: [
                     

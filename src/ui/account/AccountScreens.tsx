@@ -1,5 +1,5 @@
 import { useId, useState, type FormEvent, type ReactNode } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { getAccountsConfig } from '../../api-client/index.ts';
 import {
   AuthError, MAX_PASSWORD_BYTES, MIN_PASSWORD_LENGTH, PRIVACY_VERSION, isValidEmail, passwordIssues,
@@ -104,6 +104,8 @@ function SentNotice({ title, text, action }: { title: string; text: string; acti
 
 // ── Registro ─────────────────────────────────────────────────────────────────
 
+const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
 export function SignUpScreen() {
   const { status } = useAccount();
   const captcha = useCaptcha();
@@ -111,6 +113,7 @@ export function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [birthYear, setBirthYear] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
   const [accepted, setAccepted] = useState(false);
   const [showNotice, setShowNotice] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<SignUpField, string>>>({});
@@ -124,7 +127,7 @@ export function SignUpScreen() {
     return (
       <SentNotice
         title="Revisa tu correo"
-        text="Si el correo es válido, te enviamos un enlace para confirmar la cuenta. Ábrelo en este mismo navegador y luego inicia sesión."
+        text="Si el correo es válido, te enviamos un enlace para confirmar la cuenta. Al abrirlo quedas con la sesión iniciada en ese navegador."
         action={<Link className="btn btn--primary btn--block" to="/cuenta/entrar">Ir a iniciar sesión</Link>}
       />
     );
@@ -134,7 +137,7 @@ export function SignUpScreen() {
     e.preventDefault();
     if (busy) return;
     const input = {
-      email, password, displayName: name, birthYear: Number(birthYear),
+      email, password, displayName: name, birthYear: Number(birthYear), birthMonth: Number(birthMonth),
       privacyVersion: accepted ? PRIVACY_VERSION : '', captchaToken: captcha.token,
     };
     const found = validateSignUp(input, new Date());
@@ -174,11 +177,23 @@ export function SignUpScreen() {
           {(id, d) => <PasswordInput id={id} value={password} onChange={setPassword} autoComplete="new-password"
             describedBy={d} invalid={!!errors.password} />}
         </Field>
-        <Field label="Año de nacimiento" error={errors.birthYear} hint="Solo para confirmar que tienes 18 años o más.">
-          {(id, d) => <input id={id} className="account-input" inputMode="numeric" pattern="[0-9]*" value={birthYear}
-            onChange={e => setBirthYear(e.target.value.replace(/\D/g, '').slice(0, 4))} autoComplete="bday-year"
-            required aria-describedby={d} aria-invalid={!!errors.birthYear || undefined} />}
-        </Field>
+        <fieldset className="account-field account-birth" aria-describedby="birth-msg">
+          <legend className="field-label">Mes y año de nacimiento</legend>
+          <div className="account-birth__row">
+            <select className="account-input" aria-label="Mes de nacimiento" value={birthMonth}
+              onChange={e => setBirthMonth(e.target.value)} autoComplete="bday-month" required
+              aria-invalid={!!errors.birthDate || undefined}>
+              <option value="" disabled>Mes</option>
+              {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+            </select>
+            <input className="account-input" aria-label="Año de nacimiento" placeholder="Año" inputMode="numeric"
+              pattern="[0-9]*" value={birthYear} onChange={e => setBirthYear(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              autoComplete="bday-year" required aria-invalid={!!errors.birthDate || undefined} />
+          </div>
+          <span id="birth-msg" className={errors.birthDate ? 'account-field__error' : 'account-field__hint'}>
+            {errors.birthDate ?? 'Solo para confirmar que tienes 18 años o más.'}
+          </span>
+        </fieldset>
         <div className="account-field">
           <label className="account-check">
             <input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)}
@@ -236,7 +251,7 @@ export function SignInScreen() {
     <AccountLayout title="Iniciar sesión">
       {linkError && (
         <div className="card account-note" role="status">
-          <p>El enlace venció, ya se usó o se abrió en otro navegador. Si era para confirmar tu correo, probablemente ya quedó confirmado: inicia sesión.</p>
+          <p>El enlace venció o ya se usó. Si era para confirmar tu correo, prueba a iniciar sesión; si no, pide un enlace nuevo.</p>
           <button type="button" className="account-link" onClick={accountActions.dismissLinkError}>Entendido</button>
         </div>
       )}
@@ -279,7 +294,7 @@ export function ResetRequestScreen() {
     return (
       <SentNotice
         title="Revisa tu correo"
-        text="Si hay una cuenta con ese correo, te enviamos un enlace para elegir una contraseña nueva. Ábrelo en este mismo navegador; vence en una hora."
+        text="Si hay una cuenta con ese correo, te enviamos un enlace para elegir una contraseña nueva. Vence en una hora y sirve una sola vez."
         action={<Link className="btn btn--secondary btn--block" to="/cuenta/entrar">Volver a iniciar sesión</Link>}
       />
     );
@@ -333,6 +348,9 @@ export function NewPasswordScreen() {
   const [alert, setAlert] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  // Con `secure_password_change`, un cambio desde Perfil exige un inicio de sesión reciente.
+  const [needsReauth, setNeedsReauth] = useState(false);
+  const navigate = useNavigate();
 
   if (status === 'disabled' || status === 'signed_out') return <Navigate to="/cuenta/entrar" replace />;
   if (done) {
@@ -362,9 +380,15 @@ export function NewPasswordScreen() {
       setDone(true);
     } catch (err) {
       setAlert(errorText(err));
+      setNeedsReauth(err instanceof AuthError && err.code === 'reauthentication_needed');
     } finally {
       setBusy(false);
     }
+  }
+
+  async function signOutAndReenter() {
+    await (await authRepository()).signOut();
+    navigate('/cuenta/entrar', { replace: true });
   }
 
   return (
@@ -379,6 +403,11 @@ export function NewPasswordScreen() {
           {id => <PasswordInput id={id} value={confirm} onChange={setConfirm} autoComplete="new-password" />}
         </Field>
         <FormAlert text={alert} />
+        {needsReauth && (
+          <button type="button" className="btn btn--secondary btn--block" onClick={signOutAndReenter}>
+            Cerrar sesión y volver a entrar
+          </button>
+        )}
         <button type="submit" className="btn btn--primary btn--block" disabled={busy}>
           {busy ? 'Guardando…' : 'Guardar contraseña'}
         </button>
@@ -391,5 +420,7 @@ export function NewPasswordScreen() {
 
 export function PrivacyScreen() {
   const navigate = useNavigate();
-  return <PrivacyNotice onClose={() => navigate(-1)} />;
+  const location = useLocation();
+  // Abierto directo (enlace o recarga) no hay historial dentro de la app: se vuelve a Perfil.
+  return <PrivacyNotice onClose={() => (location.key === 'default' ? navigate('/perfil') : navigate(-1))} />;
 }

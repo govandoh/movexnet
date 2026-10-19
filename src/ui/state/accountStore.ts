@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { accountsEnabled, loadAuthRepository } from '../../api-client/index.ts';
-import type { AuthRepository, AuthUser } from '../../domain/ports.ts';
+import type { AuthRepository, AuthUser, EmailLinkType } from '../../domain/ports.ts';
 
 /**
  * Estado de la cuenta para la UI (issue #60, DEC-069). Solo guarda quién inició sesión;
@@ -31,8 +31,9 @@ function set(patch: Partial<AccountState>): void {
   for (const l of listeners) l();
 }
 
-/** Parámetros que Auth agrega a la URL al volver de un enlace del correo. */
-const AUTH_PARAMS = ['code', 'error', 'error_code', 'error_description'];
+/** Parámetros que dejan en la URL los enlaces del correo y las redirecciones de Auth. */
+const AUTH_PARAMS = ['code', 'token_hash', 'type', 'error', 'error_code', 'error_description'];
+const LINK_TYPES: readonly EmailLinkType[] = ['email', 'recovery'];
 
 /**
  * Quita de la URL lo que dejó Auth. Si el canje funcionó, supabase-js ya borró `code`; si
@@ -41,7 +42,7 @@ const AUTH_PARAMS = ['code', 'error', 'error_code', 'error_description'];
 function cleanAuthParams(): boolean {
   const url = new URL(window.location.href);
   const failed = url.searchParams.has('error') || url.searchParams.has('code');
-  if (!AUTH_PARAMS.some(p => url.searchParams.has(p))) return false;
+  if (!url.searchParams.has('token_hash') && !url.searchParams.has('code') && !url.searchParams.has('error')) return false;
   for (const p of AUTH_PARAMS) url.searchParams.delete(p);
   window.history.replaceState(window.history.state, '', url.toString());
   return failed;
@@ -62,10 +63,29 @@ export function startAccount(): void {
         else if (event === 'password_recovery') set({ status: 'signed_in', user, recovery: true });
         else set({ status: 'signed_in', user });
       });
+      const linkFailed = await verifyLinkInUrl(repo);
       const user = await repo.currentUser();
-      set({ status: user ? 'signed_in' : 'signed_out', user, linkError: cleanAuthParams() });
+      set({ status: user ? 'signed_in' : 'signed_out', user, linkError: cleanAuthParams() || linkFailed });
     })
     .catch(() => set({ status: 'disabled' }));
+}
+
+/**
+ * Enlace del correo con `token_hash` (plantillas de `supabase/templates/`, DEC-069): a
+ * diferencia del código PKCE, se canjea en cualquier navegador. Devuelve si falló.
+ */
+async function verifyLinkInUrl(repo: AuthRepository): Promise<boolean> {
+  const params = new URL(window.location.href).searchParams;
+  const tokenHash = params.get('token_hash');
+  const type = params.get('type') as EmailLinkType | null;
+  if (!tokenHash) return false;
+  if (!type || !LINK_TYPES.includes(type)) return true;
+  try {
+    await repo.verifyEmailLink({ tokenHash, type });
+    return false;
+  } catch {
+    return true;
+  }
 }
 
 export function useAccount(): AccountState {

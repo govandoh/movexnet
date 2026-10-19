@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  AuthError, PRIVACY_VERSION, isAdultBirthYear, isValidEmail, normalizeEmail, passwordIssues,
+  AuthError, PRIVACY_VERSION, isAdultBirthMonth, isValidEmail, normalizeEmail, passwordIssues,
   validateSignUp, type SignUpInput,
 } from './auth.ts'
 
@@ -12,20 +12,29 @@ const valid: SignUpInput = {
   password: 'Sentadilla2026',
   displayName: 'Ana',
   birthYear: 1995,
+  birthMonth: 4,
   privacyVersion: PRIVACY_VERSION,
 }
 
-describe('isAdultBirthYear', () => {
-  it('aplica la regla por año de calendario, igual que el servidor', () => {
-    expect(isAdultBirthYear(2008, NOW)).toBe(true)
-    expect(isAdultBirthYear(2009, NOW)).toBe(false)
-    expect(isAdultBirthYear(1990, NOW)).toBe(true)
+describe('isAdultBirthMonth', () => {
+  it('exige 18 años y un mes completo más: el mes de nacimiento todavía no cuenta', () => {
+    // NOW = 19 de octubre de 2026
+    expect(isAdultBirthMonth(2008, 9, NOW)).toBe(true)
+    expect(isAdultBirthMonth(2008, 10, NOW)).toBe(false)
+    expect(isAdultBirthMonth(2008, 11, NOW)).toBe(false)
+    expect(isAdultBirthMonth(1990, 12, NOW)).toBe(true)
   })
 
-  it('rechaza años absurdos o no enteros', () => {
-    expect(isAdultBirthYear(1850, NOW)).toBe(false)
-    expect(isAdultBirthYear(1990.5, NOW)).toBe(false)
-    expect(isAdultBirthYear(Number.NaN, NOW)).toBe(false)
+  it('con solo el año entraba gente de 17: ya no', () => {
+    expect(isAdultBirthMonth(2008, 12, NOW)).toBe(false)
+  })
+
+  it('rechaza meses fuera de rango y años absurdos o no enteros', () => {
+    expect(isAdultBirthMonth(1990, 0, NOW)).toBe(false)
+    expect(isAdultBirthMonth(1990, 13, NOW)).toBe(false)
+    expect(isAdultBirthMonth(1850, 5, NOW)).toBe(false)
+    expect(isAdultBirthMonth(1990.5, 5, NOW)).toBe(false)
+    expect(isAdultBirthMonth(Number.NaN, 5, NOW)).toBe(false)
   })
 })
 
@@ -66,7 +75,8 @@ describe('validateSignUp', () => {
   })
 
   it('bloquea a menores de 18', () => {
-    expect(validateSignUp({ ...valid, birthYear: 2010 }, NOW).birthYear).toMatch(/18 años/)
+    expect(validateSignUp({ ...valid, birthYear: 2010 }, NOW).birthDate).toMatch(/18 años/)
+    expect(validateSignUp({ ...valid, birthYear: 2008, birthMonth: 10 }, NOW).birthDate).toBeDefined()
   })
 
   it('exige el aviso de privacidad vigente', () => {

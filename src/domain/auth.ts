@@ -22,15 +22,21 @@ export const MAX_PASSWORD_BYTES = 72;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_DISPLAY_NAME_LENGTH = 60;
 
+/** Meses que deben haber pasado desde el mes de nacimiento: 18 años y un mes completo más. */
+const MIN_ACCOUNT_AGE_MONTHS = MIN_ACCOUNT_AGE_YEARS * 12 + 1;
+
 /**
- * Regla por año de calendario, igual que `private.is_adult_birth_year`: quien cumple 18 en
- * el año en curso puede registrarse. Sin mes de nacimiento no hay más precisión.
+ * Puerta 18+ con mes y año, igual que `private.is_adult_birth_month`. Sin el día, el
+ * cumpleaños puede caer el último día del mes, así que el mes de nacimiento todavía no
+ * cuenta: nacido en octubre de 2008, puede registrarse desde noviembre de 2026 (DEC-069).
+ * `birthMonth` va de 1 (enero) a 12. Usa la fecha del dispositivo; el servidor usa la hora
+ * de Guatemala y es quien decide.
  */
-export function isAdultBirthYear(birthYear: number, now: Date): boolean {
-  const year = now.getFullYear();
-  return Number.isInteger(birthYear)
-    && birthYear >= year - MAX_AGE_YEARS
-    && year - birthYear >= MIN_ACCOUNT_AGE_YEARS;
+export function isAdultBirthMonth(birthYear: number, birthMonth: number, now: Date): boolean {
+  if (!Number.isInteger(birthYear) || !Number.isInteger(birthMonth)) return false;
+  if (birthMonth < 1 || birthMonth > 12 || birthYear < now.getFullYear() - MAX_AGE_YEARS) return false;
+  const months = (now.getFullYear() - birthYear) * 12 + (now.getMonth() + 1 - birthMonth);
+  return months >= MIN_ACCOUNT_AGE_MONTHS;
 }
 
 /** Correo normalizado (sin espacios, en minúsculas) para que la misma cuenta no se duplique. */
@@ -62,13 +68,15 @@ export interface SignUpInput {
   password: string;
   displayName: string;
   birthYear: number;
+  /** 1 (enero) a 12. */
+  birthMonth: number;
   /** Debe ser `PRIVACY_VERSION`: el usuario marcó la casilla del aviso vigente. */
   privacyVersion: string;
   /** Token de Cloudflare Turnstile; obligatorio cuando el captcha está activo (DEC-069). */
   captchaToken?: string;
 }
 
-export type SignUpField = 'email' | 'password' | 'displayName' | 'birthYear' | 'privacy';
+export type SignUpField = 'email' | 'password' | 'displayName' | 'birthDate' | 'privacy';
 
 /** Errores por campo, en español; vacío si el formulario puede enviarse. */
 export function validateSignUp(input: SignUpInput, now: Date): Partial<Record<SignUpField, string>> {
@@ -80,8 +88,8 @@ export function validateSignUp(input: SignUpInput, now: Date): Partial<Record<Si
   if (name.length < 1 || name.length > MAX_DISPLAY_NAME_LENGTH) {
     errors.displayName = `Escribe tu nombre (máximo ${MAX_DISPLAY_NAME_LENGTH} caracteres).`;
   }
-  if (!isAdultBirthYear(input.birthYear, now)) {
-    errors.birthYear = `Necesitas tener al menos ${MIN_ACCOUNT_AGE_YEARS} años para crear una cuenta.`;
+  if (!isAdultBirthMonth(input.birthYear, input.birthMonth, now)) {
+    errors.birthDate = `Necesitas tener al menos ${MIN_ACCOUNT_AGE_YEARS} años para crear una cuenta.`;
   }
   if (input.privacyVersion !== PRIVACY_VERSION) errors.privacy = 'Debes aceptar el aviso de privacidad.';
   return errors;
@@ -121,7 +129,7 @@ const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
   signup_rejected: 'No pudimos crear la cuenta con esos datos. Revisa el formulario.',
   signup_disabled: 'El registro de cuentas no está disponible por ahora.',
   session_expired: 'Tu sesión terminó. Inicia sesión de nuevo.',
-  reauthentication_needed: 'Por seguridad, inicia sesión de nuevo antes de cambiar la contraseña.',
+  reauthentication_needed: 'Por seguridad, cierra sesión y vuelve a entrar antes de cambiar la contraseña.',
   network: 'Sin conexión con el servidor. Revisa tu internet y vuelve a intentarlo.',
   unknown: 'Algo salió mal. Vuelve a intentarlo.',
 };

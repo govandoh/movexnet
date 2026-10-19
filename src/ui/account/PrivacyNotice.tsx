@@ -22,7 +22,7 @@ export function PrivacyNotice({ onClose }: { onClose: () => void }) {
         <p>MovexNet es un proyecto de seminario universitario. No vende nada: los pagos de la app son simulados y nunca se te cobra.</p>
 
         <h2>Qué guardamos</h2>
-        <p>Si creas una cuenta: tu correo, tu nombre, tu año de nacimiento y, si los escribes, tu altura, peso y nivel. También tus sesiones, series y métricas de entrenamiento. Los puntos del cuerpo (landmarks) solo se guardan si das tu consentimiento en cada grabación.</p>
+        <p>Si creas una cuenta: tu correo, tu nombre, tu mes y año de nacimiento y, si los escribes, tu altura, peso y nivel. También tus sesiones, series y métricas de entrenamiento. Los puntos del cuerpo (landmarks) solo se guardan si das tu consentimiento en cada grabación.</p>
 
         <h2>Qué nunca guardamos</h2>
         <p>El video de la cámara nunca sale de tu celular. No guardamos datos de tarjeta.</p>

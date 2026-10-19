@@ -10,6 +10,7 @@ const signUpInput: SignUpInput = {
   password: 'Sentadilla2026', // ggignore: contraseña de prueba, no es un secreto
   displayName: ' Ana ',
   birthYear: 1995,
+  birthMonth: 4,
   privacyVersion: PRIVACY_VERSION,
   captchaToken: 'tok',
 }
@@ -28,6 +29,7 @@ function fakeAuth(overrides: Record<string, unknown> = {}) {
     resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
     updateUser: vi.fn(async () => ({ data: { user: SESSION.user }, error: null })),
     getSession: vi.fn(async () => ({ data: { session: SESSION }, error: null })),
+    verifyOtp: vi.fn(async () => ({ data: { session: SESSION, user: SESSION.user }, error: null })),
     onAuthStateChange: vi.fn((cb: (event: string, session: unknown) => void) => {
       callback = cb
       return { data: { subscription: { unsubscribe: vi.fn() } } }
@@ -56,7 +58,7 @@ describe('signUp', () => {
       options: {
         emailRedirectTo: 'https://app.example/',
         captchaToken: 'tok',
-        data: { display_name: 'Ana', birth_year: '1995', privacy_version: PRIVACY_VERSION },
+        data: { display_name: 'Ana', birth_year: '1995', birth_month: '4', privacy_version: PRIVACY_VERSION },
       },
     })
   })
@@ -166,6 +168,21 @@ describe('sesión y eventos', () => {
       updateUser: vi.fn(async () => ({ data: { user: null }, error: apiError('reauthentication_needed') })),
     })
     await expect(repo(auth).updatePassword('Nueva12345A')).rejects.toMatchObject({ code: 'reauthentication_needed' })
+  })
+})
+
+describe('verifyEmailLink', () => {
+  it('canjea el token_hash del correo con su tipo', async () => {
+    const { auth } = fakeAuth()
+    await repo(auth).verifyEmailLink({ tokenHash: 'abc', type: 'recovery' })
+    expect(auth.verifyOtp).toHaveBeenCalledWith({ token_hash: 'abc', type: 'recovery' })
+  })
+
+  it('un enlace vencido o usado falla con un error genérico', async () => {
+    const { auth } = fakeAuth({
+      verifyOtp: vi.fn(async () => ({ data: { session: null, user: null }, error: apiError('otp_expired', 403) })),
+    })
+    await expect(repo(auth).verifyEmailLink({ tokenHash: 'abc', type: 'email' })).rejects.toBeInstanceOf(AuthError)
   })
 })
 

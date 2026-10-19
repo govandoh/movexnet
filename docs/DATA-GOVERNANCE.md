@@ -12,7 +12,7 @@
 | Imagen clave por rep (segunda opinión) | Solo bajo petición explícita del usuario premium, una imagen, con aviso en pantalla. | Edge Function; no se persiste tras responder. | `DEC-027`. Pendiente de DEC propia antes de implementarse. |
 | Landmarks (`LandmarkFrame[]`) | Solo con `RecordingConsent` activo. | Supabase Storage (bucket privado) + tabla `recordings`. | Consentimiento explícito por grabación (§2). |
 | Métricas por rep/serie/sesión (`Rep`, `Set`, `Metric`) | Sí, para usuarios autenticados. | Postgres. | Base del historial, progreso y coaching. Sin cuenta, nada sale del dispositivo. |
-| Perfil (nombre, año de nacimiento, altura, peso, nivel) | Opcional salvo nombre. | Postgres. | Editable y borrable por el usuario. |
+| Perfil (nombre, mes y año de nacimiento, altura, peso, nivel) | Opcional salvo nombre. | Postgres. | Editable y borrable por el usuario. |
 | RPE y notas de sesión | Opcional. | Postgres. | — |
 | Mensajes de coaching | Sí, entre entrenador, cliente y asistente. | Postgres + Realtime. | Visibles solo a las partes de la `CoachingRelationship`. |
 | Datos de pago (tarjeta) | **Nunca en Fitnet.** | Recurrente/Paddle (checkout alojado). | Fitnet guarda solo `externalId`, plan y estado. |
@@ -28,7 +28,7 @@ Datos de actividad física y medidas corporales son datos sensibles de salud a e
 - **Compartir métricas con un entrenador:** implícito al aceptar la `CoachingRelationship`; revocable al terminarla (el entrenador pierde acceso a datos futuros y pasados salvo los reportes ya generados, que se anonimizan).
 - **Perfil público / comunidad / rankings:** opt-in explícito (`Profile.publicProfile`); por defecto nada es visible a terceros.
 - **Segunda opinión por imagen:** confirmación por petición, no persistente.
-- Menores de edad: solo mayores de 18 años, declarado con el año de nacimiento al registrarse (`DEC-067`). Lo impone el servidor: el trigger de alta rechaza la cuenta si la edad o la aceptación del aviso no cumplen, y después no se puede declarar una edad menor (`DEC-069`). No hay verificación documental.
+- Menores de edad: solo mayores de 18 años, declarado con el mes y el año de nacimiento al registrarse (`DEC-067`, precisado en `DEC-069`: sin el día, el mes de nacimiento todavía no cuenta). Lo impone el servidor: el trigger de alta rechaza la cuenta si la edad o la aceptación del aviso no cumplen, y después no se puede declarar una edad menor (`DEC-069`). No hay verificación documental.
 
 ## 3. Retención y borrado
 

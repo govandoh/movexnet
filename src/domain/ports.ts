@@ -20,6 +20,8 @@ import type {
 export interface Profile {
   displayName: string;
   birthYear: number | null;
+  /** 1 (enero) a 12; junto con el año, para la puerta 18+ (DEC-069). */
+  birthMonth: number | null;
   heightCm: number | null;
   weightKg: number | null;
   experienceLevel: ExperienceLevel;
@@ -53,6 +55,9 @@ export interface AuthUser {
  *   contraseña nueva y llamar a `updatePassword`.
  * - `signed_out`: cierre de sesión o sesión vencida que no se pudo renovar.
  */
+/** Tipos de enlace que mandan las plantillas de `supabase/templates/` (DEC-069). */
+export type EmailLinkType = 'email' | 'recovery';
+
 export type AuthEvent = 'signed_in' | 'signed_out' | 'password_recovery' | 'user_updated';
 
 /**
@@ -70,6 +75,12 @@ export interface AuthRepository {
   signOut(): Promise<void>;
   /** Envía el correo de recuperación. Resuelve igual exista o no la cuenta. */
   requestPasswordReset(input: { email: string; captchaToken?: string }): Promise<void>;
+  /**
+   * Canjea el enlace del correo (`?token_hash=…&type=…`). Funciona en cualquier navegador,
+   * también si el correo se abre fuera de la PWA instalada. `recovery` emite
+   * `password_recovery`; `email` confirma la cuenta e inicia sesión. Un solo uso, vence en 1 h.
+   */
+  verifyEmailLink(input: { tokenHash: string; type: EmailLinkType }): Promise<void>;
   /** Contraseña nueva para el usuario con sesión (tras `password_recovery` o desde Perfil). */
   updatePassword(newPassword: string): Promise<void>;
   /** Usuario de la sesión guardada en el dispositivo; null si no hay sesión. */

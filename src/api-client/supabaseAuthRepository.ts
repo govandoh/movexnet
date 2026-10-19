@@ -13,11 +13,12 @@ import type { AuthChangeEvent, Session, SupabaseClient } from '@supabase/supabas
 import {
   AuthError, PRIVACY_VERSION, normalizeEmail, validateSignUp, type AuthErrorCode, type SignUpInput,
 } from '../domain/auth.ts';
-import type { AuthEvent, AuthRepository, AuthUser } from '../domain/ports.ts';
+import type { AuthEvent, AuthRepository, AuthUser, EmailLinkType } from '../domain/ports.ts';
 
 export type SupabaseAuth = Pick<
   SupabaseClient['auth'],
-  'signUp' | 'signInWithPassword' | 'signOut' | 'resetPasswordForEmail' | 'updateUser' | 'getSession' | 'onAuthStateChange'
+  'signUp' | 'signInWithPassword' | 'signOut' | 'resetPasswordForEmail' | 'updateUser' | 'getSession'
+  | 'onAuthStateChange' | 'verifyOtp'
 >;
 
 export interface SupabaseAuthRepositoryDeps {
@@ -35,7 +36,7 @@ interface ErrorLike {
   status?: number;
 }
 
-type Operation = 'signUp' | 'signIn' | 'reset' | 'update' | 'session';
+type Operation = 'signUp' | 'signIn' | 'reset' | 'update' | 'session' | 'verify';
 
 /** Códigos de https://supabase.com/docs/guides/auth/debugging/error-codes que usamos. */
 const CODE_MAP: Record<string, AuthErrorCode> = {
@@ -106,11 +107,12 @@ export class SupabaseAuthRepository implements AuthRepository {
       options: {
         emailRedirectTo: this.deps.redirectTo,
         captchaToken: input.captchaToken,
-        // Lo lee solo el trigger de alta (`private.handle_new_user`). El año viaja como texto
-        // porque el trigger valida el formato con una expresión regular.
+        // Lo lee solo el trigger de alta (`private.handle_new_user`). Año y mes viajan como
+        // texto porque el trigger valida el formato con una expresión regular.
         data: {
           display_name: input.displayName.trim(),
           birth_year: String(input.birthYear),
+          birth_month: String(input.birthMonth),
           privacy_version: PRIVACY_VERSION,
         },
       },
@@ -159,6 +161,11 @@ export class SupabaseAuthRepository implements AuthRepository {
     const code = mapAuthError(error, 'reset');
     // Solo se informan los errores que no dicen nada de la cuenta.
     if (code === 'rate_limited' || code === 'captcha_failed' || code === 'network') throw new AuthError(code);
+  }
+
+  async verifyEmailLink(input: { tokenHash: string; type: EmailLinkType }): Promise<void> {
+    const { error } = await this.deps.auth.verifyOtp({ token_hash: input.tokenHash, type: input.type });
+    if (error) throw new AuthError(mapAuthError(error, 'verify'));
   }
 
   async updatePassword(newPassword: string): Promise<void> {

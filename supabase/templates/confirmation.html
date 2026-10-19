@@ -1,0 +1,8 @@
+<!-- Confirmación de cuenta (issue #60, DEC-069). El enlace lleva token_hash y lo canjea la app
+     con verifyOtp, así funciona en cualquier navegador (también fuera de la PWA instalada).
+     Copiar igual en Supabase > Authentication > Emails > Templates > Confirm signup. -->
+<h2>Confirma tu cuenta de MovexNet</h2>
+<p>Hola. Para activar tu cuenta, toca el botón:</p>
+<p><a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email">Confirmar mi correo</a></p>
+<p>El enlace sirve una sola vez y vence en una hora. Si no creaste una cuenta en MovexNet, ignora este correo.</p>
+<p>MovexNet es un proyecto académico: el video de tu cámara nunca sale de tu celular.</p>

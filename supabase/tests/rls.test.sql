@@ -8,9 +8,9 @@ select plan(47);
 insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
 values
   ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'a@test.local',
-   '{"display_name":"Ana","birth_year":"1995","privacy_version":"privacy-2026-10-v1"}'),
+   '{"display_name":"Ana","birth_year":"1995","birth_month":"4","privacy_version":"privacy-2026-10-v1"}'),
   ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'b@test.local',
-   '{"display_name":"Beto","birth_year":"1990","privacy_version":"privacy-2026-10-v1"}');
+   '{"display_name":"Beto","birth_year":"1990","birth_month":"9","privacy_version":"privacy-2026-10-v1"}');
 
 insert into public.workout_sessions (id, user_id) values
   ('10000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000a'),

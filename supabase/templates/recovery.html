@@ -1,0 +1,6 @@
+<!-- Recuperación de contraseña (issue #60, DEC-069). Mismo esquema que confirmation.html.
+     Copiar igual en Supabase > Authentication > Emails > Templates > Reset password. -->
+<h2>Elige una contraseña nueva</h2>
+<p>Pediste recuperar el acceso a tu cuenta de MovexNet. Toca el botón para elegir una contraseña nueva:</p>
+<p><a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=recovery">Elegir contraseña nueva</a></p>
+<p>El enlace sirve una sola vez y vence en una hora. Si no lo pediste tú, ignora este correo: tu contraseña no cambia.</p>

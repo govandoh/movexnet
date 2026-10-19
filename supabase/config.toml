@@ -246,6 +246,16 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Plantillas con token_hash en vez de {{ .ConfirmationURL }} (DEC-069): la app canjea el enlace
+# con verifyOtp y funciona en cualquier navegador. En la nube se copian en el panel.
+[auth.email.template.confirmation]
+subject = "Confirma tu cuenta de MovexNet"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Recupera tu contraseña de MovexNet"
+content_path = "./supabase/templates/recovery.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
