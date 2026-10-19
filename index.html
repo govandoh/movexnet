@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="manifest" href="/manifest.json" />
+    <!-- use-credentials: el navegador pide el manifest sin cookies; en los previews de Vercel
+         (protegidos con inicio de sesión) eso devuelve una redirección y la PWA no se puede
+         instalar. Mismo origen, así que en producción no cambia nada. -->
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
     <!-- iOS no acepta SVG como ícono de inicio: PNG de 180 px a sangre (iOS redondea las esquinas) -->
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
     <!-- viewport-fit=cover para ocupar la pantalla completa en iPhone con notch -->
