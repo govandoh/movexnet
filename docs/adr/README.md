@@ -20,7 +20,7 @@ Las ADR son inmutables: si una decisión cambia, se escribe una DEC nueva y la a
 2. Copiar `TEMPLATE.md` a `DEC-NNN-<slug>.md` con el siguiente número libre de la tabla; estado `Propuesta`.
 3. Rellenar contexto, opciones (mínimo dos reales), decisión y consecuencias. Enlazar código, DEC previas y fuentes externas.
 4. Añadir la fila en la tabla de este README y, si el estado cambia a `Aceptada`, en `DECISIONS.md` (índice corto de la raíz).
-5. Abrir PR con título `docs(adr): DEC-NNN <título>`. Requiere **2 aprobaciones** (leads de B, D y E revisan `docs/adr/`; si la DEC toca `packages/contracts`, deben aprobar B y D).
+5. Abrir PR con título `docs(adr): DEC-NNN <título>`. La revisión de los leads de B, D y E es recomendada, no obligatoria; mergea el responsable del proyecto (`DEC-070`).
 6. La ADR se discute en la revisión de arquitectura de 30 min del sprint; al hacer merge el estado pasa a `Aceptada`.
 
 En Claude Code, la skill `/adr` genera el borrador a partir de la conversación (`.claude/skills/adr`); el agente `adr-scribe` mantiene este índice.
@@ -97,8 +97,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Propuesta |
 | [DEC-067](DEC-067-coste-ia-rankings-antitrampa-privacidad.md) | Tope de costo del asistente IA (USD 2/usuario/mes, modo simulado por defecto), rankings cada 15 min, reglas anti-trampa v1 y aviso de privacidad versionado | 2026-10-17 | Propuesta |
 | [DEC-068](DEC-068-nombre-movexnet-repositorio-publico.md) | Nombre del producto MovexNet, repositorio `movexnet` y visibilidad pública | 2026-10-17 | Propuesta |
+| [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Propuesta |
 
-Próximo número libre: **DEC-069** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-071** (provisional hasta el merge, ver DEC-062).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 

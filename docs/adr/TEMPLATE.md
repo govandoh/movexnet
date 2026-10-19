@@ -41,4 +41,4 @@ Convenciones:
 
 - Nombre de archivo: `DEC-NNN-slug-corto-en-kebab-case.md` dentro de `docs/adr/`.
 - Una ADR se escribe una vez y no se reescribe: si la decisión cambia, se crea una nueva DEC y la anterior pasa a `Reemplazada por DEC-MMM`.
-- El estado `Aceptada` solo se asigna al hacer merge de la rama `adr/*` con las aprobaciones que exige `docs/adr/README.md`.
+- El estado `Aceptada` solo se asigna al hacer merge de la rama `adr/*` (`DEC-070`).

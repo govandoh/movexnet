@@ -55,8 +55,8 @@ Comandos:
 1. Antes de abrir el PR: `pnpm check` en verde (o `/pr-ready` en Claude Code). CI corre lo mismo en `.github/workflows/ci.yml`.
 2. Título con el mismo formato de conventional commit. Cuerpo con la plantilla `.github/PULL_REQUEST_TEMPLATE.md`: qué, por qué, cómo se probó (dispositivo real), checklist DoD, DEC enlazadas, issue que cierra.
 3. PR pequeño (< 400 líneas). Si crece, divídelo.
-4. Revisores: 1 obligatorio (CODEOWNERS asigna al dueño del directorio); 2 si toca `packages/contracts`, `models/manifest.json` o `docs/adr/`.
-5. Squash merge. Vercel publica un preview por PR; enlázalo en la descripción y confirma que lo probaste en celular.
+4. Revisión opcional (`DEC-070`): CODEOWNERS pide revisión al dueño del directorio, pero no bloquea. Mergea el responsable del proyecto cuando el CI está en verde.
+5. Solo squash merge (el repositorio no permite otro). Vercel publica un preview por PR; enlázalo en la descripción y confirma que lo probaste en celular.
 6. Si el PR cambia el hito, el estado de la migración o una decisión, anótalo en la descripción del PR. `docs/STATUS.md` lo actualiza el líder en la review semanal (`DEC-062`); no lo edites en tu PR.
 
 Definition of Done completa: `docs/WORKSTREAMS.md` §4.
@@ -103,7 +103,7 @@ Entrenamientos largos corren en Kaggle; los notebooks viven en `ml/notebooks/` y
 2. Copia `docs/adr/TEMPLATE.md` a `docs/adr/DEC-NNN-<slug>.md` (siguiente número libre en `docs/adr/README.md`), estado `Propuesta`.
 3. Contexto con hechos verificables, al menos dos opciones reales, decisión, consecuencias positivas y negativas, referencias.
 4. Añade la fila al índice de `docs/adr/README.md`.
-5. PR `docs(adr): DEC-NNN <título>`; 2 aprobaciones; se discute en la revisión de arquitectura del sprint; al mergear pasa a `Aceptada`.
+5. PR `docs(adr): DEC-NNN <título>`; se comenta en la revisión de arquitectura del sprint si hace falta; al mergear pasa a `Aceptada` (`DEC-070`).
 
 Si la decisión nace de una necesidad de otro workstream, abre primero la issue con la plantilla `adr` (`.github/ISSUE_TEMPLATE/adr.yml`). En Claude Code, `/adr` genera el borrador desde la conversación. No agregues decisiones a `DECISIONS.md` (es solo un índice).
 

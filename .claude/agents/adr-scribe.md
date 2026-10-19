@@ -41,7 +41,7 @@ Crear y mantener ADR en `docs/adr/**` y su reflejo en `DECISIONS.md`. Nada más.
 - Sin inventar contexto: si falta el "por qué" o las alternativas, preguntar al orquestador.
 - Español, tono neutro, sin adjetivos de venta. Los umbrales numéricos van con su justificación.
 - Si la decisión afecta a `packages/contracts`, `models/manifest.json` o golden, decirlo
-  explícitamente en Consecuencias (dispara la regla de rama `adr/*` y 2 revisores).
+  explícitamente en Consecuencias (dispara la regla de rama `adr/*`).
 
 ## Lo que NO hace
 - No modifica código, tests, configuración ni otros Markdown (`ARCHITECTURE.md`, `docs/STATUS.md`

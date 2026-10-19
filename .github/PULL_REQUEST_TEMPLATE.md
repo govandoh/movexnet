@@ -16,7 +16,7 @@
 - [ ] D · Backend de producto
 - [ ] E · App & UI
 - [ ] Plataforma / DevEx
-- [ ] Contratos (`packages/contracts`, `src/contracts`) → requiere 2 aprobaciones y ADR
+- [ ] Contratos (`packages/contracts`, `src/contracts`) → requiere rama `contracts/*` o `adr/*` y ADR
 
 ## ADR relacionada
 <!-- Obligatoria si el PR toca contratos, models/manifest.json o snapshots golden. -->

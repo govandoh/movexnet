@@ -61,7 +61,7 @@ reemplazan, así que la forma de desactivar uno es no ejecutar el compartido. Op
    { "disableAllHooks": true }
    ```
 2. **Excepción puntual para el guard** (por ejemplo, arreglar un typo en el manifest sin ADR):
-   trabaja en una rama `contracts/<slug>`; el hook lo permite y CODEOWNERS pide 2 revisores.
+   trabaja en una rama `contracts/<slug>`; el hook lo permite; la revisión es opcional (`DEC-070`).
 3. **Sobrescribir el comando** (solo si sabes lo que haces): en `settings.local.json` añade el mismo
    `matcher` con un comando `node -e "process.exit(0)"`; ambos correrán, y el compartido seguirá
    bloqueando. Por eso la opción soportada es la 1 o la 2.

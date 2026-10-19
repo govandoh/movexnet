@@ -41,7 +41,7 @@ git add docs/adr/DEC-NNN-<slug>.md docs/adr/README.md DECISIONS.md
 git commit -m "docs(adr): DEC-NNN <título corto>"
 ```
 Mostrar el comando al usuario; no ejecutarlo sin confirmación. Recordar que el PR necesita
-aprobación de los leads B, D y E (`.github/CODEOWNERS`).
+revisión de los leads B, D y E solo como recomendación; mergea el responsable (`DEC-070`).
 
 ## Salida esperada
 - Ruta del archivo creado y su número.

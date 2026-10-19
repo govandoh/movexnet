@@ -54,7 +54,7 @@ Hasta que exista `packages/`, las mismas fronteras aplican a `src/pose` (A), `sr
 3. **No exponer claves.** API keys (Claude, pagos, service-role) viven solo en Edge Functions o secretos de CI. Nunca en el bundle ni en el repo.
 4. **Español en UI y documentación entregable; identificadores de código en inglés.** Sin emojis en docs ni código.
 5. **No cambiar snapshots golden sin una DEC enlazada en el PR.** Los fixtures de `fixtures/landmarks/` congelan el comportamiento en producción.
-6. **`packages/contracts/**`, `src/contracts/**` y `models/manifest.json` solo se editan en ramas `adr/*` o `contracts/*`**, con 2 aprobaciones y bump semver (`docs/WORKSTREAMS.md`). En Claude Code lo bloquea el hook `guard-protected-paths.mjs`; en el PR lo exige CODEOWNERS.
+6. **`packages/contracts/**`, `src/contracts/**` y `models/manifest.json` solo se editan en ramas `adr/*` o `contracts/*`**, con bump semver y la DEC enlazada (`docs/WORKSTREAMS.md`). En Claude Code lo bloquea el hook `guard-protected-paths.mjs`.
 7. **Cero costo, sin excepciones.** Fitnet es un proyecto de seminario y no factura (`DEC-035`): todo va sobre planes gratuitos (Supabase Free, Vercel Hobby, Kaggle, GitHub Actions, Hugging Face). Cualquier gasto real requiere DEC y aprobación explícita.
 8. **Los pagos son simulados.** Se implementa el puerto `PaymentProvider` con `MockPaymentProvider`; el flujo es completo y demostrable, pero ningún cobro es real y la interfaz debe decirlo. Nunca integrar una pasarela real ni pedir datos de tarjeta.
 9. **No instalar dependencias ni introducir tecnologías sin discutirlo**; si hace falta, proponerlo como opción con su DEC.
@@ -90,7 +90,7 @@ apps/web importa todo; nada importa apps/web
 - **Ramas cortas** desde `main`: `feat/*`, `fix/*`, `chore/*`, `adr/*`, `contracts/*`. `main` siempre desplegable (Vercel).
 - **Conventional commits en español**: `feat(analysis-core): agregar PeakDetector basado en tiempo`, `docs(adr): DEC-034 ...`. **commitlint** (hook `commit-msg` de husky) rechaza los mensajes que no cumplan el formato.
 - **Antes de abrir el PR:** `pnpm check` (lint + typecheck + test + build) en verde. El mismo comando corre en CI (`.github/workflows/ci.yml`).
-- **PR pequeño** (< 400 líneas), 1 revisor obligatorio (2 si toca contratos o `docs/adr/`), squash merge, plantilla `.github/PULL_REQUEST_TEMPLATE.md` con checklist DoD.
+- **PR pequeño** (< 400 líneas), sin aprobación obligatoria (`DEC-070`): CI en verde y el responsable del proyecto hace el squash merge; la revisión de CODEOWNERS es opcional, plantilla `.github/PULL_REQUEST_TEMPLATE.md` con checklist DoD.
 - **Definition of Done:** tests verdes; golden intactos o DEC enlazada; docs del paquete actualizadas; preview probado en celular; entrada en `docs/CHANGELOG.md` si es visible al usuario; cambio de estado anotado en la descripción del PR (`docs/STATUS.md` lo actualiza solo el líder en la review semanal, `DEC-062`).
 - **Numeración de DEC:** el número es provisional hasta el merge; si al mergear ya existe en `main`, renumera quien mergea segundo (`DEC-062`).
 - **Una issue, una rama, una sesión de IA**; modelo y esfuerzo por tarea en `CLAUDE.md` (`DEC-062`).

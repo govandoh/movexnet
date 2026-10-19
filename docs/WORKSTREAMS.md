@@ -22,8 +22,8 @@ Transversales: `architect-guardian` (revisión de fronteras, sin dueño de códi
 
 `packages/contracts` (`@fitnet/contracts`) es **co-propiedad de B y D**. Es el único lugar donde se definen tipos y esquemas zod compartidos entre paquetes, con `ml/` (espejo pydantic) y con las Edge Functions.
 
-1. Todo cambio va en rama `contracts/*` o `adr/*`. En Claude Code lo impone el hook `PreToolUse` `guard-protected-paths.mjs`, que bloquea con exit 2 las ediciones de `packages/contracts/**`, `src/contracts/**` y `models/manifest.json` fuera de esas ramas; en el PR lo impone CODEOWNERS.
-2. Requiere **2 aprobaciones** (B y D) y, si el cambio nace de una decisión, la DEC correspondiente enlazada.
+1. Todo cambio va en rama `contracts/*` o `adr/*`. En Claude Code lo impone el hook `PreToolUse` `guard-protected-paths.mjs`, que bloquea con exit 2 las ediciones de `packages/contracts/**`, `src/contracts/**` y `models/manifest.json` fuera de esas ramas.
+2. Requiere la DEC correspondiente enlazada si el cambio nace de una decisión. La revisión de B y D es recomendada, no obligatoria (`DEC-070`).
 3. **Semver:** parche = documentación o validación más laxa; menor = campos opcionales nuevos; mayor = cambio rompiente.
 4. Todo dato persistido o serializado (fixtures, `Recording`, `Metric`, `Report`, mensajes de Worker) lleva `schemaVersion`.
 5. Los cambios rompientes conviven como `v2` junto a `v1` con un adaptador durante al menos un release; se elimina `v1` con DEC.
@@ -35,9 +35,9 @@ Transversales: `architect-guardian` (revisión de fronteras, sin dueño de códi
 
 - **Sprints de 2 semanas.** El trabajo vive en issues de GitHub con etiquetas `epic`, `historia`, `adr`, `equipo` y `ws:A-pose`..`ws:E-app` (`ws:todos` para lo transversal), agrupadas por hito: `Sprint 0 — Fundación` y `Sprint 1 — Migración y datos`. Épicas = las 8 de `PRODUCT.md` + "Núcleo de IA" + "Plataforma/DevEx" (issues #1–#10). El tablero GitHub Projects con columnas Backlog → Ready → In progress → In review → Done está pendiente: crear el proyecto requiere el scope `project` en el token de `gh` (issue #21). Hasta entonces, el filtro por etiqueta e hito hace de tablero.
 - **Trunk-based con ramas cortas:** `feat/*`, `fix/*`, `chore/*`, `adr/*`, `contracts/*`. PR pequeño (< 400 líneas), squash merge, `main` siempre desplegable (Vercel).
-- **Revisión:** 1 revisor obligatorio; 2 si toca `packages/contracts` o `docs/adr/`. CODEOWNERS asigna automáticamente al dueño del directorio.
+- **Revisión:** opcional (`DEC-070`). CODEOWNERS pide revisión al dueño del directorio sin bloquear. El responsable del proyecto hace el squash merge con el CI en verde; en PRs que cruzan workstreams, contratos, migraciones o autenticación, antes corre `architect-guardian` (y `/security-review` si toca seguridad).
 - **Conventional commits** en español: `feat(analysis-core): ...`, `fix(pose-engine): ...`, `docs(adr): ...`, `chore(ci): ...`. commitlint + husky ya activos: el hook `commit-msg` rechaza los mensajes fuera de formato.
-- **Branch protection en `main`:** PR obligatorio, CI verde, revisión de CODEOWNERS. En el plan gratuito de GitHub solo funciona en repos públicos; si el equipo elige privado, cada integrante reclama el GitHub Student Developer Pack.
+- **Branch protection en `main`:** PR obligatorio, CI verde (build, commitlint y tests de RLS), solo squash merge, sin aprobaciones requeridas (`DEC-070`). En el plan gratuito de GitHub solo funciona en repos públicos; si el equipo elige privado, cada integrante reclama el GitHub Student Developer Pack.
 
 ### Rituales
 
