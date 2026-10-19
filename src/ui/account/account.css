@@ -1,0 +1,159 @@
+/* Pantallas de cuenta (issue #60). Sin animaciones nuevas: solo las del botón de base.css. */
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.account-input {
+  width: 100%;
+  min-height: var(--touch);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  /* 16 px como mínimo: evita el zoom de iOS al enfocar (DESIGN.md §7). */
+  font-size: var(--text-body);
+  outline: none;
+}
+
+.account-input:focus-visible {
+  border-color: var(--color-volt);
+}
+
+.account-input[aria-invalid='true'] {
+  border-color: var(--color-coral);
+}
+
+.account-field__error {
+  color: var(--color-coral);
+  font-size: var(--text-small);
+}
+
+.account-field__hint {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+.account-password {
+  position: relative;
+}
+
+.account-password .account-input {
+  padding-right: 96px;
+}
+
+.account-password__toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 84px;
+  height: var(--touch);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  font-weight: 600;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.account-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: var(--touch);
+  line-height: 1.45;
+}
+
+.account-check input {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  accent-color: var(--color-volt);
+}
+
+.account-link {
+  color: var(--color-volt);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.account-alert {
+  min-height: 1.45em;
+  color: var(--color-coral);
+  font-size: var(--text-small);
+}
+
+.account-alert:empty {
+  min-height: 0;
+}
+
+.account-foot {
+  text-align: center;
+  font-size: var(--text-small);
+}
+
+.account-captcha {
+  min-height: 65px;
+}
+
+.account-sent {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  line-height: 1.45;
+}
+
+.account-sent__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--tint-volt);
+  color: var(--color-volt);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-sent__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.account-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-color: var(--color-amber);
+  background: var(--tint-amber);
+  align-items: flex-start;
+  line-height: 1.45;
+}
+
+.privacy-notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  line-height: 1.5;
+}
+
+.privacy-notice h2 {
+  font-size: var(--text-body);
+  font-weight: 700;
+  margin-top: var(--space-2);
+}
+
+.privacy-notice p {
+  color: var(--color-text-muted);
+}

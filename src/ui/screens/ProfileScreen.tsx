@@ -7,8 +7,70 @@ import { totals } from '../../domain/sessionHistory';
 import { computeStats } from '../../domain/progress';
 import { AchievementsSection, GoalsSection, ProgressStats } from './ProgressSections';
 import { MockPaymentProvider } from '../../domain/payment';
+import { authRepository, useAccount } from '../state/accountStore';
 
 const ONBOARDING_KEY = 'ob_complete_v1';
+
+/** Estado de la cuenta (issue #60). Con las cuentas apagadas no se muestra nada. */
+function AccountSection() {
+  const { status, user } = useAccount();
+  const [busy, setBusy] = useState(false);
+  if (status === 'disabled') return null;
+
+  async function signOut() {
+    setBusy(true);
+    try {
+      await (await authRepository()).signOut();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="card card--framed">
+      <h2 className="card-title">Cuenta</h2>
+      {status === 'loading' && <p className="muted" role="status">Cargando…</p>}
+      {status === 'signed_out' && (
+        <>
+          <Link className="list-row exercise-row" to="/cuenta/entrar">
+            <span className="list-row__main">
+              <span className="list-row__title">Iniciar sesión</span>
+              <span className="list-row__meta">Con tu correo y contraseña</span>
+            </span>
+          </Link>
+          <Link className="list-row exercise-row" to="/cuenta/registro">
+            <span className="list-row__main">
+              <span className="list-row__title">Crear cuenta</span>
+              <span className="list-row__meta">Solo mayores de 18 años</span>
+            </span>
+          </Link>
+        </>
+      )}
+      {status === 'signed_in' && user && (
+        <>
+          <div className="list-row">
+            <span className="list-row__main">
+              <span className="list-row__title">Sesión iniciada</span>
+              <span className="list-row__meta">{user.email}</span>
+            </span>
+          </div>
+          <Link className="list-row exercise-row" to="/cuenta/nueva-clave">
+            <span className="list-row__main"><span className="list-row__title">Cambiar contraseña</span></span>
+          </Link>
+          <button className="list-row exercise-row" onClick={signOut} disabled={busy}>
+            <span className="list-row__main">
+              <span className="list-row__title">{busy ? 'Cerrando sesión…' : 'Cerrar sesión'}</span>
+              <span className="list-row__meta">En este celular</span>
+            </span>
+          </button>
+        </>
+      )}
+      <Link className="list-row exercise-row" to="/privacidad">
+        <span className="list-row__main"><span className="list-row__title">Aviso de privacidad</span></span>
+      </Link>
+    </section>
+  );
+}
 
 export function ProfileScreen() {
   const { history, entitlement, voiceEnabled, questionnaire, goals } = useAppState();
@@ -46,6 +108,8 @@ export function ProfileScreen() {
       <ProgressStats stats={stats} />
       <GoalsSection goals={goals} stats={stats} />
       <AchievementsSection stats={stats} />
+
+      <AccountSection />
 
       <section className="card card--framed">
         <h2 className="card-title">Ajustes</h2>

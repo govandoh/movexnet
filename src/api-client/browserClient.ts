@@ -13,7 +13,9 @@ const STORAGE_KEY = 'movexnet-auth';
 
 function clearLocalSession(): void {
   try {
-    for (const suffix of ['', '-code-verifier', '-user']) localStorage.removeItem(STORAGE_KEY + suffix);
+    // La sesión y los verificadores de PKCE de cada flujo (`-code-verifier`, `-flow-<id>-…`).
+    const keys = Object.keys(localStorage).filter(k => k === STORAGE_KEY || k.startsWith(`${STORAGE_KEY}-`));
+    for (const k of keys) localStorage.removeItem(k);
   } catch {
     // Almacenamiento bloqueado (modo privado): no hay nada guardado que borrar (DEC-024).
   }
