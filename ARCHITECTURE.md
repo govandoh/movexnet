@@ -71,30 +71,31 @@ El paso I-1 trajo el motor puro de fitnetv2 (workstream B), con tests Vitest per
 ### 2.1 Paquetes y dirección de dependencias (`DEC-028`)
 
 ```
-                        ┌──────────────────────┐
-                        │  @movexnet/contracts   │  tipos + zod, semver, schemaVersion
-                        └──────────┬───────────┘
-              ┌────────────────────┼─────────────────────┐
-              ▼                    │                     ▼
-   ┌──────────────────┐            │           ┌──────────────────┐
-   │ @movexnet/pose-    │            │           │  @movexnet/domain  │  entidades, puertos, casos de uso
-   │ engine           │            │           └────────┬─────────┘
-   │ (MediaPipe aquí) │            │                    ▼
-   └────────┬─────────┘            │           ┌──────────────────┐
-            ▼                      │           │ @movexnet/api-     │  Supabase, CoachAssistant HTTP,
-   ┌──────────────────┐            │           │ client           │  cola offline
-   │ @movexnet/analysis-│            │           └──────────────────┘
-   │ core             │            │
-   └────────┬─────────┘            │
-            ▼                      │
-   ┌──────────────────┐            │
-   │ @movexnet/ml-      │            │
-   │ runtime (ONNX)   │            │
-   └──────────────────┘            │
-                                   ▼
-                    ┌──────────────────────────┐
-                    │  @movexnet/ui   +  apps/web │  importa todo; nadie la importa
-                    └──────────────────────────┘
+                     ┌────────────────────────┐
+                     │ @movexnet/contracts    │  tipos + zod, semver, schemaVersion
+                     └───────────┬────────────┘
+                ┌────────────────┼────────────────────────┐
+                ▼                │                        ▼
+   ┌────────────────────────┐    │           ┌────────────────────────┐
+   │ @movexnet/pose-engine  │    │           │ @movexnet/domain       │  entidades, puertos, casos de uso
+   │ (MediaPipe aquí)       │    │           └────────────┬───────────┘
+   └────────────┬───────────┘    │                        ▼
+                ▼                │           ┌────────────────────────┐
+   ┌────────────────────────┐    │           │ @movexnet/api-client   │  Supabase, CoachAssistant HTTP,
+   │ @movexnet/analysis-core│    │           └────────────────────────┘  cola offline
+   └────────────┬───────────┘    │
+                ▼                │
+   ┌────────────────────────┐    │
+   │ @movexnet/ml-runtime   │    │
+   │ (ONNX)                 │    │
+   └────────────────────────┘    │
+                                 │
+                                 │
+                                 │
+                                 ▼
+               ┌────────────────────────────────────┐
+               │ @movexnet/ui + apps/web            │  importa todo; nadie la importa
+               └────────────────────────────────────┘
 ```
 
 ```
