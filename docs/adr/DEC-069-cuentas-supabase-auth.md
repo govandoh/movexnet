@@ -93,6 +93,9 @@ Hechos verificados el 2026-10-19 en la documentación de Supabase:
 - La sesión en el navegador es vulnerable a XSS hasta que la CSP pase a modo estricto.
 - En iOS, Safari puede borrar el almacenamiento tras días sin uso: el usuario tendría que volver a iniciar sesión. Se prueba con la PWA instalada.
 - Correos de un remitente sin dominio propio pueden caer en spam; a verificar en la prueba en celular.
+- El trigger de alta falla cerrado: rechaza cualquier fila nueva de `auth.users` sin nombre, año y aviso, incluidas las invitaciones desde el panel y un OAuth futuro. Añadir otro método de acceso exige ajustar el trigger (y una DEC).
+- Quien llame a la API sin la UI puede distinguir un correo nuevo con datos inválidos (500) de uno ya registrado (éxito simulado). Es una enumeración marginal que exige saltarse la validación de la UI; se acepta y la frenan los límites de tasa y el captcha.
+- Formatos persistidos nuevos: la sesión en `localStorage` bajo la clave `movexnet-auth` y las columnas `privacy_*`. Una configuración inválida deja las cuentas apagadas (falla cerrado) y `pnpm build` incluye `scripts/check-bundle-secrets.mjs` como paso obligatorio.
 
 ## Documentos a actualizar tras aprobarse (`docs-keeper`)
 
