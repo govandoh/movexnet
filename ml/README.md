@@ -4,8 +4,12 @@
 
 ## Alcance (Issue #38, dos fases)
 
-- **Fase 1 (completada):** scaffold mínimo, conversor video → v2, validador
-  estructural y una prueba con datos **sintéticos**. No se usa MM-Fit real.
+- **Fase 1 (completada, con una limitación conocida):** scaffold mínimo, conversor
+  video → v2, validador estructural. El generador de clip sintético
+  (`make_synthetic_clip.py`) dibuja una figura de palitos que **MediaPipe no detecta**
+  (`convert_video_to_v2.py` lanza `RuntimeError: No se detectó ninguna persona en
+  ningún frame`); no es un smoke test reproducible — ver "Qué no hacer aquí" y
+  "Cómo correr" más abajo.
 - **Fase 2 (completada para Sprint 1):** MM-Fit real, video RGB de Zenodo (CC BY 4.0,
   licencia verificada) **más** la etiqueta oficial de `w19_labels.csv` (set de
   sentadillas, frames 1014–1510), con uso autorizado por `@govandoh` para este
@@ -30,8 +34,9 @@ Ejecutado manualmente (no en CI) el 2026-10-12, en la rama `feat/ml-datasets`.
 - **Conversión MediaPipe:** exitosa, **240 frames** generados en
   `ml/data/out/mmfit_w19_squat_v2.json` (archivo local, ignorado por git).
 - **Validación (`validate_v2.py`):** `OK ml/data/out/mmfit_w19_squat_v2.json (240 frames)`.
-- **Pruebas unitarias (`test_validate_v2.py`):** `9 passed in 0.08s`
-  (Python 3.11.9, pytest 9.1.1).
+- **Pruebas unitarias (`test_validate_v2.py`):** `10 passed in 0.03s`
+  (Python 3.11.9, pytest 9.1.1; re-ejecutado el 2026-10-19 en `docs/ml-pr48-followup`
+  tras agregar `test_dataset_official_label_metadata_does_not_break_validation`).
 - **Etiquetas originales de MM-Fit:** el clip se confirmó, contra `w19_labels.csv`
   (`mm-fit/w19/`, extraído por rango HTTP sin descargar el ZIP completo, integridad
   verificada por CRC32), dentro del set oficial de sentadillas (frames 1014–1510,
@@ -50,21 +55,40 @@ Ejecutado manualmente (no en CI) el 2026-10-12, en la rama `feat/ml-datasets`.
 
 No subir video ni datos de usuario (regla dura 2, `AGENTS.md`). No inventar licencias ni
 resultados de conversión real. No tocar `src/**`, contratos ni `models/manifest.json`.
+No presentar `make_synthetic_clip.py` como un smoke test reproducible de principio a
+fin: MediaPipe no detecta la figura de palitos que genera (ver limitación arriba).
 
 ## Cómo correr (gratis, `DEC-035`)
 
+El camino funcional y verificado end-to-end es el validador (sin red ni video) más la
+conversión real de MM-Fit (Fase 2, abajo). El clip sintético solo sirve para generar un
+`.mp4` de prueba del propio generador; **no completa una conversión MediaPipe válida**.
+
 ```bash
 pip install -r ml/datasets/mm-fit/requirements.txt
-python ml/datasets/mm-fit/make_synthetic_clip.py --out ml/data/raw/synthetic.mp4
-python ml/datasets/mm-fit/convert_video_to_v2.py --video ml/data/raw/synthetic.mp4 \
-  --exercise-id squat --subject-id anon-smoke --synthetic \
-  --out ml/data/out/synthetic_squat_smoke.json
-python ml/datasets/validate_v2.py ml/data/out/synthetic_squat_smoke.json
+
+# Validador y pruebas unitarias: sin red, sin video, sin MediaPipe.
 python -m pytest ml/datasets/test_validate_v2.py -v
+
+# Conversión funcional real (MM-Fit w19, recorte 35-43s): ver comando completo y
+# resultados reales en ml/datasets/mm-fit/README.md §"Fase 2".
 ```
 
+Si se quiere generar el clip sintético igualmente (por ejemplo, para iterar sobre el
+propio `make_synthetic_clip.py`):
+
+```bash
+python ml/datasets/mm-fit/make_synthetic_clip.py --out ml/data/raw/synthetic.mp4
+```
+
+**No se continúa con `convert_video_to_v2.py --synthetic` sobre ese clip**: la figura de
+palitos no es una persona real y el `PoseLandmarker` de MediaPipe no la detecta
+(`RuntimeError: No se detectó ninguna persona en ningún frame; no se escribe JSON
+vacío.`); no hay `ml/data/samples/synthetic_squat_smoke.json` resultante porque esa
+conversión nunca llegó a producir un JSON válido.
+
 Pasos de Kaggle: `ml/datasets/mm-fit/kaggle.md`. Procedimiento de Fase 2 (MM-Fit RGB
-real): `ml/datasets/mm-fit/README.md`.
+real, el ejemplo funcional recomendado): `ml/datasets/mm-fit/README.md`.
 
 ## MediaPipe: Kaggle (Python) vs la app (JavaScript)
 
@@ -78,5 +102,5 @@ mismo modelo `pose_landmarker_lite.task` (float16, variante 1).
 |---|---|
 | `ml/datasets/mm-fit/` | Registro de licencia, conversor, guía Kaggle |
 | `ml/datasets/validate_v2.py` | Validador estructural del esquema v2 |
-| `ml/data/samples/` | Muestras versionadas (sintéticas en Fase 1) |
+| `ml/data/samples/` | Muestras versionadas (vacío hoy: el clip sintético de Fase 1 no produce un JSON válido, ver limitación arriba) |
 | `ml/data/raw/`, `ml/data/out/` | Video y salidas, ignorados por git |

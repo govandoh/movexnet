@@ -25,7 +25,7 @@
       "outputFile": "ml/data/out/mmfit_w19_squat_v2.json",
       "frames": 240,
       "validation": { "tool": "ml/datasets/validate_v2.py", "result": "OK", "framesReported": 240 },
-      "unitTests": { "tool": "ml/datasets/test_validate_v2.py", "result": "9 passed in 0.08s", "python": "3.11.9", "pytest": "9.1.1" },
+      "unitTests": { "tool": "ml/datasets/test_validate_v2.py", "result": "10 passed in 0.03s", "python": "3.11.9", "pytest": "9.1.1", "note": "Re-ejecutado el 2026-10-19 en docs/ml-pr48-followup; pasó de 9 a 10 tras agregar test_dataset_official_label_metadata_does_not_break_validation." },
       "note": "Ejecución manual fuera de CI (entorno Windows sin sandbox de filesystem para Shell del agente); salida reportada por el desarrollador del workstream C. No se subieron el video ni el JSON (ambos en .gitignore)."
     },
     "labelsProvenance": {

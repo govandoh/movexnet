@@ -1,9 +1,10 @@
 # MM-Fit — registro y plan de conversión (Issue #38)
 
-Estado: **Fase 1 completada (datos sintéticos). Fase 2: video RGB real de Zenodo
-(CC BY 4.0) + etiquetas originales de `w19_labels.csv`, con uso autorizado por el
-responsable del proyecto (ver "Etiquetas originales" abajo; no es una licencia pública
-verificada).**
+Estado: **Fase 1 completada, con una limitación conocida en el smoke sintético (ver
+abajo). Fase 2: video RGB real de Zenodo (CC BY 4.0) + etiquetas originales de
+`w19_labels.csv`, con uso autorizado por el responsable del proyecto (ver "Etiquetas
+originales" abajo; no es una licencia pública verificada). El ejemplo funcional
+recomendado para reproducir el pipeline es la Fase 2, no el clip sintético.**
 Sitio oficial: https://mmfit.github.io/ (Strömbäck, Huang, Radu, IMWUT 2020).
 
 ## Licencias verificadas (no son iguales entre artefactos)
@@ -68,10 +69,18 @@ sin cambiar `labels[]` ni el contrato del esquema v2.
 `squats→squat`, `pushups→pushup`, `lunges→lunge`, `bicep_curls→curl`,
 `dumbbell_shoulder_press→press`; el resto no tiene asistente en Fitnet hoy.
 
-## Fase 1 — qué se probó
+## Fase 1 — qué se probó (y qué no)
 
-`convert_video_to_v2.py` + `make_synthetic_clip.py` produjeron y validaron
-`ml/data/samples/synthetic_squat_smoke.json`. Ningún archivo real de MM-Fit se usó.
+`make_synthetic_clip.py` genera un clip corto con una figura de palitos (sentadilla
+simulada) para probar `convert_video_to_v2.py` sin MM-Fit real. **Esta parte no es un
+smoke test reproducible de punta a punta:** el `PoseLandmarker` de MediaPipe no detecta
+la figura de palitos como una persona, así que `convert_video_to_v2.py --synthetic`
+sobre ese clip falla con `RuntimeError: No se detectó ninguna persona en ningún frame`.
+No existe `ml/data/samples/synthetic_squat_smoke.json` en el repositorio por esta razón
+(confirmado en la revisión del PR #48). Lo que sí se probó y valida de forma
+reproducible es el validador estructural (`validate_v2.py` + `test_validate_v2.py`,
+sin red ni video) y la conversión real descrita en "Fase 2" abajo, que es el ejemplo
+funcional recomendado para reproducir el pipeline.
 
 ## Fase 2 — procedimiento con MM-Fit real (RGB + etiqueta oficial autorizada)
 
