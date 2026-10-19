@@ -7,7 +7,7 @@ const SESSION = { user: { id: 'u1', email: 'ana@example.com' } }
 
 const signUpInput: SignUpInput = {
   email: '  Ana@Example.com ',
-  password: 'Sentadilla2026',
+  password: 'Sentadilla2026', // ggignore: contraseña de prueba, no es un secreto
   displayName: ' Ana ',
   birthYear: 1995,
   privacyVersion: PRIVACY_VERSION,
@@ -52,7 +52,7 @@ describe('signUp', () => {
     await expect(repo(auth).signUp(signUpInput)).resolves.toEqual({ needsEmailConfirmation: true })
     expect(auth.signUp).toHaveBeenCalledWith({
       email: 'ana@example.com',
-      password: 'Sentadilla2026',
+      password: signUpInput.password,
       options: {
         emailRedirectTo: 'https://app.example/',
         captchaToken: 'tok',
