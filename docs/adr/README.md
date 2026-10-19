@@ -97,6 +97,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Propuesta |
 | [DEC-067](DEC-067-coste-ia-rankings-antitrampa-privacidad.md) | Tope de costo del asistente IA (USD 2/usuario/mes, modo simulado por defecto), rankings cada 15 min, reglas anti-trampa v1 y aviso de privacidad versionado | 2026-10-17 | Propuesta |
 | [DEC-068](DEC-068-nombre-movexnet-repositorio-publico.md) | Nombre del producto MovexNet, repositorio `movexnet` y visibilidad pública | 2026-10-17 | Propuesta |
+| [DEC-069](DEC-069-cuentas-supabase-auth.md) | Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor | 2026-10-19 | Propuesta |
 | [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Propuesta |
 
 Próximo número libre: **DEC-071** (provisional hasta el merge, ver DEC-062).

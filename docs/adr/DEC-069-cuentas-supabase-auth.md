@@ -1,0 +1,111 @@
+# DEC-069 · Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor
+
+- **Estado:** Propuesta
+- **Fecha:** 2026-10-19
+- **Decisores:** @govandoh (D, responsable del proyecto); el PR sigue las aprobaciones que exige `docs/adr/README.md`
+- **Etiquetas:** `backend`, `auth`, `seguridad`, `privacidad`, `dependencia`
+- **Issue:** #60. Depende de `DEC-067` (aviso `privacy-2026-10-v1` y regla 18+) para activar cuentas en producción.
+
+## Contexto y problema
+
+La app no tiene cuentas: todo vive en `localStorage`. El esquema y RLS por `auth.uid()` ya están en la nube (#17). La historia #60 pide registro, inicio y cierre de sesión, recuperación de contraseña y sesión persistente en la PWA. Hay que decidir el método de acceso, cómo se envían los correos, cómo se frena el abuso automatizado y dónde se impone la puerta de edad, sin gastar nada (regla dura 7) y sin exponer claves (regla dura 3).
+
+Hechos verificados el 2026-10-19 en la documentación de Supabase:
+
+- El correo integrado de Supabase solo envía a miembros del equipo del proyecto, unos **2 correos por hora**, sin SLA y "solo para uso no productivo" (`docs/guides/auth/auth-smtp`). No alcanza ni para confirmar registros ni para recuperar contraseñas.
+- La protección contra contraseñas filtradas (HaveIBeenPwned) es **solo del plan Pro**; en Free quedan la longitud mínima y los tipos de carácter obligatorios.
+- Supabase Auth valida captchas de **hCaptcha y Cloudflare Turnstile** en registro, inicio de sesión y recuperación; el cliente pasa `captchaToken` en `options`.
+- Resend (gratis 100/día) exige un dominio propio verificado y no tenemos uno. Brevo (gratis 300/día por SMTP) funciona sin dominio propio, con un remitente verificado; las reglas exactas de verificación del remitente están **a verificar** en el panel.
+
+## Factores de decisión
+
+- Seguridad: que ninguna regla de negocio sensible (edad, privacidad) dependa solo del cliente.
+- Cero costo y cero claves en el bundle.
+- Correo suficiente para confirmación y recuperación en un piloto académico.
+- Poco trabajo de UI para E y funcionamiento en la PWA instalada (Android Chrome, iOS Safari).
+
+## Opciones consideradas
+
+### Método de acceso
+
+1. **Correo y contraseña con confirmación obligatoria** (elegida). Universal, sin terceros; la confirmación evita que alguien registre el correo de otra persona y hace que Supabase no revele si un correo ya existe.
+2. **Solo enlace mágico u OTP por correo.** Sin contraseñas que filtrar, pero cada inicio de sesión gasta un correo del cupo y abrir el enlace en la PWA instalada de iOS no vuelve a la PWA (abre Safari). Descartada para v1.
+3. **OAuth social (Google, Apple).** Requiere registrar apps con cada proveedor y Apple exige cuenta de pago. Fuera de alcance de #60.
+
+### Envío de correo
+
+1. **Correo integrado de Supabase.** Descartado: 2/h y solo al equipo.
+2. **Resend gratis.** Descartado: requiere dominio propio.
+3. **Brevo gratis por SMTP** (elegida): 300 correos/día, sin dominio propio.
+
+### Abuso automatizado
+
+1. **Solo límites de tasa de Supabase.** Por IP; no frena bots distribuidos ni el relleno de credenciales.
+2. **Cloudflare Turnstile** (elegida): gratis, sin rompecabezas en la mayoría de los casos, validado por Supabase Auth con la clave secreta guardada en el panel (nunca en el repo).
+3. **hCaptcha.** Equivalente, pero con más fricción visual.
+
+### Puerta 18+ y aviso de privacidad
+
+1. **Solo en el formulario.** Descartada: se salta llamando a `/auth/v1/signup` con la clave publicable.
+2. **En el servidor** (elegida): un trigger sobre `auth.users` crea el perfil y rechaza el alta si falta el año de nacimiento, si la edad declarada es menor de 18 o si no se aceptó la versión vigente del aviso. Un trigger sobre `profiles` vuelve inmutables los campos de aceptación y no deja declarar después una edad menor.
+3. **Verificación documental.** Descartada por `DEC-067`: no hay presupuesto ni base legal clara para tratar documentos de identidad.
+
+## Decisión
+
+1. **Acceso v1:** correo y contraseña, confirmación de correo obligatoria, flujo **PKCE** para los enlaces de confirmación y recuperación. Sin acceso anónimo, enlace mágico ni OAuth.
+2. **Contraseñas:** mínimo **10 caracteres** con minúsculas, mayúsculas y dígitos (`lower_upper_letters_digits`), igual en `supabase/config.toml` y en el panel. El cliente valida lo mismo solo para dar un mensaje temprano; manda el servidor.
+3. **Correo:** SMTP de **Brevo** (plan gratis) configurado en el panel de Supabase; la clave SMTP vive solo allí. Remitente: una cuenta de correo del proyecto, no personal.
+4. **Captcha:** **Cloudflare Turnstile** en registro, inicio de sesión y recuperación. La *site key* (pública) va en `VITE_TURNSTILE_SITE_KEY`; la clave secreta solo en el panel de Supabase. El script de Turnstile se carga solo en las pantallas de cuenta.
+5. **Puerta 18+ y privacidad en el servidor**, como en la opción 2. El año de nacimiento y la versión del aviso viajan en `options.data` del registro y el trigger los valida; la versión vigente es `privacy-2026-10-v1` (`DEC-067`). Las columnas nuevas son `profiles.privacy_version` y `profiles.privacy_accepted_at` (la fecha la pone el servidor, no el cliente).
+6. **Dependencia nueva:** `@supabase/supabase-js`, importable solo desde `src/api-client/` (carpeta interina hasta `packages/api-client` en el PR 6), con una regla de ESLint que lo impida en el resto. Va en el mismo PR de #60, como la excepción de #17.
+7. **Configuración del cliente:** `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` (públicas por diseño). El cliente rechaza al arrancar cualquier clave con prefijo `sb_secret_` o un JWT con rol `service_role`, y un script de CI falla si el bundle contiene `service_role`, `sb_secret` o `eyJhbGci`.
+8. **Interruptor:** `VITE_ENABLE_ACCOUNTS`; apagado en producción hasta cerrar #22 y publicar el texto del aviso. Apagado, la app funciona exactamente como hoy.
+9. **Sesión:** se guarda en el almacenamiento del navegador, como exige el SDK en una SPA sin servidor propio. Mitigación del robo por XSS: no registrar tokens ni contraseñas, sin HTML no confiable en la UI y una política CSP con cabeceras de seguridad en Vercel, primero en modo `Report-Only` porque MediaPipe y three.js necesitan WASM y workers. La CSP es una historia aparte de E (`public/**`, `vercel.json`).
+
+### Ajustes del panel de Supabase (los aplica D; no viven en el repo)
+
+| Ajuste | Valor |
+|---|---|
+| Site URL | URL de producción de Vercel |
+| Redirect URLs | Solo URLs exactas: producción y `https://localhost:5173`; sin comodines en producción |
+| Confirm email | Activado |
+| Secure password change | Activado (pide sesión reciente para cambiar la contraseña) |
+| Contraseña | Mínimo 10, `lower_upper_letters_digits` |
+| SMTP | Brevo, remitente del proyecto |
+| Captcha | Turnstile, clave secreta solo aquí |
+| Rate limits | Correos 30/h; registro e inicio 30 cada 5 min por IP; verificaciones 30 cada 5 min |
+| Anonymous sign-ins, OAuth | Desactivados |
+| JWT | Expiración 3600 s, rotación de refresh token activa |
+
+## Consecuencias
+
+### Positivas
+
+- La edad y la aceptación del aviso no dependen del cliente: la API directa tampoco las salta.
+- Confirmación obligatoria más mensajes genéricos cierran la enumeración de usuarios y el registro con correos ajenos.
+- Cero costo: Brevo gratis, Turnstile gratis, Supabase Free.
+
+### Negativas y riesgos
+
+- Dos servicios externos nuevos (Brevo y Cloudflare) y un SDK nuevo; más superficie que mantener.
+- Sin protección contra contraseñas filtradas (Pro). Se compensa con la longitud mínima y el captcha.
+- 300 correos/día limita un lanzamiento masivo; suficiente para el piloto.
+- La sesión en el navegador es vulnerable a XSS hasta que la CSP pase a modo estricto.
+- En iOS, Safari puede borrar el almacenamiento tras días sin uso: el usuario tendría que volver a iniciar sesión. Se prueba con la PWA instalada.
+- Correos de un remitente sin dominio propio pueden caer en spam; a verificar en la prueba en celular.
+
+## Documentos a actualizar tras aprobarse (`docs-keeper`)
+
+- `docs/DATA-GOVERNANCE.md` §2: la puerta 18+ ya tiene mecanismo (declarativo, impuesto en el servidor).
+- `docs/DOMAIN.md`: `Profile.privacyVersion`, `privacyAcceptedAt`.
+- `CONTRIBUTING.md`: variables de entorno y cómo probar la cuenta en local.
+- `ARCHITECTURE.md`: `src/api-client/` interina.
+
+## Referencias
+
+- Issue #60; `DEC-029` (Supabase), `DEC-035` (cero costo), `DEC-067` (privacidad y 18+), `AGENTS.md` reglas duras 3, 7 y 9.
+- Supabase, SMTP propio: https://supabase.com/docs/guides/auth/auth-smtp
+- Supabase, seguridad de contraseñas: https://supabase.com/docs/guides/auth/password-security
+- Supabase, captcha: https://supabase.com/docs/guides/auth/auth-captcha
+- Brevo, SMTP gratis: https://www.brevo.com/free-smtp-server
+- Resend, límites: https://resend.com/docs/knowledge-base/resend-sending-limits

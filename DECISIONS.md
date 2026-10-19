@@ -53,5 +53,6 @@ Acceso rápido a las más citadas desde el código:
 | DEC-061 | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | [docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md](docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md) |
 | DEC-064 | Un consentimiento de grabación vale para una sola grabación (propuesta) | [docs/adr/DEC-064-consentimiento-una-grabacion.md](docs/adr/DEC-064-consentimiento-una-grabacion.md) |
 | DEC-065 | Datasets externos: licencias de MM-Fit corregidas y alcance solo académico (propuesta) | [docs/adr/DEC-065-datasets-externos-alcance-academico.md](docs/adr/DEC-065-datasets-externos-alcance-academico.md) |
+| DEC-069 | Cuentas con Supabase Auth: correo y contraseña, Brevo, Turnstile y puerta 18+ en el servidor (propuesta) | [docs/adr/DEC-069-cuentas-supabase-auth.md](docs/adr/DEC-069-cuentas-supabase-auth.md) |
 
 No agregar decisiones nuevas a este archivo: crear `docs/adr/DEC-NNN-*.md` y actualizar el índice de `docs/adr/README.md`.
