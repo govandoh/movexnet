@@ -46,7 +46,7 @@ export function PrivacyNotice({ onClose }: { onClose: () => void }) {
         <p>Las cuentas son solo para mayores de 18 años.</p>
 
         <h2>Contacto</h2>
-        <p>Responsable del proyecto: equipo MovexNet, a través del repositorio del proyecto en GitHub (govandoh/movexnet).</p>
+        <p>Responsable del proyecto: Gerardo Ovando, equipo MovexNet. Escribe a <a className="account-link" href="mailto:govandoh@miumg.edu.gt">govandoh@miumg.edu.gt</a> para cualquier pregunta o para ejercer tus derechos.</p>
       </article>
     </div>
   );
