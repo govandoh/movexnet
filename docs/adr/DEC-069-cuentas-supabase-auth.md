@@ -47,20 +47,27 @@ Hechos verificados el 2026-10-19 en la documentación de Supabase:
 ### Puerta 18+ y aviso de privacidad
 
 1. **Solo en el formulario.** Descartada: se salta llamando a `/auth/v1/signup` con la clave publicable.
-2. **En el servidor** (elegida): un trigger sobre `auth.users` crea el perfil y rechaza el alta si falta el año de nacimiento, si la edad declarada es menor de 18 o si no se aceptó la versión vigente del aviso. Un trigger sobre `profiles` vuelve inmutables los campos de aceptación y no deja declarar después una edad menor.
+2. **En el servidor** (elegida): un trigger sobre `auth.users` crea el perfil y rechaza el alta si falta el mes o el año de nacimiento, si la edad declarada es menor de 18 o si no se aceptó la versión vigente del aviso. Un trigger sobre `profiles` vuelve inmutables los campos de aceptación y no deja declarar después una edad menor.
 3. **Verificación documental.** Descartada por `DEC-067`: no hay presupuesto ni base legal clara para tratar documentos de identidad.
+
+**Precisión de la edad** (revisión de #67 y #68). Con solo el año, "cumple 18 este año" deja entrar a quien todavía tiene 17. Opciones: (a) solo año con margen (19 años de diferencia), que excluye a parte de los de 18; (b) fecha completa, que guarda el día sin necesitarlo; (c) **mes y año con regla conservadora** (elegida): sin el día, el mes de nacimiento todavía no cuenta, así que se exigen 217 meses (18 años y un mes). Nacido en octubre de 2008, entra desde el 1 de noviembre de 2026. Precisa la regla 18+ de `DEC-067`.
+
+### Enlaces del correo
+
+1. **`{{ .ConfirmationURL }}` con PKCE.** Solo se canjea en el navegador que pidió el enlace. En iOS, el correo abre Safari y la PWA instalada tiene otro almacenamiento: la confirmación y la recuperación fallarían ahí (revisión de #67).
+2. **Plantillas con `token_hash` y `verifyOtp`** (elegida): el enlace va directo a la app (`?token_hash=…&type=email|recovery`) y la app lo canjea en cualquier navegador. Un solo uso, vence en una hora. Además, los antivirus de correo que abren los enlaces por adelantado no lo consumen: abrir la página no canjea nada, el canje lo hace la app con una llamada aparte.
 
 ## Decisión
 
-1. **Acceso v1:** correo y contraseña, confirmación de correo obligatoria, flujo **PKCE** para los enlaces de confirmación y recuperación. Sin acceso anónimo, enlace mágico ni OAuth.
+1. **Acceso v1:** correo y contraseña, confirmación de correo obligatoria. Los enlaces de confirmación y recuperación usan las plantillas de `supabase/templates/` con `token_hash`, que la app canjea con `verifyOtp`; el cliente sigue en flujo **PKCE** para cualquier otro enlace. Sin acceso anónimo, enlace mágico ni OAuth.
 2. **Contraseñas:** mínimo **10 caracteres** con minúsculas, mayúsculas y dígitos (`lower_upper_letters_digits`), igual en `supabase/config.toml` y en el panel. El cliente valida lo mismo solo para dar un mensaje temprano; manda el servidor.
 3. **Correo:** SMTP de **Brevo** (plan gratis) configurado en el panel de Supabase; la clave SMTP vive solo allí. Remitente: una cuenta de correo del proyecto, no personal.
 4. **Captcha:** **Cloudflare Turnstile** en registro, inicio de sesión y recuperación. La *site key* (pública) va en `VITE_TURNSTILE_SITE_KEY`; la clave secreta solo en el panel de Supabase. El script de Turnstile se carga solo en las pantallas de cuenta.
-5. **Puerta 18+ y privacidad en el servidor**, como en la opción 2. El año de nacimiento y la versión del aviso viajan en `options.data` del registro y el trigger los valida; la versión vigente es `privacy-2026-10-v1` (`DEC-067`). Las columnas nuevas son `profiles.privacy_version` y `profiles.privacy_accepted_at` (la fecha la pone el servidor, no el cliente).
+5. **Puerta 18+ y privacidad en el servidor**, como en la opción 2, con **mes y año** y la regla conservadora de 217 meses (columna nueva `profiles.birth_month`, hora de Guatemala). El mes, el año y la versión del aviso viajan en `options.data` del registro y el trigger los valida; la versión vigente es `privacy-2026-10-v1` (`DEC-067`). Las columnas nuevas son `profiles.privacy_version` y `profiles.privacy_accepted_at` (la fecha la pone el servidor, no el cliente).
 6. **Dependencia nueva:** `@supabase/supabase-js`, importable solo desde `src/api-client/` (carpeta interina hasta `packages/api-client` en el PR 6), con una regla de ESLint que lo impida en el resto. Va en el mismo PR de #60, como la excepción de #17.
 7. **Configuración del cliente:** `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` (públicas por diseño). El cliente rechaza al arrancar cualquier clave con prefijo `sb_secret_` o un JWT con rol `service_role`, y un script de CI falla si el bundle contiene `service_role`, `sb_secret` o `eyJhbGci`.
 8. **Interruptor:** `VITE_ENABLE_ACCOUNTS`; apagado en producción hasta cerrar #22 y publicar el texto del aviso. Apagado, la app funciona exactamente como hoy.
-9. **Sesión:** se guarda en el almacenamiento del navegador, como exige el SDK en una SPA sin servidor propio. Mitigación del robo por XSS: no registrar tokens ni contraseñas, sin HTML no confiable en la UI y una política CSP con cabeceras de seguridad en Vercel, primero en modo `Report-Only` porque MediaPipe y three.js necesitan WASM y workers. La CSP es una historia aparte de E (`public/**`, `vercel.json`).
+9. **Sesión:** se guarda en el almacenamiento del navegador, como exige el SDK en una SPA sin servidor propio. Mitigación del robo por XSS: no registrar tokens ni contraseñas, sin HTML no confiable en la UI y una política CSP con cabeceras de seguridad en Vercel, primero en modo `Report-Only` porque MediaPipe y three.js necesitan WASM y workers. La CSP es la historia #70 de E (`vercel.json`); debe permitir el dominio de Supabase y `challenges.cloudflare.com`.
 
 ### Ajustes del panel de Supabase (los aplica D; no viven en el repo)
 
@@ -73,6 +80,7 @@ Hechos verificados el 2026-10-19 en la documentación de Supabase:
 | Contraseña | Mínimo 10, `lower_upper_letters_digits` |
 | SMTP | Brevo, remitente del proyecto |
 | Captcha | Turnstile, clave secreta solo aquí |
+| Plantillas de correo | *Confirm signup* y *Reset password* con el contenido de `supabase/templates/confirmation.html` y `recovery.html` |
 | Rate limits | Correos 30/h; registro e inicio 30 cada 5 min por IP; verificaciones 30 cada 5 min |
 | Anonymous sign-ins, OAuth | Desactivados |
 | JWT | Expiración 3600 s, rotación de refresh token activa |
@@ -91,6 +99,8 @@ Hechos verificados el 2026-10-19 en la documentación de Supabase:
 - Sin protección contra contraseñas filtradas (Pro). Se compensa con la longitud mínima y el captcha.
 - 300 correos/día limita un lanzamiento masivo; suficiente para el piloto.
 - La sesión en el navegador es vulnerable a XSS hasta que la CSP pase a modo estricto.
+- Se guarda un dato personal más (el mes de nacimiento) a cambio de no admitir menores de 17; quien cumple 18 en el mes en curso espera hasta el mes siguiente.
+- Con `token_hash`, quien tenga acceso al buzón puede canjear el enlace en cualquier navegador durante una hora. Es el mismo modelo de confianza que la recuperación por correo en general.
 - En iOS, Safari puede borrar el almacenamiento tras días sin uso: el usuario tendría que volver a iniciar sesión. Se prueba con la PWA instalada.
 - Correos de un remitente sin dominio propio pueden caer en spam; a verificar en la prueba en celular.
 - El trigger de alta falla cerrado: rechaza cualquier fila nueva de `auth.users` sin nombre, año y aviso, incluidas las invitaciones desde el panel y un OAuth futuro. Añadir otro método de acceso exige ajustar el trigger (y una DEC).
@@ -99,7 +109,7 @@ Hechos verificados el 2026-10-19 en la documentación de Supabase:
 
 ## Documentos a actualizar tras aprobarse (`docs-keeper`)
 
-- `docs/DATA-GOVERNANCE.md` §2: la puerta 18+ ya tiene mecanismo (declarativo, impuesto en el servidor).
+- `docs/DATA-GOVERNANCE.md` §2: la puerta 18+ ya tiene mecanismo (mes y año declarados, impuesto en el servidor).
 - `docs/DOMAIN.md`: `Profile.privacyVersion`, `privacyAcceptedAt`.
 - `CONTRIBUTING.md`: variables de entorno y cómo probar la cuenta en local.
 - `ARCHITECTURE.md`: `src/api-client/` interina.
