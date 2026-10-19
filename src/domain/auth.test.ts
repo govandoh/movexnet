@@ -44,13 +44,13 @@ describe('correo', () => {
 
 describe('passwordIssues', () => {
   it('acepta una contraseña que cumple la política', () => {
-    expect(passwordIssues('Sentadilla2026')).toEqual([])
+    expect(passwordIssues('Sentadilla2026')).toEqual([]) // ggignore: contraseña de prueba, no es un secreto
   })
 
   it('pide longitud mínima, minúsculas, mayúsculas y dígitos', () => {
     expect(passwordIssues('Ab1')).toContain('too_short')
-    expect(passwordIssues('SENTADILLA2026')).toContain('no_lower')
-    expect(passwordIssues('sentadilla2026')).toContain('no_upper')
+    expect(passwordIssues('SENTADILLA2026')).toContain('no_lower') // ggignore: contraseña de prueba, no es un secreto
+    expect(passwordIssues('sentadilla2026')).toContain('no_upper') // ggignore: contraseña de prueba, no es un secreto
     expect(passwordIssues('Sentadillaaa')).toContain('no_digit')
   })
 
