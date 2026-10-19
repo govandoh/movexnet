@@ -81,7 +81,7 @@ La puntuación (`METRICS.md` §7) solo cuenta sesiones que cumplan **todas** est
 
 1. **Origen:** el set tiene `source = 'camera'`. Los modos manual (`DEC-047`) e importado no puntúan. Requiere columna `source` en `set_logs` (hoy no existe).
 2. **Plausibilidad por servidor** (función SQL que marca `flagged = true`, sin rechazar el guardado):
-   - repetición de menos de 800 ms (coincide con el mínimo del cooldown del contador, `DEC-016`);
+   - repetición de menos de 800 ms (coincide con la duración mínima de una repetición de sentadilla, `DEC-037`);
    - más de 100 repeticiones en una serie;
    - más de 3 horas de actividad contada en un día;
    - sesiones del mismo usuario que se solapan en el tiempo;

@@ -28,7 +28,7 @@ Datos de actividad física y medidas corporales son datos sensibles de salud a e
 - **Compartir métricas con un entrenador:** implícito al aceptar la `CoachingRelationship`; revocable al terminarla (el entrenador pierde acceso a datos futuros y pasados salvo los reportes ya generados, que se anonimizan).
 - **Perfil público / comunidad / rankings:** opt-in explícito (`Profile.publicProfile`); por defecto nada es visible a terceros.
 - **Segunda opinión por imagen:** confirmación por petición, no persistente.
-- Menores de edad: no se admiten cuentas sin verificación de edad (pendiente de definir el mecanismo con el aviso de privacidad).
+- Menores de edad: v1 solo para mayores de 18 años, declarado al registrarse con el año de nacimiento (`profiles.birth_year`); quien no cumpla no puede crear cuenta. No hay verificación documental (`DEC-067`).
 
 ## 3. Retención y borrado
 
