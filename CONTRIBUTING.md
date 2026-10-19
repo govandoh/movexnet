@@ -43,7 +43,7 @@ Comandos:
 Sin variables, la app funciona sin cuentas, como en producción. Para probarlas:
 
 1. `pnpm db:start` (Docker) y `pnpm db:reset` para aplicar las migraciones.
-2. Crea `.env.local` (ignorado por git) con:
+2. Copia `.env.example` a `.env.local` (ignorado por git) y ajústalo:
    ```
    VITE_ENABLE_ACCOUNTS=true
    VITE_SUPABASE_URL=http://127.0.0.1:54321
