@@ -3,15 +3,14 @@
 begin;
 select plan(47);
 
--- Dos usuarios y un anónimo. Las filas se crean como superusuario (sin RLS).
-insert into auth.users (id, instance_id, aud, role, email)
+-- Dos usuarios y un anónimo. Las filas se crean como superusuario (sin RLS). El perfil lo
+-- crea el trigger de alta con los datos del registro (migración de cuentas, #60).
+insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
 values
-  ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'a@test.local'),
-  ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'b@test.local');
-
-insert into public.profiles (user_id, display_name) values
-  ('00000000-0000-0000-0000-00000000000a', 'Ana'),
-  ('00000000-0000-0000-0000-00000000000b', 'Beto');
+  ('00000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'a@test.local',
+   '{"display_name":"Ana","birth_year":"1995","privacy_version":"privacy-2026-10-v1"}'),
+  ('00000000-0000-0000-0000-00000000000b', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'b@test.local',
+   '{"display_name":"Beto","birth_year":"1990","privacy_version":"privacy-2026-10-v1"}');
 
 insert into public.workout_sessions (id, user_id) values
   ('10000000-0000-0000-0000-00000000000a', '00000000-0000-0000-0000-00000000000a'),

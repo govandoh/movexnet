@@ -28,7 +28,7 @@ Comandos:
 | Comando | Qué hace |
 |---|---|
 | `pnpm dev` | Servidor de desarrollo con HTTPS y HMR. |
-| `pnpm build` | `tsc -b && vite build` → `dist/`. |
+| `pnpm build` | `tsc -b && vite build` → `dist/`, y falla si el bundle contiene una clave secreta (`scripts/check-bundle-secrets.mjs`). |
 | `pnpm preview` | Sirve `dist/` para probar el build (y el SW) localmente. |
 | `pnpm lint` | ESLint (incluirá la regla de fronteras entre paquetes tras el PR 6). |
 | `pnpm typecheck` | `tsc --noEmit` sobre `tsconfig.app.json` y `tsconfig.node.json`. |
@@ -37,6 +37,22 @@ Comandos:
 | `pnpm check` | `lint + typecheck + test + build`. **Es lo que corre CI**; pásalo antes de abrir el PR. |
 | `pnpm test -u` | Actualiza snapshots. **Solo con una DEC enlazada en el PR.** |
 | `pnpm e2e` | Playwright con cámara falsa (pendiente: PR 5). |
+
+### Cuentas en local (issue #60, `DEC-069`)
+
+Sin variables, la app funciona sin cuentas, como en producción. Para probarlas:
+
+1. `pnpm db:start` (Docker) y `pnpm db:reset` para aplicar las migraciones.
+2. Crea `.env.local` (ignorado por git) con:
+   ```
+   VITE_ENABLE_ACCOUNTS=true
+   VITE_SUPABASE_URL=http://127.0.0.1:54321
+   VITE_SUPABASE_PUBLISHABLE_KEY=<PUBLISHABLE_KEY que imprime db:start>
+   VITE_TURNSTILE_SITE_KEY=
+   ```
+3. Los correos de confirmación y recuperación llegan a Mailpit: `http://127.0.0.1:54324`.
+
+Todo lo que empieza por `VITE_` es público. Nunca pongas la `service_role` ni una clave `sb_secret_` en un `.env` del cliente: las cuentas no arrancan y `pnpm build` falla. Los ajustes de la nube (SMTP, captcha, URLs de redirección) están en la tabla de `DEC-069` y se cambian en el panel de Supabase.
 
 ## 2. Ramas y commits
 
