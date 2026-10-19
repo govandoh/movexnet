@@ -1,5 +1,7 @@
-// v4: identidad de DEC-058 (manifest, ícono y fuentes nuevos); subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v4';
+// v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
+// (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
+// seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
+const CACHE = 'entrenador-ia-v5';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
