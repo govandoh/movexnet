@@ -37,7 +37,7 @@ export function PrivacyNotice({ onClose }: { onClose: () => void }) {
         <p>Si usas el asistente, se envían a Anthropic solo métricas agregadas y tus objetivos; nunca video ni puntos del cuerpo. Mientras el asistente funcione en modo de demostración no se envía nada.</p>
 
         <h2>Tus derechos</h2>
-        <p>Puedes ver, exportar y borrar tus datos y tu cuenta, y retirar tus consentimientos. Borramos lo que pidas en un máximo de 30 días.</p>
+        <p>Puedes ver, exportar y borrar tus datos y tu cuenta, y retirar tus consentimientos. Mientras la app no tenga estas opciones en Perfil, pídelo al contacto de abajo desde el correo de tu cuenta; lo atendemos en un máximo de 30 días.</p>
 
         <h2>Rankings y perfil público</h2>
         <p>Nada tuyo es visible para otras personas salvo que lo actives tú.</p>
