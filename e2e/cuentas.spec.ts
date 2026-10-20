@@ -109,13 +109,16 @@ test('registro, confirmación desde otro navegador, sesión persistente y cierre
   await signIn(page, to, 'Incorrecta2026');
   await expect(page.getByText('Correo o contraseña incorrectos.')).toBeVisible();
   await signIn(page, to, PASSWORD);
+  // Tras iniciar sesión entra a la app (Hoy), no a Perfil.
+  await expect(page).toHaveURL(/#\/$/);
+  await page.getByRole('link', { name: 'Perfil' }).click();
   await expect(page.getByText('Sesión iniciada')).toBeVisible();
   await page.reload();
   await expect(page.getByText(to)).toBeVisible();
 
   // Cerrar sesión deja el dispositivo sin datos de la sesión.
   await page.getByRole('button', { name: /Cerrar sesión/ }).click();
-  await expect(page.getByRole('link', { name: /Iniciar sesión/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Entra a tu cuenta' })).toBeVisible();
   const keys = await page.evaluate(() => Object.keys(localStorage).filter(k => k.startsWith('movexnet-auth')));
   expect(keys).toEqual([]);
 });
@@ -146,11 +149,11 @@ test('recuperación de contraseña desde otro navegador', async ({ page, browser
   // La contraseña vieja ya no sirve y la nueva sí.
   await page.goto('/#/perfil');
   await page.getByRole('button', { name: /Cerrar sesión/ }).click();
-  await expect(page.getByRole('link', { name: /Iniciar sesión/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Entra a tu cuenta' })).toBeVisible();
   await signIn(page, to, PASSWORD);
   await expect(page.getByText('Correo o contraseña incorrectos.')).toBeVisible();
   await signIn(page, to, NEW_PASSWORD);
-  await expect(page.getByText('Sesión iniciada')).toBeVisible();
+  await expect(page).toHaveURL(/#\/$/);
 });
 
 test('la recuperación no revela si el correo tiene cuenta', async ({ page }) => {
@@ -160,9 +163,21 @@ test('la recuperación no revela si el correo tiene cuenta', async ({ page }) =>
   await expect(page.getByText('Si hay una cuenta con ese correo')).toBeVisible();
 });
 
-test('el aviso de privacidad abierto directo vuelve a Perfil', async ({ page }) => {
+test('sin sesión la app pide cuenta antes de entrenar', async ({ page }) => {
+  for (const route of ['/#/', '/#/entrenar', '/#/rutinas', '/#/perfil', '/#/manual']) {
+    await page.goto(route);
+    await expect(page).toHaveURL(/#\/cuenta$/);
+  }
+  await expect(page.getByRole('heading', { name: 'Entra a tu cuenta' })).toBeVisible();
+  await page.getByRole('link', { name: 'Ya tengo cuenta' }).click();
+  await expect(page).toHaveURL(/#\/cuenta\/entrar$/);
+  await page.getByRole('button', { name: 'Volver' }).click();
+  await expect(page).toHaveURL(/#\/cuenta$/);
+});
+
+test('el aviso de privacidad se lee sin sesión y volver lleva a la bienvenida', async ({ page }) => {
   await page.goto('/#/privacidad');
   await expect(page.getByRole('heading', { name: 'Aviso de privacidad' })).toBeVisible();
   await page.getByRole('button', { name: 'Volver' }).click();
-  await expect(page).toHaveURL(/#\/perfil$/);
+  await expect(page).toHaveURL(/#\/cuenta$/);
 });

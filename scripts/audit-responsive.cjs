@@ -142,15 +142,20 @@ async function withSafe(ctx, dev) {
       localStorage.setItem('fitnet_history_v1', JSON.stringify([r('a', -2, 10, 9, 'baja'), r('b', -1, 12, 10, 'moderada'), r('c', 0, 10, 9, 'baja')]));
       localStorage.setItem('fitnet_profile_v1', JSON.stringify({ questionnaire: { goal: 'muscle_gain', level: 'intermediate', location: 'home_limited', equipment: ['dumbbell', 'band'], daysPerWeek: 4, sessionMinutes: 60 }, programStartedAt: d(-3, 8), voiceEnabled: true }));
     });
+    // Pantallas de cuenta (#60). Con un build con VITE_ENABLE_ACCOUNTS=true la app entera
+    // pide cuenta, así que se auditan solo estas: ACCOUNTS=1 node scripts/audit-responsive.cjs
+    if (process.env.ACCOUNTS) {
+      for (const [label, hash] of [['cuenta-bienvenida', '#/cuenta'], ['cuenta-registro', '#/cuenta/registro'], ['cuenta-entrar', '#/cuenta/entrar'], ['cuenta-recuperar', '#/cuenta/recuperar'], ['privacidad', '#/privacidad']]) {
+        await page.goto(BASE + hash); await page.waitForTimeout(700);
+        all.push(...await audit(page, dev, label));
+      }
+      await ctx.close();
+      continue;
+    }
     for (const [label, hash] of [['hoy', '#/'], ['rutinas', '#/rutinas'], ['ejercicios', '#/ejercicios'], ['perfil', '#/perfil']]) {
       await page.goto(BASE + hash); await page.reload(); await page.waitForTimeout(700);
       if (label === 'ejercicios') await page.locator('.exercise-row').first().click();
       all.push(...await audit(page, dev, label));
-    }
-    // Pantallas de cuenta (#60): solo aparecen si el build tiene VITE_ENABLE_ACCOUNTS=true.
-    for (const [label, hash] of [['cuenta-registro', '#/cuenta/registro'], ['cuenta-entrar', '#/cuenta/entrar'], ['cuenta-recuperar', '#/cuenta/recuperar'], ['privacidad', '#/privacidad']]) {
-      await page.goto(BASE + hash); await page.waitForTimeout(700);
-      if (page.url().includes(hash)) all.push(...await audit(page, dev, label));
     }
     await page.goto(BASE + '#/rutinas'); await page.waitForTimeout(500);
     await page.getByRole('tab', { name: /Semana 2/ }).click(); await page.waitForTimeout(600);

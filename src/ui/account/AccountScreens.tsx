@@ -38,10 +38,13 @@ function useCaptcha() {
 
 function AccountLayout({ title, lead, children }: { title: string; lead?: string; children: ReactNode }) {
   const navigate = useNavigate();
+  const { status } = useAccount();
+  // Sin sesión, la app entera está detrás de la cuenta (DEC-069): volver es ir a la bienvenida.
+  const back = status === 'signed_in' ? '/perfil' : '/cuenta';
   return (
     <div className="flow">
       <div className="flow__top">
-        <button type="button" className="icon-btn" aria-label="Volver" onClick={() => navigate('/perfil')}><IconBack /></button>
+        <button type="button" className="icon-btn" aria-label="Volver" onClick={() => navigate(back)}><IconBack /></button>
       </div>
       <div className="flow__intro">
         <p className="eyebrow">Tu cuenta</p>
@@ -149,7 +152,7 @@ export function SignUpScreen() {
       const { needsEmailConfirmation } = await (await authRepository()).signUp(input);
       setPassword('');
       if (needsEmailConfirmation) setSent(true);
-      else navigate('/perfil', { replace: true });
+      else navigate('/', { replace: true });
     } catch (err) {
       setAlert(errorText(err));
     } finally {
@@ -224,7 +227,8 @@ export function SignInScreen() {
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
 
-  if (status === 'disabled' || status === 'signed_in') return <Navigate to="/perfil" replace />;
+  if (status === 'disabled') return <Navigate to="/perfil" replace />;
+  if (status === 'signed_in') return <Navigate to="/" replace />;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -238,7 +242,7 @@ export function SignInScreen() {
     try {
       await (await authRepository()).signIn({ email, password, captchaToken: captcha.token });
       setPassword('');
-      navigate('/perfil', { replace: true });
+      navigate('/', { replace: true });
     } catch (err) {
       setAlert(errorText(err));
     } finally {
@@ -413,6 +417,31 @@ export function NewPasswordScreen() {
         </button>
       </form>
     </AccountLayout>
+  );
+}
+
+// ── Bienvenida de la cuenta: la puerta de la app con las cuentas activas ─────
+
+export function AccountWelcomeScreen() {
+  const { status } = useAccount();
+  if (status === 'disabled') return <Navigate to="/" replace />;
+  if (status === 'signed_in') return <Navigate to="/" replace />;
+  return (
+    <div className="flow">
+      <div className="flow__intro account-welcome">
+        <p className="eyebrow">MovexNet</p>
+        <h1 className="flow__title">Entra a tu cuenta</h1>
+        <p className="flow__lead">
+          Crea una cuenta o inicia sesión para entrenar con el asistente. El video de tu cámara nunca sale de tu celular.
+        </p>
+      </div>
+      <div className="flow__spacer" />
+      <Link className="btn btn--primary btn--block" to="/cuenta/registro">Crear cuenta</Link>
+      <Link className="btn btn--secondary btn--block" to="/cuenta/entrar">Ya tengo cuenta</Link>
+      <p className="muted account-foot">
+        Solo para mayores de 18 años. <Link className="account-link" to="/privacidad">Aviso de privacidad</Link>
+      </p>
+    </div>
   );
 }
 
