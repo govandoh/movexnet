@@ -94,12 +94,15 @@ export const IconChevron = () => (
   <Stroke width={2.2}><path d="M9 6l6 6-6 6" /></Stroke>
 );
 
-/** Logo de MovexNet: cinco nodos voltaje unidos por líneas índigo que forman una "F". */
-export function FitnetMark({ size = 32 }: { size?: number }) {
+/**
+ * Logo de MovexNet: cinco nodos voltaje unidos por líneas índigo que forman una "M" (DEC-058,
+ * DEC-068). Misma geometría que `public/favicon.svg` y los PNG de `scripts/generate-icons.mjs`.
+ */
+export function MovexMark({ size = 32 }: { size?: number }) {
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true">
-      <path d="M12 8L28 8M12 8L12 32M12 20L24 20" fill="none" stroke="var(--color-indigo)" strokeWidth="2.5" strokeLinecap="round" />
-      {[[12, 8], [28, 8], [12, 20], [24, 20], [12, 32]].map(([cx, cy]) => (
+      <path d="M8 32L8 8L20 21L32 8L32 32" fill="none" stroke="var(--color-indigo)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {[[8, 32], [8, 8], [20, 21], [32, 8], [32, 32]].map(([cx, cy]) => (
         <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="4" fill="var(--color-volt)" />
       ))}
     </svg>

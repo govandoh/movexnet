@@ -11,7 +11,7 @@ Fitnet es *fit* más *net*: la cámara lee el cuerpo como una red de 33 puntos (
 - **Anillo de 33 nodos.** El progreso se dibuja como 33 puntos en círculo que se encienden, uno por punto del cuerpo. Sustituye a los anillos concéntricos: no se usan anillos de Apple.
 - **Nodos y líneas.** El esqueleto (líneas índigo, articulaciones en voltaje) aparece en la cámara y, como decoración tenue, en tarjetas destacadas.
 - **Fondo de puntos.** Retícula de puntos de 1 px cada 18-20 px al 12-13 % de opacidad, solo en cabeceras y pantallas de gestión; nunca sobre la cámara.
-- **Logo.** Cinco nodos voltaje unidos por líneas índigo que forman una "F", junto a la palabra `fitnet` en Barlow Condensed 800 itálica minúscula.
+- **Logo.** Cinco nodos voltaje unidos por líneas índigo que forman una "M", junto a la palabra `movexnet` en Barlow Condensed 800 itálica minúscula (`DEC-068`). Componente `MovexMark`; íconos de la PWA generados con `node scripts/generate-icons.mjs` a partir de la misma geometría.
 - **Voz deportiva.** Títulos de pantalla y botones principales en Barlow Condensed itálica y mayúsculas ("HOY", "EMPEZAR CON ASISTENTE").
 
 ## 2. Color

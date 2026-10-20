@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FitnetMark, IconVoice, IconVoiceOff } from '../components/icons';
+import { MovexMark, IconVoice, IconVoiceOff } from '../components/icons';
 import { PremiumSheet } from '../components/PremiumSheet';
 import { appActions, useAppState } from '../state/appStore';
 import { totals } from '../../domain/sessionHistory';
@@ -30,7 +30,7 @@ export function ProfileScreen() {
     <div className="screen">
       <header className="screen-header">
         <h1 className="screen-title">Perfil</h1>
-        <FitnetMark size={36} />
+        <MovexMark size={36} />
       </header>
 
       <div className="grid-2">
