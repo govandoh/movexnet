@@ -8,17 +8,20 @@
 
 El sprint venció el 16-oct con 6 de 9 issues cerradas. Pasan al siguiente: #14 (PR 5, sin asignar), #15 y #16 (datos reales). En `main`: cuentas en producción (#60), anti-trampa y `coach_usage` (#66), nombre y logo MovexNet (#63, #64), pose-engine con `CameraPoseSource` y `ReplayPoseSource` (#43–#45, #50), contrato `ExerciseTracker` (#46), editor de rutinas y modo manual (#54), calendario del programa en el dominio (#55). Tests: 505 unitarios, 71 pgTAP y 6 de extremo a extremo (`pnpm e2e`).
 
+DEC-064 aceptada; #65 cerrada (seguimiento en #73).
+
 **Validado en celular:** motor 3D con grabaciones reales (DEC-066, iPhone 17 Pro Max y S24 Ultra); cuentas en Android (S24 Ultra). **Sin validar:** cuentas en iOS Safari con la PWA instalada y fps del mini mapa en gama baja.
 
-## Reparto (propuesta para el Sprint 2, 21-oct a 3-nov)
+## Reparto del Sprint 2 (21-oct a 3-nov, hito en GitHub)
 
 | Dev | Workstream | Issues, en orden | Depende de |
 |---|---|---|---|
 | A · @ChejoUMG | Pose y captura | #15 (fixtures reales) → #58 (curl y press en 3D); #16 con C | — |
 | B · @ecaldcc | Análisis | #39 (ola 1 con personas) → #33 (3D por defecto, requiere DEC) | #33 espera #15 |
 | C · @christian15alda-netizen | ML | #38 → #59 → #16 (protocolo, con A) → #36 | #36 espera las grabaciones de #16 |
-| D · @govandoh (líder) | Backend y transversal | #35 (pantalla del calendario y recordatorios, tomada de E); historia de sincronización del historial local con la nube; `STATUS.md` semanal | — |
-| E · @eliasgregoriomp-svg | App y UI | #70 (CSP y cabeceras de seguridad) | — |
+| D · @govandoh (líder) | Backend y transversal | #35 (pantalla del calendario y recordatorios, tomada de E) → #73 (anti-trampa); sincronización del historial con la nube; `STATUS.md` semanal | — |
+| E · @eliasgregoriomp-svg | App y UI | Solo #70 (CSP), con acompañamiento de D | — |
+| Edwar | Pruebas en iPhone | #75 (cuentas en iOS Safari y con la PWA instalada) | — |
 
 Sin asignar: #14 (PR 5, `AnalysisPipeline` y store; B y E) y #37 (ST-GCN++, espera el dataset).
 
@@ -33,11 +36,8 @@ Sin asignar: #14 (PR 5, `AnalysisPipeline` y store; B y E) y #37 (ST-GCN++, espe
 
 | Pendiente | Dónde |
 |---|---|
-| Cerrar #65 (hecha en #66) y abrir el seguimiento de la revisión del #66: series de cámara sin `duration_ms` y solapamiento de sesiones | #65 |
-| Aceptar DEC-064 (el aviso de privacidad cita el consentimiento por grabación) | `docs/adr/` |
-| Probar cuentas en iOS Safari con la PWA instalada | issue nueva |
-| Crear el hito Sprint 2 y activar el flujo "Item closed → Done" del tablero | GitHub Project |
-| Borrar el proyecto duplicado `entrenador-personal-ia-qodm` en Vercel | Vercel |
+| Activar el flujo "Item closed → Done" del tablero (no se puede por API) | GitHub Project → Workflows |
+| Asignar #75 a Edwar en GitHub cuando acepte la invitación | #75 |
 
 ## Comportamiento congelado conocido
 
