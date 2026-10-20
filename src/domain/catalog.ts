@@ -10,9 +10,10 @@
  * - `pattern`: patrón de movimiento, con el que el generador llena cada día.
  * - `assistant`: id del contador 3D cuando el ejercicio tiene análisis por cámara; es lo que
  *   marca la insignia "con asistente". `tracking` conserva el modo de registro de fitnetv2
- *   (`reps`/`time` es el respaldo manual). Los de
- *   la ola 1 (flexiones, zancadas, puente, plancha) solo existen con `?engine=3d` hasta que
- *   el motor 3D sea el predeterminado (DEC-057).
+ *   (`reps`/`time` es el respaldo manual). La ola 1 usa el motor 3D sin flag (DEC-059):
+ *   flexiones, zancadas y puente pasaron a `camera` tras validarse en celular con personas
+ *   (#39, DEC-066, DEC-071). La plancha sigue en `time`, porque el generador de rutinas y la
+ *   sesión la recetan en segundos con ese valor.
  *
  * El lugar (gimnasio o casa) no se guarda por ejercicio: se deriva del equipo disponible.
  * Sin colores ni otros datos de UI (esos viven en `src/ui`). Módulo puro.
@@ -76,7 +77,7 @@ export const EXERCISE_CATALOG: readonly CatalogExercise[] = [
   { id: 'press-inclinado', name: 'Press inclinado', muscleGroup: 'pecho', secondary: ['hombros', 'triceps'], baseDifficulty: 'medio', tracking: 'reps', pattern: 'horizontal_push', equipment: [['barbell', 'bench'], ['dumbbell', 'bench']], equipmentLabel: 'Banco inclinado', cues: 'Inclinación de 30 a 45 grados, ni más.' },
   { id: 'aperturas', name: 'Aperturas con mancuernas', muscleGroup: 'pecho', secondary: [], baseDifficulty: 'medio', tracking: 'reps', pattern: 'isolation_upper', equipment: [['dumbbell', 'bench']], equipmentLabel: 'Mancuernas y banco', cues: 'Codos con una flexión leve y fija durante todo el recorrido.' },
   { id: 'cruce-poleas', name: 'Cruce de poleas', muscleGroup: 'pecho', secondary: [], baseDifficulty: 'medio', tracking: 'reps', pattern: 'isolation_upper', equipment: [['cable']], equipmentLabel: 'Poleas', cues: 'Junta las manos por delante del esternón y sostén un instante.' },
-  { id: 'flexiones', name: 'Flexiones de brazos', muscleGroup: 'pecho', secondary: ['triceps', 'core'], baseDifficulty: 'bajo', tracking: 'reps', assistant: 'pushup', pattern: 'horizontal_push', equipment: [['bodyweight']], equipmentLabel: 'Peso corporal', cues: 'Cuerpo en línea recta de la cabeza a los talones.' },
+  { id: 'flexiones', name: 'Flexiones de brazos', muscleGroup: 'pecho', secondary: ['triceps', 'core'], baseDifficulty: 'bajo', tracking: 'camera', assistant: 'pushup', pattern: 'horizontal_push', equipment: [['bodyweight']], equipmentLabel: 'Peso corporal', cues: 'Cuerpo en línea recta de la cabeza a los talones.' },
   { id: 'flexiones-inclinadas', name: 'Flexiones inclinadas', muscleGroup: 'pecho', secondary: ['triceps'], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'horizontal_push', equipment: [['bench']], equipmentLabel: 'Banco o cajón', cues: 'Cuanto más alto el apoyo, menos carga.' },
   { id: 'fondos-paralelas', name: 'Fondos en paralelas', muscleGroup: 'pecho', secondary: ['triceps', 'hombros'], baseDifficulty: 'alto', tracking: 'reps', pattern: 'horizontal_push', equipment: [['dip_bars']], equipmentLabel: 'Paralelas', cues: 'Inclinar el torso adelante carga más el pecho.' },
   // ── espalda ──
@@ -112,7 +113,7 @@ export const EXERCISE_CATALOG: readonly CatalogExercise[] = [
   { id: 'sentadilla-frontal', name: 'Sentadilla frontal', muscleGroup: 'cuadriceps', secondary: ['core'], baseDifficulty: 'alto', tracking: 'reps', pattern: 'knee_dominant', equipment: [['barbell']], equipmentLabel: 'Barra', cues: 'Codos altos para sostener la barra.' },
   { id: 'prensa', name: 'Prensa de piernas', muscleGroup: 'cuadriceps', secondary: ['gluteos'], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'knee_dominant', equipment: [['machine']], equipmentLabel: 'Máquina de prensa', cues: 'No bloquees las rodillas al extender.' },
   { id: 'extension-cuadriceps', name: 'Extensión de cuádriceps', muscleGroup: 'cuadriceps', secondary: [], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'isolation_lower', equipment: [['machine']], equipmentLabel: 'Máquina', cues: 'Movimiento controlado, sin impulso.' },
-  { id: 'zancadas', name: 'Zancadas', muscleGroup: 'cuadriceps', secondary: ['gluteos'], baseDifficulty: 'medio', tracking: 'reps', assistant: 'lunge', pattern: 'knee_dominant', equipment: [['bodyweight'], ['dumbbell']], equipmentLabel: 'Peso corporal o mancuernas', cues: 'La rodilla de atrás casi toca el suelo.' },
+  { id: 'zancadas', name: 'Zancadas', muscleGroup: 'cuadriceps', secondary: ['gluteos'], baseDifficulty: 'medio', tracking: 'camera', assistant: 'lunge', pattern: 'knee_dominant', equipment: [['bodyweight'], ['dumbbell']], equipmentLabel: 'Peso corporal o mancuernas', cues: 'La rodilla de atrás casi toca el suelo.' },
   { id: 'sentadilla-bulgara', name: 'Sentadilla búlgara', muscleGroup: 'cuadriceps', secondary: ['gluteos'], baseDifficulty: 'alto', tracking: 'reps', pattern: 'knee_dominant', equipment: [['bench']], equipmentLabel: 'Banco y mancuernas', cues: 'El pie de atrás solo da equilibrio, no empuja.' },
   { id: 'sentadilla-goblet', name: 'Sentadilla goblet', muscleGroup: 'cuadriceps', secondary: ['core'], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'knee_dominant', equipment: [['dumbbell'], ['kettlebell']], equipmentLabel: 'Mancuerna o pesa rusa', cues: 'Peso pegado al pecho, codos por dentro de las rodillas.' },
   // ── isquiotibiales ──
@@ -121,7 +122,7 @@ export const EXERCISE_CATALOG: readonly CatalogExercise[] = [
   { id: 'buenos-dias', name: 'Buenos días', muscleGroup: 'isquiotibiales', secondary: ['espalda'], baseDifficulty: 'alto', tracking: 'reps', pattern: 'hip_hinge', equipment: [['barbell']], equipmentLabel: 'Barra', cues: 'Poco peso: la técnica manda en este movimiento.' },
   // ── gluteos ──
   { id: 'hip-thrust', name: 'Hip thrust', muscleGroup: 'gluteos', secondary: ['isquiotibiales'], baseDifficulty: 'medio', tracking: 'reps', pattern: 'hip_hinge', equipment: [['barbell', 'bench']], equipmentLabel: 'Barra y banco', cues: 'Mentón hacia el pecho, aprieta arriba.' },
-  { id: 'puente-gluteo', name: 'Puente de glúteo', muscleGroup: 'gluteos', secondary: ['core'], baseDifficulty: 'bajo', tracking: 'reps', assistant: 'bridge', pattern: 'hip_hinge', equipment: [['bodyweight']], equipmentLabel: 'Peso corporal', cues: 'Empuja con los talones.' },
+  { id: 'puente-gluteo', name: 'Puente de glúteo', muscleGroup: 'gluteos', secondary: ['core'], baseDifficulty: 'bajo', tracking: 'camera', assistant: 'bridge', pattern: 'hip_hinge', equipment: [['bodyweight']], equipmentLabel: 'Peso corporal', cues: 'Empuja con los talones.' },
   { id: 'patada-gluteo', name: 'Patada de glúteo', muscleGroup: 'gluteos', secondary: [], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'isolation_lower', equipment: [['cable'], ['bodyweight']], equipmentLabel: 'Polea o peso corporal', cues: 'Sin arquear la zona lumbar.' },
   { id: 'abduccion', name: 'Abducción de cadera', muscleGroup: 'gluteos', secondary: [], baseDifficulty: 'bajo', tracking: 'reps', pattern: 'isolation_lower', equipment: [['machine'], ['band']], equipmentLabel: 'Máquina o banda', cues: 'Torso levemente inclinado al frente.' },
   // ── pantorrillas ──
