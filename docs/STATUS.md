@@ -2,49 +2,47 @@
 
 > Solo lo vigente. Lo actualiza el líder (o `docs-keeper` a su pedido) en la review semanal; los PRs de los workstreams no lo editan (DEC-062). Máximo 4 KB. Historial: `docs/CHANGELOG.md`. Decisiones: `docs/adr/README.md`.
 
-**Última actualización:** 2026-10-05
+**Última actualización:** 2026-10-20
 
-## Hito actual: Sprint 1 — Migración y datos
+## Hito actual: cierre del Sprint 1 — Migración y datos
 
-La Fase 1 está en `main` (PRs #40 y #41, detalle en `docs/CHANGELOG.md`). 289 tests en verde. Siguen abiertos los pendientes de equipo del Sprint 0 (#18–#22).
+El sprint venció el 16-oct con 6 de 9 issues cerradas. Pasan al siguiente: #14 (PR 5, sin asignar), #15 y #16 (datos reales). En `main`: cuentas en producción (#60), anti-trampa y `coach_usage` (#66), nombre y logo MovexNet (#63, #64), pose-engine con `CameraPoseSource` y `ReplayPoseSource` (#43–#45, #50), contrato `ExerciseTracker` (#46), editor de rutinas y modo manual (#54), calendario del programa en el dominio (#55). Tests: 505 unitarios, 71 pgTAP y 6 de extremo a extremo (`pnpm e2e`).
 
-**Sin validar en celular:** el motor 3D (`?engine=3d`, 7 ejercicios), las pantallas de la Fase 1, la técnica en 3D y los fps del mini mapa en gama baja. Es el requisito para predeterminar el 3D (#33).
+**Validado en celular:** motor 3D con grabaciones reales (DEC-066, iPhone 17 Pro Max y S24 Ultra); cuentas en Android (S24 Ultra). **Sin validar:** cuentas en iOS Safari con la PWA instalada y fps del mini mapa en gama baja.
 
-## Reparto del sprint
+## Reparto (propuesta para el Sprint 2, 21-oct a 3-nov)
 
-Una persona por workstream y carpetas exclusivas. Cada issue tiene su brief (qué falta, archivos, criterio de aceptación) y su asignado.
+| Dev | Workstream | Issues, en orden | Depende de |
+|---|---|---|---|
+| A · @ChejoUMG | Pose y captura | #15 (fixtures reales) → #58 (curl y press en 3D); #16 con C | — |
+| B · @ecaldcc | Análisis | #39 (ola 1 con personas) → #33 (3D por defecto, requiere DEC) | #33 espera #15 |
+| C · @christian15alda-netizen | ML | #38 → #59 → #16 (protocolo, con A) → #36 | #36 espera las grabaciones de #16 |
+| D · @govandoh (líder) | Backend y transversal | #35 (pantalla del calendario y recordatorios, tomada de E); historia de sincronización del historial local con la nube; `STATUS.md` semanal | — |
+| E · @eliasgregoriomp-svg | App y UI | #70 (CSP y cabeceras de seguridad) | — |
 
-| Dev | Workstream | Issues, en orden | Carpetas exclusivas | Depende de |
-|---|---|---|---|---|
-| A · @ChejoUMG | Pose y captura | #12 → #15 (fixtures reales con `world`) | `src/pose/**`, `fixtures/` | — |
-| B · @ecaldcc | Análisis | #11 (rama `contracts/*`) → #33 (golden, requiere DEC) | `src/exercises/**`, `src/geometry/**`, `src/analysis/**`, `src/feedback/**`, `src/contracts/` | #33 espera #15 y las pruebas en celular |
-| C · @christian15alda-netizen | ML | #38 → #16 (protocolo, con A) → #36 | `ml/` (nueva) | #36 necesita grabaciones de #16 |
-| D · @govandoh (líder) | Backend y transversal | #17 → datos de #35 (calendario); #19, #21, #22, #32; `STATUS.md` semanal | `supabase/` (nueva), `src/domain/` | — |
-| E · @eliasgregoriomp-svg | App y UI | Lo que falta de #34 (editor de rutinas, modo manual, tutoriales, logros) | `src/ui/**`, `public/**` | — |
+Sin asignar: #14 (PR 5, `AnalysisPipeline` y store; B y E) y #37 (ST-GCN++, espera el dataset).
 
-**Primera semana, todos:** probar en su celular los 7 ejercicios con `?engine=3d` y una serie completa de la Fase 1. Resultados en una issue por dispositivo.
+## Reglas vigentes
 
-**Siguiente sprint:** #14 (PR 5, `AnalysisPipeline` y store; toca B y E, espera #11 y #12) y #37 (ST-GCN++, espera el dataset).
+- **Merge (DEC-070):** sin aprobaciones obligatorias. CI en verde (build, commitlint y tests de RLS) y squash merge del líder. Antes de mergear PRs de auth, migraciones o varios workstreams: `architect-guardian`, y `/security-review` si toca seguridad.
+- `package.json` y `pnpm-lock.yaml`: dependencia nueva solo tras discutirla (regla dura 9).
+- `DEC-NNN`: el número es provisional hasta el merge; si choca, renumera quien mergea segundo. Próxima libre: DEC-071.
+- Migraciones: nunca editar una ya aplicada en la nube; corregir con una nueva. Si entra una con fecha anterior a la última aplicada: `supabase db push --include-all`.
 
-## Reglas para no chocar
+## Pendientes del líder
 
-- `package.json` y `pnpm-lock.yaml`: las dependencias nuevas van en un PR aparte, discutidas antes.
-- `DEC-NNN`: el número es provisional hasta el merge; si choca, renumera quien mergea segundo.
-- `src/App.tsx` y la navegación: los edita solo E; los demás piden la ruta o el chip en su issue.
-
-## Pendientes que solo el equipo puede resolver
-
-| Pendiente | Issue |
+| Pendiente | Dónde |
 |---|---|
-| Que ChejoUMG, ecaldcc y eliasgregoriomp-svg acepten la invitación al repositorio (sin eso CODEOWNERS no los cuenta ni se les puede asignar issues) | #18 |
-| Crear el GitHub Project (`gh auth refresh -s project`) | #21 |
-| Tope de costo del asistente IA, frescura de rankings, anti-trampa y aviso de privacidad | #22 |
-| Precios teóricos y comisión para el análisis de rentabilidad (pagos simulados por DEC-035) | #20 |
+| Cerrar #65 (hecha en #66) y abrir el seguimiento de la revisión del #66: series de cámara sin `duration_ms` y solapamiento de sesiones | #65 |
+| Aceptar DEC-064 (el aviso de privacidad cita el consentimiento por grabación) | `docs/adr/` |
+| Probar cuentas en iOS Safari con la PWA instalada | issue nueva |
+| Crear el hito Sprint 2 y activar el flujo "Item closed → Done" del tablero | GitHub Project |
+| Borrar el proyecto duplicado `entrenador-personal-ia-qodm` en Vercel | Vercel |
 
 ## Comportamiento congelado conocido
 
-Los golden del PR 1 documentan cinco sensibilidades del análisis 2D por reglas (fondo dependiente de los fps, spike de ruido, curl parcial atrapado en `flexed`, sentadilla corta sin feedback, curl bilateral y lateral indistinguibles). Detalle en `fixtures/README.md`; las resuelve el motor 3D (#33) y el PR 7.
+Los golden del PR 1 documentan cinco sensibilidades del análisis 2D por reglas. Detalle en `fixtures/README.md`; las resuelve el motor 3D (#33) y el PR 7.
 
 ## En producción
 
-PWA en Vercel (Hobby), deploy en cada push a `main`. Sin backend ni cuentas. MediaPipe `@mediapipe/tasks-vision@0.10.35`, `pose_landmarker_lite`. fitnetv2 sigue en fitnetv2.netlify.app mientras se integra (DEC-054).
+PWA MovexNet en Vercel (Hobby), deploy en cada push a `main`. Cuentas activas (DEC-069): Supabase Auth en `us-east-1`, correo por Brevo, captcha Turnstile; la app pide cuenta antes de entrenar. MediaPipe `@mediapipe/tasks-vision@0.10.35`, `pose_landmarker_lite`.
