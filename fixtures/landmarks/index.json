@@ -165,15 +165,15 @@
       "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 10-528 de 599 (toma completa en la carpeta privada del equipo)."
     },
     {
-      "file": "curl-side-elbow-drift-01.json",
+      "file": "curl-front-elbow-drift-01.json",
       "exercise": "curl",
-      "view": "side",
+      "view": "front",
       "quality": "elbow-drift",
       "source": "phone",
       "fps": 18.2,
       "frames": 527,
       "durationMs": 29167,
-      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: elbow_drift. Recorte de los frames 22-548 de 686 (toma completa en la carpeta privada del equipo)."
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: elbow_drift. Recorte de los frames 22-548 de 686 (toma completa en la carpeta privada del equipo).  Se grabó con la URL de view=side; la vista real es frontal (confirmado por el sujeto, corregida)."
     },
     {
       "file": "curl-side-excess-speed-01.json",
