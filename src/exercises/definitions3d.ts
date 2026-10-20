@@ -12,8 +12,9 @@ import { GOOD_LOCKOUT_ANGLE } from './shoulderPress.ts';
  *
  * Umbrales tomados de los trackers 3D de fitnetv2 (commit d456e95): histéresis de fase,
  * validación temporal por ejercicio (DEC-037/045) y comprobaciones de forma que solo son
- * medibles en 3D (DEC-036). Los umbrales de calidad buena (`GOOD_*`, `SAFE_LOW_ANGLE`) se
- * comparten con los trackers 2D de producción para que ambos motores juzguen igual.
+ * medibles en 3D (DEC-036). El umbral de extensión completa del press (`GOOD_LOCKOUT_ANGLE`)
+ * se comparte con el tracker 2D. El curl tiene el suyo (`CURL_GOOD_CONTRACTION_3D_DEG`)
+ * porque el 3D mide el codo menos doblado, y el press no avisa de bajar de más (DEC-073).
  *
  * Las comprobaciones contra la vertical (tronco, brazo) suponen landmarks nivelados por
  * gravedad o calibración (DEC-050/053).

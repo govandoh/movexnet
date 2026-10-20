@@ -3,7 +3,7 @@
 - **Estado:** Propuesta
 - **Fecha:** 2026-10-20
 - **Decisores:** B (análisis, @ecaldcc), A (pose y captura, @ChejoUMG), D (@govandoh)
-- **Etiquetas:** `analysis-core`, `pose-engine`
+- **Etiquetas:** `analysis-core`
 
 ## Contexto y problema
 
@@ -39,6 +39,8 @@ Se ajustan las definiciones 3D de curl y press en `src/exercises/definitions3d.t
 
 **El curl se mide de perfil.** De frente, el antebrazo se mueve hacia la cámara y ni el 2D ni el 3D ven el recorrido: la toma frontal a medias contó 6, igual que la completa. Pedir la vista lateral y avisar si la persona está de frente queda para el PR que pasa curl y press al 3D por defecto (#33).
 
+**Criterio en los tests.** `src/exercises/armCalibration3d.test.ts` acepta de 5 a 8 repeticiones en las tomas bien hechas, porque los fixtures son recortes de menos de 2 MB y no siempre contienen la serie entera. El criterio de #58 (5 de 5 bien hechas y 0 a medias) se comprueba en celular.
+
 Resultados en las tomas completas, con la decisión aplicada:
 
 | Toma | Antes | Ahora | Reales |
@@ -66,6 +68,8 @@ Resultados en las tomas completas, con la decisión aplicada:
 - **"Pega el codo" con 50° solo detecta despegues claros.** En la toma de codo despegado salió en el 9 % de los frames; distinguirlo bien requiere una medida por repetición, no por frame.
 - **Los tirones del curl no se rechazan:** la toma con tirones contó 9. Hace falta un límite de velocidad pico, que hoy no existe en `QualityThresholds`.
 - **El press de perfil bajando los codos de más casi no cuenta** (1 de 6–8). Queda pendiente con más datos.
+- `src/analysis/setSummary.ts` conserva la etiqueta de `unsafe_low_elbow` para el motor 2D, que sí emite ese aviso.
+- `peakPhrase` decide el umbral del curl según el motor dentro de la UI. Es deuda: la frase debería salir de la definición del ejercicio, y se corrige al retirar el 2D (#33).
 - La ficha de técnica del curl (`demoPoses.ts`) sigue citando el umbral 2D de 50°. Se actualiza cuando el curl pase al 3D por defecto.
 
 ## Referencias
