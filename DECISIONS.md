@@ -51,7 +51,7 @@ Acceso rápido a las más citadas desde el código:
 | DEC-059 | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D | [docs/adr/DEC-059-ola1-motor3d-sin-flag.md](docs/adr/DEC-059-ola1-motor3d-sin-flag.md) |
 | DEC-060 | Responsive y áreas seguras como regla de diseño y funcionalidad | [docs/adr/DEC-060-responsive-areas-seguras.md](docs/adr/DEC-060-responsive-areas-seguras.md) |
 | DEC-061 | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | [docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md](docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md) |
-| DEC-064 | Un consentimiento de grabación vale para una sola grabación (propuesta) | [docs/adr/DEC-064-consentimiento-una-grabacion.md](docs/adr/DEC-064-consentimiento-una-grabacion.md) |
+| DEC-064 | Un consentimiento de grabación vale para una sola grabación | [docs/adr/DEC-064-consentimiento-una-grabacion.md](docs/adr/DEC-064-consentimiento-una-grabacion.md) |
 | DEC-065 | Datasets externos: licencias de MM-Fit corregidas y alcance solo académico (propuesta) | [docs/adr/DEC-065-datasets-externos-alcance-academico.md](docs/adr/DEC-065-datasets-externos-alcance-academico.md) |
 | DEC-069 | Cuentas con Supabase Auth: correo y contraseña, Brevo, Turnstile y puerta 18+ en el servidor (propuesta) | [docs/adr/DEC-069-cuentas-supabase-auth.md](docs/adr/DEC-069-cuentas-supabase-auth.md) |
 

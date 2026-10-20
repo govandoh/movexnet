@@ -1,6 +1,6 @@
 # DEC-064 · Un consentimiento de grabación vale para una sola grabación
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-20, por el responsable del proyecto; requisito para activar las cuentas, DEC-069)
 - **Fecha:** 2026-10-10
 - **Decisores:** Workstream D (@govandoh); revisan B y E (`docs/adr/README.md`)
 - **Etiquetas:** `backend`, `datos`, `privacidad`
