@@ -175,3 +175,12 @@ select.account-input {
   appearance: none;
   padding-right: var(--space-4);
 }
+
+/* Enlaces dentro del texto: área táctil de 40 px o más sin mover el renglón (DEC-060). */
+.account-link {
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}

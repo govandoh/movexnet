@@ -36,7 +36,7 @@ Comandos:
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm check` | `lint + typecheck + test + build`. **Es lo que corre CI**; pásalo antes de abrir el PR. |
 | `pnpm test -u` | Actualiza snapshots. **Solo con una DEC enlazada en el PR.** |
-| `pnpm e2e` | Playwright con cámara falsa (pendiente: PR 5). |
+| `pnpm e2e` | Pruebas de extremo a extremo con Playwright (`e2e/`) contra Supabase local: requiere `pnpm db:start`. Hoy cubre las cuentas (#60). La primera vez: `pnpm exec playwright install chromium`. |
 
 ### Cuentas en local (issue #60, `DEC-069`)
 

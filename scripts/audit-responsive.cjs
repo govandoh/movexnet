@@ -13,7 +13,7 @@
  * repo hasta que exista su DEC (propuesta en DEC-060). Sin red a los CDN de MediaPipe, pasa
  * MODEL_PATH con el archivo pose_landmarker_lite.task descargado.
  */
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
 const WASM = path.join(__dirname, '..', 'node_modules', '@mediapipe', 'tasks-vision', 'wasm');
@@ -146,6 +146,11 @@ async function withSafe(ctx, dev) {
       await page.goto(BASE + hash); await page.reload(); await page.waitForTimeout(700);
       if (label === 'ejercicios') await page.locator('.exercise-row').first().click();
       all.push(...await audit(page, dev, label));
+    }
+    // Pantallas de cuenta (#60): solo aparecen si el build tiene VITE_ENABLE_ACCOUNTS=true.
+    for (const [label, hash] of [['cuenta-registro', '#/cuenta/registro'], ['cuenta-entrar', '#/cuenta/entrar'], ['cuenta-recuperar', '#/cuenta/recuperar'], ['privacidad', '#/privacidad']]) {
+      await page.goto(BASE + hash); await page.waitForTimeout(700);
+      if (page.url().includes(hash)) all.push(...await audit(page, dev, label));
     }
     await page.goto(BASE + '#/rutinas'); await page.waitForTimeout(500);
     await page.getByRole('tab', { name: /Semana 2/ }).click(); await page.waitForTimeout(600);
