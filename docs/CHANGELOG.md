@@ -6,6 +6,7 @@
 
 | Entregable | Contenido | Estado al cierre |
 |---|---|---|
+| Calendario del programa y recordatorios (#35) | Calendario mensual en Rutinas con cada sesión hecha, perdida, de hoy, próxima o Premium; próximas sesiones en Hoy; recordatorio a la hora elegida desde Perfil (con la app abierta o en segundo plano) | Probado con Playwright (reloj fijo); falta probar el aviso en celular. Con la app cerrada requiere Web Push (historia aparte) |
 | Cuentas con Supabase Auth (#60, `DEC-069`) | Registro con puerta 18+ y aviso de privacidad impuestos en el servidor, confirmación por correo, inicio y cierre de sesión, recuperación de contraseña (PKCE), sesión persistente y estado de la cuenta en Perfil. Con las cuentas activas, la app pide iniciar sesión o registrarse antes de entrenar; detrás de `VITE_ENABLE_ACCOUNTS`, apagado en producción | Probado en local (Auth y navegador emulado); falta configurar la nube, aprobar el aviso (#22) y probar en celular |
 | Umbrales del motor 3D ajustados con grabaciones reales (#39, #49, `DEC-066`) | Las zancadas vuelven a contar; las flexiones pierden menos repeticiones y ya no piden bajar más estando abajo; la sentadilla cuenta con `?engine=3d`; la calibración de postura termina y la serie arranca sola | Probado en vivo en iPhone 17 Pro Max y Samsung S24 Ultra, y con grabaciones; falta validar con más personas (#16) y resolver curl y press en 3D (#58) |
 

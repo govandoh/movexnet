@@ -8,8 +8,56 @@ import { computeStats } from '../../domain/progress';
 import { AchievementsSection, GoalsSection, ProgressStats } from './ProgressSections';
 import { MockPaymentProvider } from '../../domain/payment';
 import { authRepository, useAccount } from '../state/accountStore';
+import { notificationPermission, requestNotificationPermission, type PermissionState } from '../state/reminders';
 
 const ONBOARDING_KEY = 'ob_complete_v1';
+
+/**
+ * Recordatorios del programa (#35): se activan con permiso de notificaciones y avisan el día
+ * de la sesión a la hora elegida. Sin servidor de push, solo con la app abierta o en segundo
+ * plano (ver src/ui/state/reminders.ts).
+ */
+function RemindersRow() {
+  const { reminders, questionnaire } = useAppState();
+  const [permission, setPermission] = useState<PermissionState>(notificationPermission);
+  const on = reminders.enabled && permission === 'granted';
+  const time = `${String(reminders.hour).padStart(2, '0')}:${String(reminders.minute).padStart(2, '0')}`;
+
+  async function toggle() {
+    if (on) return appActions.setReminders({ enabled: false });
+    const result = permission === 'granted' ? 'granted' : await requestNotificationPermission();
+    setPermission(result);
+    if (result === 'granted') appActions.setReminders({ enabled: true });
+  }
+
+  const meta = !questionnaire ? 'Arma tu programa para recibir avisos de tus sesiones'
+    : permission === 'unsupported' ? 'Este navegador no permite notificaciones. En iPhone, instala la app en la pantalla de inicio'
+      : permission === 'denied' ? 'Las notificaciones están bloqueadas: actívalas para MovexNet en los ajustes del navegador'
+        : on ? `El día que toca entrenar, a las ${time}, con la app abierta o en segundo plano` : 'Un aviso el día que toca entrenar';
+
+  return (
+    <>
+      <button className="list-row exercise-row" onClick={toggle} aria-pressed={on}
+        disabled={!questionnaire || permission === 'unsupported' || permission === 'denied'}>
+        <span className="list-row__main">
+          <span className="list-row__title">Recordatorios</span>
+          <span className="list-row__meta">{meta}</span>
+        </span>
+        <span className={`pill ${on ? 'pill--volt' : 'pill--neutral'}`}>{on ? 'Activados' : 'Apagados'}</span>
+      </button>
+      {on && (
+        <label className="list-row">
+          <span className="list-row__main"><span className="list-row__title">Hora del aviso</span></span>
+          <input className="reminder-time" type="time" value={time} step={300}
+            onChange={e => {
+              const [h, m] = e.target.value.split(':').map(Number);
+              if (Number.isInteger(h) && Number.isInteger(m)) appActions.setReminders({ hour: h, minute: m });
+            }} />
+        </label>
+      )}
+    </>
+  );
+}
 
 /** Estado de la cuenta (issue #60). Con las cuentas apagadas no se muestra nada. */
 function AccountSection() {
@@ -120,6 +168,7 @@ export function ProfileScreen() {
           </span>
           <span className={`pill ${voiceEnabled ? 'pill--volt' : 'pill--neutral'}`}>{voiceEnabled ? <IconVoice /> : <IconVoiceOff />}{voiceEnabled ? 'Activada' : 'Apagada'}</span>
         </button>
+        <RemindersRow />
         <Link className="list-row exercise-row" to="/cuestionario">
           <span className="list-row__main">
             <span className="list-row__title">{questionnaire ? 'Cambiar mis respuestas' : 'Armar mi programa'}</span>

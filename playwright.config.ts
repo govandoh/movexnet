@@ -16,6 +16,7 @@ function localPublishableKey(): string {
 }
 
 const PORT = 5173; // la URL de redirección local (supabase/config.toml) apunta a este puerto
+const APP_PORT = 5176; // la misma app con las cuentas apagadas: pantallas que no dependen de la sesión
 
 export default defineConfig({
   testDir: 'e2e',
@@ -25,24 +26,37 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     ...devices['Pixel 7'],
-    baseURL: `https://localhost:${PORT}`,
     // Certificado autofirmado de @vitejs/plugin-basic-ssl (DEC-020).
     ignoreHTTPSErrors: true,
     trace: 'retain-on-failure',
     // El service worker no se registra con el certificado autofirmado y no aporta a estas pruebas.
     serviceWorkers: 'block',
   },
-  webServer: {
-    command: `pnpm exec vite --port ${PORT} --strictPort`,
-    url: `https://localhost:${PORT}`,
-    ignoreHTTPSErrors: true,
-    reuseExistingServer: false,
-    timeout: 120_000,
-    env: {
-      VITE_ENABLE_ACCOUNTS: 'true',
-      VITE_SUPABASE_URL: 'http://127.0.0.1:54321',
-      VITE_SUPABASE_PUBLISHABLE_KEY: localPublishableKey(),
-      VITE_TURNSTILE_SITE_KEY: '',
+  projects: [
+    { name: 'cuentas', testMatch: /cuentas\.spec\.ts/, use: { baseURL: `https://localhost:${PORT}` } },
+    { name: 'app', testMatch: /calendario\.spec\.ts/, use: { baseURL: `https://localhost:${APP_PORT}` } },
+  ],
+  webServer: [
+    {
+      command: `pnpm exec vite --port ${PORT} --strictPort`,
+      url: `https://localhost:${PORT}`,
+      ignoreHTTPSErrors: true,
+      reuseExistingServer: false,
+      timeout: 120_000,
+      env: {
+        VITE_ENABLE_ACCOUNTS: 'true',
+        VITE_SUPABASE_URL: 'http://127.0.0.1:54321',
+        VITE_SUPABASE_PUBLISHABLE_KEY: localPublishableKey(),
+        VITE_TURNSTILE_SITE_KEY: '',
+      },
     },
-  },
+    {
+      command: `pnpm exec vite --port ${APP_PORT} --strictPort`,
+      url: `https://localhost:${APP_PORT}`,
+      ignoreHTTPSErrors: true,
+      reuseExistingServer: false,
+      timeout: 120_000,
+      env: { VITE_ENABLE_ACCOUNTS: 'false' },
+    },
+  ],
 });

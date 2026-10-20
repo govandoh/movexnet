@@ -1,7 +1,7 @@
-// v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
+// v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
 // (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
 // seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v7';
+const CACHE = 'entrenador-ia-v8';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -46,6 +46,18 @@ self.addEventListener('fetch', e => {
         return res;
       }).catch(() => cached);
       return cached ?? networkFetch;
+    })
+  );
+});
+
+// Recordatorios del programa (#35): tocar el aviso enfoca la app si ya está abierta o la abre.
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = new URL(e.notification.data?.url ?? '/', self.location.origin).href;
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      const open = list.find(c => c.url.startsWith(self.location.origin));
+      return open ? open.focus() : self.clients.openWindow(url);
     })
   );
 });

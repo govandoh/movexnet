@@ -27,6 +27,29 @@ export interface AppState {
   routines: Routine[];
   /** Objetivos del perfil; su avance se deriva del historial (DEC-041). */
   goals: Goal[];
+  /** Recordatorios de las sesiones del programa (#35). */
+  reminders: ReminderPrefs;
+}
+
+export interface ReminderPrefs {
+  enabled: boolean;
+  /** Hora local del aviso el día de la sesión. */
+  hour: number;
+  minute: number;
+}
+
+export const DEFAULT_REMINDERS: ReminderPrefs = { enabled: false, hour: 18, minute: 0 };
+
+function readReminders(v: unknown): ReminderPrefs {
+  if (typeof v !== 'object' || v === null) return DEFAULT_REMINDERS;
+  const o = v as Record<string, unknown>;
+  const int = (x: unknown, min: number, max: number, d: number) =>
+    (typeof x === 'number' && Number.isInteger(x) && x >= min && x <= max ? x : d);
+  return {
+    enabled: typeof o.enabled === 'boolean' ? o.enabled : false,
+    hour: int(o.hour, 0, 23, DEFAULT_REMINDERS.hour),
+    minute: int(o.minute, 0, 59, DEFAULT_REMINDERS.minute),
+  };
 }
 
 export interface ViewPrefs {
@@ -78,6 +101,7 @@ const KEYS = {
   /** Copia del valor crudo cuando lo guardado venía dañado, antes de escribir encima. */
   routinesBackup: 'fitnet_routines_v1_backup',
   goals: 'fitnet_goals_v1',
+  reminders: 'fitnet_reminders_v1',
 } as const;
 
 /** Tope de objetivos: la lista del perfil es corta a propósito. */
@@ -161,6 +185,7 @@ function load(): AppState {
     view: readView(read(KEYS.view)),
     routines: loadRoutines(),
     goals: Array.isArray(goals) ? goals.filter(isGoal).slice(0, MAX_GOALS) : [],
+    reminders: readReminders(read(KEYS.reminders)),
   };
 }
 
@@ -181,6 +206,7 @@ function set(next: Partial<AppState>): void {
   if ('view' in next) write(KEYS.view, state.view);
   if ('routines' in next) write(KEYS.routines, state.routines);
   if ('goals' in next) write(KEYS.goals, state.goals);
+  if ('reminders' in next) write(KEYS.reminders, state.reminders);
   for (const l of listeners) l();
 }
 
@@ -229,6 +255,9 @@ export const appActions = {
   },
   setEntitlement(e: Entitlement): void {
     set({ entitlement: e });
+  },
+  setReminders(patch: Partial<ReminderPrefs>): void {
+    set({ reminders: readReminders({ ...state.reminders, ...patch }) });
   },
   setVoice(enabled: boolean): void {
     set({ voiceEnabled: enabled });

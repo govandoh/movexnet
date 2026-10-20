@@ -92,7 +92,7 @@ export function scheduleProgram(
 }
 
 /** Sesiones entre dos días, ambos incluidos (vista de semana o de mes). */
-export function sessionsBetween(sessions: readonly ProgramSession[], from: Date, to: Date): ProgramSession[] {
+export function sessionsBetween<T extends ProgramSession>(sessions: readonly T[], from: Date, to: Date): T[] {
   const a = dayKey(from);
   const b = dayKey(to);
   // Las claves `AAAA-MM-DD` se ordenan como texto igual que como fechas.
@@ -100,7 +100,7 @@ export function sessionsBetween(sessions: readonly ProgramSession[], from: Date,
 }
 
 /** Las próximas `limit` sesiones desde hoy (hoy incluido), accesibles o no. */
-export function nextSessions(sessions: readonly ProgramSession[], now: Date, limit: number): ProgramSession[] {
+export function nextSessions<T extends ProgramSession>(sessions: readonly T[], now: Date, limit: number): T[] {
   const today = dayKey(now);
   return sessions.filter(s => s.date >= today).slice(0, Math.max(0, limit));
 }

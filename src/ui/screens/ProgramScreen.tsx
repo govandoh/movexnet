@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppState } from '../state/appStore';
-import { useProgram } from '../state/useProgram';
+import { useProgram, useProgramSessions } from '../state/useProgram';
+import { ProgramCalendar } from './ProgramCalendar';
 import { PremiumSheet } from '../components/PremiumSheet';
 import { TechniqueSheet } from '../technique/TechniqueSheet';
 import { IconAssist, IconLock } from '../components/icons';
@@ -23,6 +24,7 @@ export function ProgramScreen() {
   const now = new Date();
   const { questionnaire, entitlement } = useAppState();
   const program = useProgram(now);
+  const sessions = useProgramSessions(now);
   const [selected, setSelected] = useState<number | null>(null);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [technique, setTechnique] = useState<string | null>(null);
@@ -68,6 +70,8 @@ export function ProgramScreen() {
           Con tu equipo no hay ejercicios suficientes para {PROGRAM_LABEL[program.routine.adjustedFrom].toLowerCase()}, así que te proponemos cuerpo completo.
         </p>
       )}
+
+      <ProgramCalendar sessions={sessions} dayLabels={program.routine.days.map(d => d.label)} now={now} onPickWeek={pickWeek} />
 
       <div className="chip-row week-tabs" role="tablist" aria-label="Semanas del programa">
         {Array.from({ length: program.routine.weeks }, (_, w) => {

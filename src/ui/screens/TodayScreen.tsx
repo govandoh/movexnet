@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { NodeRing } from '../components/NodeRing';
 import { IconPlay } from '../components/icons';
 import { useAppState } from '../state/appStore';
-import { useProgram } from '../state/useProgram';
+import { useProgram, useProgramSessions } from '../state/useProgram';
+import { nextSessions } from '../../domain/calendar';
 import {
   DEFAULT_DAILY_GOAL_REPS, dayStats, lastSet, streakDays, weekActivity,
 } from '../../domain/sessionHistory';
@@ -34,6 +35,8 @@ export function TodayScreen() {
   const now = new Date();
   const { history, questionnaire } = useAppState();
   const program = useProgram(now);
+  // Las próximas sesiones sin contar hoy: la de hoy ya está en la tarjeta principal.
+  const upcoming = nextSessions(useProgramSessions(now), now, 4).filter(s => s.status !== 'today' && s.status !== 'done').slice(0, 3);
 
   const stats = dayStats(history, now);
   const todayPlan = program?.nextIsToday ? program.next : null;
@@ -122,7 +125,33 @@ export function TodayScreen() {
         </section>
       )}
 
-      <div className="grid-2" style={stagger(3)}>
+      {program && upcoming.length > 0 && (
+        <section className="card card--framed" style={stagger(3)} aria-label="Próximas sesiones">
+          <div className="day-card__head">
+            <h2 className="card-title">Próximas sesiones</h2>
+            <Link className="muted calendar-link" to="/rutinas">Ver calendario</Link>
+          </div>
+          <div className="list">
+            {upcoming.map(s => {
+              const [y, m, d] = s.date.split('-').map(Number);
+              const date = new Date(y, m - 1, d);
+              return (
+                <div key={`${s.date}-${s.dayIndex}`} className="list-row">
+                  <span className="list-row__main">
+                    <span className="list-row__title">{program.routine.days[s.dayIndex]?.label ?? 'Sesión'}</span>
+                    <span className="list-row__meta">
+                      {WEEKDAYS[date.getDay()][0].toUpperCase() + WEEKDAYS[date.getDay()].slice(1)} {d} de {MONTHS[m - 1]} · Semana {s.week + 1}
+                    </span>
+                  </span>
+                  {s.locked && <span className="pill pill--neutral">Premium</span>}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <div className="grid-2" style={stagger(4)}>
         <div className="card">
           <span className="muted">Racha</span>
           <span className="display-number stat-number">{streak}<small> {streak === 1 ? 'día' : 'días'}</small></span>

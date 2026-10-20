@@ -1,0 +1,153 @@
+/* Calendario del programa (#35). Sin animaciones nuevas (DESIGN.md §6). */
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.calendar__next svg {
+  transform: rotate(180deg);
+}
+
+.calendar__head .icon-btn:disabled {
+  opacity: 0.35;
+}
+
+.calendar__summary {
+  font-size: var(--text-small);
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+
+.calendar__weekday {
+  text-align: center;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.calendar__cell {
+  position: relative;
+  min-height: var(--touch);
+  border-radius: var(--radius-chip);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calendar__cell--empty {
+  min-height: 0;
+}
+
+.calendar__num {
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.calendar__cell.is-current .calendar__num {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.calendar__cell[aria-selected='true'] {
+  outline: 2px solid var(--color-text);
+  outline-offset: -2px;
+}
+
+.calendar__cell.is-done { background: var(--tint-volt); color: var(--color-volt); }
+.calendar__cell.is-today { background: var(--color-volt); color: var(--color-ink); }
+.calendar__cell.is-today .calendar__num { color: var(--color-ink); }
+.calendar__cell.is-upcoming { background: var(--tint-indigo); color: var(--color-indigo-text); }
+.calendar__cell.is-missed { background: var(--tint-coral); color: var(--color-coral); }
+.calendar__cell.is-locked { background: var(--color-surface-2); color: var(--color-text-muted); }
+
+.calendar__mark svg {
+  width: 12px;
+  height: 12px;
+}
+
+.calendar__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.calendar__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+}
+
+.calendar__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.calendar__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.calendar__swatch.is-done { background: var(--tint-volt); outline: 1px solid var(--color-volt); }
+.calendar__swatch.is-today { background: var(--color-volt); }
+.calendar__swatch.is-upcoming { background: var(--tint-indigo); outline: 1px solid var(--color-indigo-text); }
+.calendar__swatch.is-missed { background: var(--tint-coral); outline: 1px solid var(--color-coral); }
+.calendar__swatch.is-locked { background: var(--color-surface-2); outline: 1px solid var(--color-line); }
+
+.calendar__detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.calendar__go {
+  flex-shrink: 0;
+  min-height: var(--touch);
+  padding: 0 var(--space-3);
+}
+
+/* Hora del recordatorio en Perfil: 16 px para que iOS no haga zoom (DESIGN.md §7). */
+.reminder-time {
+  min-height: var(--touch);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--text-body);
+  color-scheme: dark;
+}
+
+/* "Ver calendario" en Hoy: área táctil de 40 px o más sin mover el renglón (DEC-060). */
+.calendar-link {
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
+  font-size: var(--text-small);
+}
