@@ -11,7 +11,7 @@ import { needsStandingCalibration } from '../../exercises/definitions3d';
 import { SetSummaryBuilder, type SetSummary } from '../../analysis/setSummary';
 import { FeedbackPolicy } from '../../feedback/feedbackPolicy';
 import type { AssistantId } from '../../domain/catalog';
-import { useSpeech } from '../useSpeech';
+import { useSpeech, useSpeechReady } from '../useSpeech';
 import { appActions, useAppState } from '../state/appStore';
 import { ASSISTED, ASSISTED_NAMES, catalogIdFor, createWorkoutTrackers, isAssistantId, usesEngine3D } from './exercises';
 import {
@@ -134,6 +134,8 @@ export function WorkoutScreen() {
   const pausedRef = useRef(false);
 
   const rawSpeak = useSpeech();
+  // Sin un primer toque el navegador no deja hablar: la preparación lo pide (DEC-071).
+  const speechReady = useSpeechReady();
   const speak = useCallback((text: string) => { if (voiceRef.current && text) rawSpeak(text); }, [rawSpeak]);
 
   useEffect(() => { voiceRef.current = voiceEnabled; }, [voiceEnabled]);
@@ -506,6 +508,7 @@ export function WorkoutScreen() {
           bubbleRef={bubbleRef}
           onStart={() => startSetRef.current()}
           onTechnique={() => setTechniqueOpen(true)}
+          voiceLocked={voiceEnabled && !speechReady}
         />
       )}
 
