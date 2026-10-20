@@ -87,7 +87,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-056](DEC-056-rutina-personalizada-catalogo-paywall.md) | Rutina personalizada: cuestionario libre, generador por reglas, catálogo por olas, paywall en el programa completo | 2026-09-24 | Aceptada |
 | [DEC-057](DEC-057-motor-3d-configurable-flag.md) | Motor de conteo 3D configurable por ejercicio, activable con `?engine=3d`; `trunk_lean` 55°, roles de la fatiga | 2026-09-24 | Aceptada |
 | [DEC-058](DEC-058-identidad-visual-movimiento.md) | Identidad visual "la red de 33 puntos", sistema de movimiento en CSS y skills de animación de Emil Kowalski adaptadas (reemplaza la sección de diseño de DEC-008) | 2026-09-24 | Aceptada |
-| [DEC-059](DEC-059-ola1-motor3d-sin-flag.md) | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D hasta el issue #33 | 2026-09-24 | Aceptada |
+| [DEC-059](DEC-059-ola1-motor3d-sin-flag.md) | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D hasta el issue #33 | 2026-09-24 | Aceptada (sentadilla: DEC-072) |
 | [DEC-060](DEC-060-responsive-areas-seguras.md) | Responsive y áreas seguras como regla de diseño y funcionalidad: matriz de dispositivos, tokens `--safe-*` y auditoría automática | 2026-09-24 | Aceptada |
 | [DEC-061](DEC-061-tecnica-3d-y-mini-mapa.md) | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | 2026-09-24 | Aceptada |
 | [DEC-062](DEC-062-modelo-esfuerzo-y-trabajo-en-paralelo.md) | Modelo y esfuerzo por agente, una issue por sesión y estado del proyecto a cargo del líder | 2026-10-05 | Propuesta |
@@ -99,8 +99,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-068](DEC-068-nombre-movexnet-repositorio-publico.md) | Nombre del producto MovexNet, repositorio `movexnet` y visibilidad pública | 2026-10-17 | Propuesta |
 | [DEC-069](DEC-069-cuentas-supabase-auth.md) | Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor | 2026-10-19 | Propuesta |
 | [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Propuesta |
+| [DEC-072](DEC-072-sentadilla-motor-3d.md) | La sentadilla pasa al motor 3D por defecto | 2026-10-20 | Propuesta |
 
-Próximo número libre: **DEC-071** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-073** (provisional hasta el merge, ver DEC-062; DEC-071 está en el PR #80).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 

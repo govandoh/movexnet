@@ -1,6 +1,6 @@
 # DEC-059 · La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D
 
-- **Estado:** Aceptada
+- **Estado:** Aceptada; la parte de la sentadilla la reemplaza DEC-072 (pasa al motor 3D)
 - **Fecha:** 2026-09-24
 - **Decisores:** Workstreams B (Análisis) y E (App & UI)
 - **Etiquetas:** analysis-core, ui, producto

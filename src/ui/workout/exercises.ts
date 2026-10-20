@@ -1,7 +1,7 @@
 import { EXERCISE_CATALOG, type AssistantId } from '../../domain/catalog';
 import { FramePipeline } from '../../analysis/framePipeline';
 import {
-  Engine3DTracker, PlankExerciseTracker, curl2D, press2D, squat2D, type EngineTracker,
+  Engine3DTracker, PlankExerciseTracker, curl2D, press2D, type EngineTracker,
 } from '../../exercises/exerciseTrackers';
 import { ENGINE_3D } from '../engineFlag';
 import { definitionFor } from './coaching';
@@ -25,12 +25,13 @@ export function catalogIdFor(ex: AssistantId): string {
 }
 
 /**
- * Motor por ejercicio (DEC-059). Sentadilla, curl y press siguen en el motor 2D de
- * producción, congelado por los golden, hasta la DEC del issue #33; con `?engine=3d` pasan
- * al 3D. La ola 1 no tiene versión 2D y usa siempre el motor 3D.
+ * Motor por ejercicio (DEC-059, DEC-072). La sentadilla usa el motor 3D desde DEC-072,
+ * validada en celular con personas. Curl y press siguen en el motor 2D de producción,
+ * congelado por los golden, hasta resolver la #58; con `?engine=3d` pasan al 3D. La ola 1
+ * no tiene versión 2D y usa siempre el motor 3D.
  */
 export function usesEngine3D(ex: AssistantId): boolean {
-  return ENGINE_3D || (ex !== 'squat' && ex !== 'curl' && ex !== 'press');
+  return ENGINE_3D || (ex !== 'curl' && ex !== 'press');
 }
 
 export function isAssistantId(v: string | null): v is AssistantId {
@@ -51,7 +52,7 @@ export function createWorkoutTrackers(initial: AssistantId): WorkoutTrackers {
   const pipeline = new FramePipeline(definitionFor(initial));
   const engine3D = (ex: Exclude<AssistantId, 'plank'>) => new Engine3DTracker(ex, pipeline, definitionFor(ex));
   const trackers: Record<AssistantId, EngineTracker> = {
-    squat: usesEngine3D('squat') ? engine3D('squat') : squat2D(),
+    squat: engine3D('squat'),
     curl: usesEngine3D('curl') ? engine3D('curl') : curl2D(),
     press: usesEngine3D('press') ? engine3D('press') : press2D(),
     pushup: engine3D('pushup'),
