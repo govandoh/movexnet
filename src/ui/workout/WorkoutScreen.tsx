@@ -381,7 +381,7 @@ export function WorkoutScreen() {
       }
       for (const u of policyRef.current.decide({
         now, reps: b.validReps, repCounted,
-        peakPhrase: peakDeg === null ? null : peakPhrase(current, peakDeg),
+        peakPhrase: peakDeg === null ? null : peakPhrase(current, peakDeg, usesEngine3D(current)),
         rejectionMessage: rejection,
       })) speak(u);
 

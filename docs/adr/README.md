@@ -100,8 +100,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-069](DEC-069-cuentas-supabase-auth.md) | Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor | 2026-10-19 | Propuesta |
 | [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Propuesta |
 | [DEC-071](DEC-071-linea-cuerpo-un-lado-ejercicios-suelo.md) | Línea del cuerpo con el lado más visible y ejercicios de suelo sin esperar la calibración de pie | 2026-10-20 | Propuesta |
+| [DEC-073](DEC-073-calibracion-brazos-3d.md) | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales (curl 140°/70°, press con suavidad mínima 0.4, sin aviso de hombros en 3D) | 2026-10-20 | Propuesta |
 
-Próximo número libre: **DEC-072** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-074** (provisional hasta el merge, ver DEC-062).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 

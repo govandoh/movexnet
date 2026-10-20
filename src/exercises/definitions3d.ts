@@ -5,8 +5,7 @@ import {
 import type { ExerciseId } from '../contracts/index.ts';
 import type { ExerciseDefinition3D, FormContext, Side } from './tracker3d.ts';
 import { GOOD_DEPTH_ANGLE } from './squat.ts';
-import { GOOD_FORM_ANGLE } from './bicepCurl.ts';
-import { GOOD_LOCKOUT_ANGLE, SAFE_LOW_ANGLE } from './shoulderPress.ts';
+import { GOOD_LOCKOUT_ANGLE } from './shoulderPress.ts';
 
 /**
  * Definiciones 3D de sentadilla, curl y press (ver DEC-057).
@@ -31,7 +30,17 @@ export const SQUAT_MAX_TRUNK_LEAN_DEG = 55;
 /** Asimetría de rodillas que dispara el aviso, como fracción. */
 const SQUAT_MAX_ASYMMETRY = 0.18;
 /** Desviación del brazo respecto a la vertical que dispara `elbow_drift`, en grados. */
-export const CURL_MAX_ELBOW_DRIFT_DEG = 25;
+// Con 25° el aviso saltaba en el 38–50 % de los frames de curls bien hechos: en las
+// grabaciones de #58 el brazo superior se separa de la vertical 20–23° de mediana y 45–52°
+// en el p95 aun con el codo quieto. 50° deja el aviso para el despegue claro (DEC-073).
+export const CURL_MAX_ELBOW_DRIFT_DEG = 50;
+
+/**
+ * Codo por debajo de este ángulo = contracción completa en el curl, en grados. El 3D (`lite`)
+ * comprime el codo: un curl completo que en la imagen llega a 20–30° mide 53–68° en 3D
+ * (grabaciones de #58). Coincide con el umbral de esfuerzo del ciclo (DEC-073).
+ */
+export const CURL_GOOD_CONTRACTION_3D_DEG = 70;
 /** Inclinación del tronco en el press que dispara `lumbar_arch`, en grados. */
 export const PRESS_MAX_TRUNK_LEAN_DEG = 25;
 const ARM_MAX_ASYMMETRY = 0.2;
@@ -116,8 +125,10 @@ export const CURL_3D: ExerciseDefinition3D = {
   extraLandmarks: [],
   sideAngle: elbowAngle,
   combine: 'min',
-  // Extendido > 160°, arriba < 60°; el brazo debe haber llegado a 130° antes de subir (DEC-017).
-  cycle: { polarity: 'min', restDeg: 160, effortDeg: 60, confirmMarginDeg: CONFIRM_MARGIN_DEG, minStartDeg: 130 },
+  // Extendido > 140°, arriba < 70°; el brazo debe haber llegado a 125° antes de subir (DEC-017).
+  // El 3D comprime el codo (extendido ~150°, arriba ~60°): con 160°/60° no contaba nada.
+  // Con 140°/70°, de perfil: 6 de 6–8 bien hechas y 1 en la toma a medias (DEC-073).
+  cycle: { polarity: 'min', restDeg: 140, effortDeg: 70, confirmMarginDeg: CONFIRM_MARGIN_DEG, minStartDeg: 125 },
   perSideCycles: true,
   cooldownMs: ARM_COOLDOWN_MS,
   shape: { effortIsMinimum: true, concentricFirst: true },
@@ -138,11 +149,11 @@ export const CURL_3D: ExerciseDefinition3D = {
   phaseFeedback(ctx: FormContext) {
     if (ctx.phase === 'rest') return { level: 'idle', message: 'Listo, sube el peso' };
     if (ctx.peakReached) {
-      return ctx.extremeDeg <= GOOD_FORM_ANGLE
+      return ctx.extremeDeg <= CURL_GOOD_CONTRACTION_3D_DEG
         ? { level: 'good', message: '¡Contracción completa! Baja controlado' }
         : { level: 'warning', message: 'Baja. En la próxima, sube un poco más' };
     }
-    return ctx.primaryAngle <= GOOD_FORM_ANGLE
+    return ctx.primaryAngle <= CURL_GOOD_CONTRACTION_3D_DEG
       ? { level: 'good', message: '¡Contracción completa!' }
       : { level: 'warning', message: 'Sube un poco más' };
   },
@@ -169,7 +180,10 @@ export const PRESS_3D: ExerciseDefinition3D = {
   perSideCycles: true,
   cooldownMs: ARM_COOLDOWN_MS,
   shape: { effortIsMinimum: false, concentricFirst: true },
-  quality: { minRomDegrees: 45, minDurationMs: 700, maxDurationMs: 10000, minSmoothness: 0.3 },
+  // minSmoothness 0.4: de frente los dos brazos desfasados contaban recorridos entrecortados
+  // (suavidad 0.33) como repeticiones; con 0.4 el press de frente pasa de 13 a 8 sobre 6–8
+  // reales, sin cambiar el de perfil ni los parciales (DEC-073).
+  quality: { minRomDegrees: 45, minDurationMs: 700, maxDurationMs: 10000, minSmoothness: 0.4 },
   formCheck(ctx: FormContext) {
     // Arqueo lumbar: solo con la cadera visible (sin ella la inclinación sale de puntos
     // estimados) y con los brazos por encima del reposo, que es cuando hay carga arriba.
@@ -178,9 +192,9 @@ export const PRESS_3D: ExerciseDefinition3D = {
     if (armsUp && areVisible(ctx.world, HIPS, MIN_VISIBILITY) && torsoLean(ctx.world) > PRESS_MAX_TRUNK_LEAN_DEG) {
       return { code: 'lumbar_arch', level: 'bad', message: 'Aprieta el abdomen, estás arqueando la espalda' };
     }
-    if (ctx.phase === 'rest' && ctx.primaryAngle > 0 && ctx.primaryAngle < SAFE_LOW_ANGLE) {
-      return { code: 'unsafe_low_elbow', level: 'bad', message: 'No bajes tanto, cuida los hombros' };
-    }
+    // Sin aviso de "cuida los hombros" en 3D: abajo, el codo 3D midió 9–55° en presses bien
+    // hechos de perfil y no se distingue de bajar de más, así que el aviso salía casi siempre.
+    // Vuelve cuando haya una medida que separe los dos casos (DEC-073, #58).
     if (ctx.phase === 'effort' && ctx.asymmetry > ARM_MAX_ASYMMETRY) {
       return { code: 'asymmetry', level: 'warning', message: 'Un brazo sube más que el otro' };
     }
