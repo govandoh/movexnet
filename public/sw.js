@@ -1,7 +1,8 @@
+// v6: recordatorios (#35), el SW atiende el clic en las notificaciones.
 // v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
 // (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
 // seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v5';
+const CACHE = 'entrenador-ia-v6';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -47,5 +48,15 @@ self.addEventListener('fetch', e => {
       }).catch(() => cached);
       return cached ?? networkFetch;
     })
+  );
+});
+
+// Recordatorios (#35): al tocar la notificación se abre la app.
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then(list =>
+      list.length ? list[0].focus() : self.clients.openWindow('/')
+    )
   );
 });
