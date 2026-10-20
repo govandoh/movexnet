@@ -149,9 +149,9 @@
       "quality": "good",
       "source": "phone",
       "fps": 19.6,
-      "frames": 503,
-      "durationMs": 26110,
-      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 213-715 de 716 (toma completa en la carpeta privada del equipo)."
+      "frames": 552,
+      "durationMs": 27789,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 48-599 de 716 (toma completa en la carpeta privada del equipo)."
     },
     {
       "file": "curl-front-partial-rom-01.json",
@@ -204,9 +204,9 @@
       "quality": "partial-rom",
       "source": "phone",
       "fps": 15.3,
-      "frames": 531,
-      "durationMs": 30568,
-      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 36-566 de 567 (toma completa en la carpeta privada del equipo)."
+      "frames": 547,
+      "durationMs": 32990,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 14-560 de 567 (toma completa en la carpeta privada del equipo)."
     },
     {
       "file": "press-front-good-02.json",
@@ -237,9 +237,9 @@
       "quality": "unsafe-low-elbow",
       "source": "phone",
       "fps": 14.3,
-      "frames": 524,
-      "durationMs": 30343,
-      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: unsafe_low_elbow. Recorte de los frames 78-601 de 602 (toma completa en la carpeta privada del equipo)."
+      "frames": 548,
+      "durationMs": 39034,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: unsafe_low_elbow. Recorte de los frames 2-549 de 602 (toma completa en la carpeta privada del equipo)."
     },
     {
       "file": "press-side-good-01.json",
@@ -248,9 +248,9 @@
       "quality": "good",
       "source": "phone",
       "fps": 15.6,
-      "frames": 531,
-      "durationMs": 28537,
-      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 733-1263 de 1264 (toma completa en la carpeta privada del equipo)."
+      "frames": 546,
+      "durationMs": 28280,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 364-909 de 1264 (toma completa en la carpeta privada del equipo)."
     },
     {
       "file": "press-side-partial-rom-01.json",
