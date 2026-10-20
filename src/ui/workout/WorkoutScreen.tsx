@@ -7,6 +7,7 @@ import { RECORD_MODE, RECORD_SCRIPT, captureFrame, downloadFixture, type Recorde
 import type { PlankResult } from '../../exercises/plankTracker';
 import type { FeedbackLevel, Tracker3DResult } from '../../exercises/tracker3d';
 import type { EngineOutput } from '../../exercises/exerciseTrackers';
+import { needsStandingCalibration } from '../../exercises/definitions3d';
 import { SetSummaryBuilder, type SetSummary } from '../../analysis/setSummary';
 import { FeedbackPolicy } from '../../feedback/feedbackPolicy';
 import type { AssistantId } from '../../domain/catalog';
@@ -296,13 +297,15 @@ export function WorkoutScreen() {
       } else if (phaseRef.current === 'prep') {
         updateBubble(worldDown);
         let calibration: number | null = null;
+        // Los ejercicios de suelo no esperan la calibración de pie (DEC-071): `null` no la exige.
+        const standing = needsStandingCalibration(current);
         if (engine3D && world) {
           // En preparación solo se aprende la calibración de pie (el contador no cuenta).
           const prepared = pipeline.prepare({ world, t: now, worldDown });
-          calibration = prepared.diagnostics.calibrationProgress;
+          calibration = standing ? prepared.diagnostics.calibrationProgress : null;
           liveWorld = prepared.world;
         } else if (engine3D) {
-          calibration = 0;
+          calibration = standing ? 0 : null;
         }
         const next: PrepState = {
           levelOk: level,

@@ -1,7 +1,8 @@
 import {
-  LM, angleBetween, areVisible, calculateAngle3D, getTorsoInclination, subtract,
+  LM, WORLD_UP, angleBetween, areVisible, calculateAngle3D, cross, dot, getTorsoInclination, normalize, subtract,
   type Landmark3D,
 } from '../geometry/vectors3d.ts';
+import type { ExerciseId } from '../contracts/index.ts';
 import type { ExerciseDefinition3D, FormContext, Side } from './tracker3d.ts';
 import { GOOD_DEPTH_ANGLE } from './squat.ts';
 import { GOOD_FORM_ANGLE } from './bicepCurl.ts';
@@ -213,8 +214,14 @@ export const PRESS_3D: ExerciseDefinition3D = {
  * p90 95°, y con 90° una de cada cuatro recibía "Baja más el pecho" estando abajo (DEC-066).
  */
 export const PUSHUP_GOOD_DEPTH_DEG = 95;
-/** Línea hombros-cadera-tobillos por debajo de este ángulo = cadera fuera de línea, en grados. */
-export const PUSHUP_MIN_BODY_LINE_DEG = 160;
+/**
+ * Desviación de la línea hombro-cadera-tobillo (en el plano vertical del cuerpo) desde la que
+ * se avisa "cadera caída" o "cadera arriba", en grados. Calibradas con 11 grabaciones de dos
+ * personas (#59, DEC-071): con el cuerpo recto el 3D mide entre −5° y +4°, y la cadera caída
+ * es más sutil que la levantada, de ahí la asimetría.
+ */
+export const HIP_SAG_MIN_DEG = 8;
+export const HIP_PIKE_MIN_DEG = 18;
 /** Rodilla delantera por debajo de este ángulo = zancada profunda, en grados. */
 export const LUNGE_GOOD_DEPTH_DEG = 100;
 /** Inclinación del tronco en la zancada que dispara `trunk_lean`, en grados. */
@@ -222,31 +229,78 @@ export const LUNGE_MAX_TRUNK_LEAN_DEG = 35;
 /** Cadera por encima de este ángulo = extensión completa del puente, en grados. */
 export const BRIDGE_GOOD_EXTENSION_DEG = 165;
 
-function mid(w: readonly Landmark3D[], a: number, b: number): Landmark3D {
-  return { x: (w[a].x + w[b].x) / 2, y: (w[a].y + w[b].y) / 2, z: (w[a].z + w[b].z) / 2 };
+export type HipIssue = 'hip_sag' | 'hip_pike';
+
+export interface BodyLine {
+  /** Ángulo hombro-cadera-tobillo en el plano vertical del cuerpo (180° = recta), en grados. */
+  angle: number;
+  /** Desviación de la recta con signo, en grados: positiva = cadera abajo, negativa = arriba. */
+  deviationDeg: number;
+  /** Inclinación de la recta hombro-tobillo respecto a la vertical, en grados (90° = horizontal). */
+  inclineDeg: number;
 }
+
+const BODY_LINE_SIDES: Record<Side, readonly number[]> = {
+  left: [LM.LEFT_SHOULDER, LM.LEFT_HIP, LM.LEFT_ANKLE],
+  right: [LM.RIGHT_SHOULDER, LM.RIGHT_HIP, LM.RIGHT_ANKLE],
+};
 
 /**
- * Alineación del cuerpo en tabla (flexión, plancha): ángulo hombros-cadera-tobillos con los
- * puntos medios (los hombros son más anchos que la cadera; por un solo lado la línea recta
- * mide ~171°) y si la cadera queda por debajo (+y) de la recta hombros-tobillos.
+ * Alineación del cuerpo en tabla (flexión, plancha) con el lado más visible. De perfil el lado
+ * lejano casi siempre está tapado: exigir los dos dejaba sin evaluar la mayoría de los cuadros, y
+ * promediar con el lado tapado enderezaba la línea (#59, DEC-071).
+ *
+ * Se mide en el plano vertical que contiene la recta hombro-tobillo: con un solo lado, el ancho
+ * de los hombros frente a la cadera tuerce la línea hacia un costado (~9° en una postura recta)
+ * y eso no es cadera caída ni levantada. `null` si ningún lado se ve completo.
  */
-export function bodyLine(w: readonly Landmark3D[]): { angle: number; hipBelow: boolean } {
-  const sh = mid(w, LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER);
-  const hip = mid(w, LM.LEFT_HIP, LM.RIGHT_HIP);
-  const an = mid(w, LM.LEFT_ANKLE, LM.RIGHT_ANKLE);
-  const angle = calculateAngle3D(sh, hip, an);
-  // Altura de la recta hombros→tobillos en la posición de la cadera (proyección sobre la recta).
+export function bodyLine(w: readonly Landmark3D[]): BodyLine | null {
+  const vis = (ids: readonly number[]) => Math.min(...ids.map(i => w[i]?.visibility ?? 0));
+  const ids = vis(BODY_LINE_SIDES.left) >= vis(BODY_LINE_SIDES.right) ? BODY_LINE_SIDES.left : BODY_LINE_SIDES.right;
+  if (w.length <= LM.RIGHT_ANKLE || vis(ids) < MIN_VISIBILITY) return null;
+  const [sh, hip, an] = ids.map(i => w[i]);
+
   const d = subtract(an, sh);
-  const len2 = d.x * d.x + d.y * d.y + d.z * d.z || 1;
-  const t = ((hip.x - sh.x) * d.x + (hip.y - sh.y) * d.y + (hip.z - sh.z) * d.z) / len2;
-  const lineY = sh.y + t * d.y;
-  return { angle, hipBelow: hip.y > lineY };
+  // Normal del plano vertical de la recta (eje lateral). Con el cuerpo vertical no hay plano
+  // definido: se mide sin proyectar.
+  const lateral = cross(d, WORLD_UP);
+  const n = Math.hypot(lateral.x, lateral.y, lateral.z) > 1e-6 ? normalize(lateral) : null;
+  const project = (p: Landmark3D) => {
+    if (!n) return p;
+    const k = dot(p, n);
+    return { x: p.x - k * n.x, y: p.y - k * n.y, z: p.z - k * n.z };
+  };
+  const angle = calculateAngle3D(project(sh), project(hip), project(an));
+
+  // ¿La cadera queda por debajo (+y) de la recta hombros→tobillos? (proyección sobre la recta)
+  const t = dot(subtract(hip, sh), d) / (dot(d, d) || 1);
+  const hipBelow = hip.y > sh.y + t * d.y;
+  return {
+    angle,
+    deviationDeg: hipBelow ? 180 - angle : angle - 180,
+    inclineDeg: angleBetween(subtract(sh, an), WORLD_UP),
+  };
 }
 
-const BODY_LINE_LANDMARKS = [
-  LM.LEFT_SHOULDER, LM.RIGHT_SHOULDER, LM.LEFT_HIP, LM.RIGHT_HIP, LM.LEFT_ANKLE, LM.RIGHT_ANKLE,
-] as const;
+/** Ejercicios que empiezan en el suelo: no tienen una postura de pie que calibrar. */
+const FLOOR_EXERCISES: ReadonlySet<ExerciseId> = new Set<ExerciseId>(['pushup', 'bridge', 'plank']);
+
+/**
+ * Si la preparación debe esperar la calibración de pie (DEC-053) antes de arrancar la serie.
+ * En los ejercicios de suelo no: quien ya está acostado nunca la completaría y la serie no
+ * arrancaba sola (#39, DEC-071). La calibración sigue aprendiendo si la persona se para frente
+ * a la cámara antes de bajar, y no aprende acostada (su tope de 35° lo impide).
+ */
+export function needsStandingCalibration(ex: ExerciseId): boolean {
+  return !FLOOR_EXERCISES.has(ex);
+}
+
+/** Problema de cadera según la línea del cuerpo, o `null` si está recta (DEC-071). */
+export function hipIssue(line: BodyLine): HipIssue | null {
+  if (line.deviationDeg >= HIP_SAG_MIN_DEG) return 'hip_sag';
+  if (line.deviationDeg <= -HIP_PIKE_MIN_DEG) return 'hip_pike';
+  return null;
+}
 
 export const PUSHUP_3D: ExerciseDefinition3D = {
   id: 'pushup',
@@ -264,14 +318,14 @@ export const PUSHUP_3D: ExerciseDefinition3D = {
   shape: { effortIsMinimum: true, concentricFirst: false },
   quality: { minRomDegrees: 40, minDurationMs: 600, maxDurationMs: 10000, minSmoothness: 0.35 },
   formCheck(ctx: FormContext) {
-    if (areVisible(ctx.world, BODY_LINE_LANDMARKS, MIN_VISIBILITY)) {
-      const line = bodyLine(ctx.world);
-      if (line.angle < PUSHUP_MIN_BODY_LINE_DEG) {
-        return line.hipBelow
-          ? { code: 'hip_sag', level: 'bad', message: 'Aprieta el abdomen, la cadera se cae' }
-          : { code: 'hip_pike', level: 'warning', message: 'Baja la cadera, cuerpo en línea recta' };
-      }
-    }
+    // Solo durante la flexión: arriba, entre repeticiones, la gente descansa con la cadera alta
+    // y avisar ahí era ruido (25–36% de los cuadros en flexiones correctas). En el esfuerzo la
+    // línea de una flexión correcta queda en ~−3°…+3° (DEC-071).
+    if (ctx.phase !== 'effort') return null;
+    const line = bodyLine(ctx.world);
+    const issue = line && hipIssue(line);
+    if (issue === 'hip_sag') return { code: 'hip_sag', level: 'bad', message: 'Aprieta el abdomen, la cadera se cae' };
+    if (issue === 'hip_pike') return { code: 'hip_pike', level: 'warning', message: 'Baja la cadera, cuerpo en línea recta' };
     return null;
   },
   phaseFeedback(ctx: FormContext) {

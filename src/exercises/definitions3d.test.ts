@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ExerciseDefinition3D } from './tracker3d.ts'
-import { LUNGE_3D, PUSHUP_3D, SQUAT_3D } from './definitions3d.ts'
+import { LUNGE_3D, PUSHUP_3D, SQUAT_3D, needsStandingCalibration } from './definitions3d.ts'
 import { DEMOS } from './demoPoses.ts'
 import { FramePipeline } from '../analysis/framePipeline.ts'
 import type { Landmark3D } from '../geometry/vectors3d.ts'
@@ -91,5 +91,12 @@ describe.each(CASES)('reposo comprimido como en celular: $id', ({ id, def, effor
   it(`con el umbral anterior (${oldRestDeg}°) no se cerraba ninguna`, () => {
     const old = { ...def, cycle: { ...def.cycle, restDeg: oldRestDeg } }
     expect(run(old, id, effortPhase, startDeg).reps).toBe(0)
+  })
+})
+
+describe('ejercicios de suelo: la preparación no espera la calibración de pie (#39, DEC-071)', () => {
+  it('flexiones, puente y plancha no la esperan; los que empiezan de pie, sí', () => {
+    expect((['pushup', 'bridge', 'plank'] as const).map(ex => needsStandingCalibration(ex))).toEqual([false, false, false])
+    expect((['squat', 'curl', 'press', 'lunge'] as const).map(ex => needsStandingCalibration(ex))).toEqual([true, true, true, true])
   })
 })
