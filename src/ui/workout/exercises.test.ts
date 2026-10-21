@@ -15,11 +15,11 @@ describe('createWorkoutTrackers', () => {
     return ASSISTED.map(ex => trackers[ex].update({ t: 0, image: [] }).detail.engine)
   }
 
-  it('sin flag, curl y press usan el motor 2D; la sentadilla y la ola 1, el 3D (DEC-059, DEC-072)', () => {
-    expect(engines(null)).toEqual(['none', '2d', '2d', 'none', 'none', 'none', 'none'])
+  it('sin flag, los siete usan el motor 3D (DEC-078)', () => {
+    expect(engines(null)).toEqual(['none', 'none', 'none', 'none', 'none', 'none', 'none'])
   })
 
-  it('con ?engine=3d, los siete usan el motor 3D', () => {
+  it('con ?engine=3d, igual que sin flag: los siete usan el motor 3D', () => {
     expect(engines('3d')).toEqual(['none', 'none', 'none', 'none', 'none', 'none', 'none'])
   })
 

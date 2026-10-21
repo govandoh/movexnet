@@ -1,0 +1,170 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-front-elbow-drift-01 1`] = `
+{
+  "frames": 521,
+  "issueAtPeak": "",
+  "rejections": {},
+  "reps": 0,
+  "warnings": {
+    "elbow_drift": 3,
+  },
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-front-elbow-drift-02 1`] = `
+{
+  "frames": 530,
+  "issueAtPeak": "elbow_drift elbow_drift elbow_drift elbow_drift elbow_drift elbow_drift elbow_drift elbow_drift",
+  "rejections": {},
+  "reps": 8,
+  "warnings": {
+    "elbow_drift": 2,
+  },
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-front-good-01 1`] = `
+{
+  "frames": 552,
+  "issueAtPeak": "- - - - - - -",
+  "rejections": {},
+  "reps": 6,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-front-partial-rom-01 1`] = `
+{
+  "frames": 525,
+  "issueAtPeak": "- - - - - - - -",
+  "rejections": {},
+  "reps": 6,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-side-excess-speed-01 1`] = `
+{
+  "frames": 533,
+  "issueAtPeak": "elbow_drift - - elbow_drift - elbow_drift elbow_drift -",
+  "rejections": {},
+  "reps": 8,
+  "warnings": {
+    "elbow_drift": 4,
+  },
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-side-good-01 1`] = `
+{
+  "frames": 484,
+  "issueAtPeak": "- - - - -",
+  "rejections": {},
+  "reps": 5,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > curl-side-partial-rom-01 1`] = `
+{
+  "frames": 547,
+  "issueAtPeak": "- -",
+  "rejections": {
+    "too_slow": 1,
+  },
+  "reps": 1,
+  "warnings": {
+    "elbow_drift": 1,
+  },
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-front-good-02 1`] = `
+{
+  "frames": 539,
+  "issueAtPeak": "- - - - - -",
+  "rejections": {},
+  "reps": 6,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-front-partial-rom-01 1`] = `
+{
+  "frames": 518,
+  "issueAtPeak": "-",
+  "rejections": {
+    "erratic": 1,
+  },
+  "reps": 0,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-front-unsafe-low-elbow-01 1`] = `
+{
+  "frames": 548,
+  "issueAtPeak": "- - - lumbar_arch - - -",
+  "rejections": {
+    "erratic": 2,
+  },
+  "reps": 5,
+  "warnings": {
+    "lumbar_arch": 2,
+  },
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-side-good-01 1`] = `
+{
+  "frames": 546,
+  "issueAtPeak": "- - - - - -",
+  "rejections": {},
+  "reps": 6,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-side-partial-rom-01 1`] = `
+{
+  "frames": 534,
+  "issueAtPeak": "- -",
+  "rejections": {
+    "too_fast": 1,
+    "too_slow": 1,
+  },
+  "reps": 0,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > press-side-unsafe-low-elbow-01 1`] = `
+{
+  "frames": 539,
+  "issueAtPeak": "",
+  "rejections": {},
+  "reps": 0,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > squat-side-excess-speed-01 1`] = `
+{
+  "frames": 585,
+  "issueAtPeak": "- - - - - - - -",
+  "rejections": {},
+  "reps": 8,
+  "warnings": {},
+}
+`;
+
+exports[`motor 3D con grabaciones reales (golden, DEC-078) > squat-side-good-02 1`] = `
+{
+  "frames": 584,
+  "issueAtPeak": "- - - - -",
+  "rejections": {},
+  "reps": 5,
+  "warnings": {},
+}
+`;

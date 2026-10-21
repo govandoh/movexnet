@@ -28,15 +28,14 @@ export function catalogIdFor(ex: AssistantId): string {
 const HAS_2D: readonly AssistantId[] = ['squat', 'curl', 'press'];
 
 /**
- * Motor por ejercicio (DEC-059, DEC-072). La sentadilla usa el motor 3D desde DEC-072,
- * validada en celular con personas. Curl y press siguen en el motor 2D de producción,
- * congelado por los golden, hasta resolver la #58; con `?engine=3d` pasan al 3D. Con
- * `?engine=2d` la sentadilla vuelve al 2D como respaldo. La ola 1 no tiene versión 2D y
- * usa siempre el motor 3D.
+ * Motor por ejercicio (DEC-078). Los siete ejercicios usan el motor 3D por defecto: la
+ * sentadilla desde DEC-072 y curl y press desde DEC-078, calibrados con grabaciones reales
+ * (DEC-073, DEC-075, DEC-077). `?engine=2d` devuelve sentadilla, curl y press a los
+ * contadores 2D del MVP como respaldo si el 3D falla en algún celular; la ola 1 no tiene
+ * versión 2D. `?engine=3d` ya no cambia nada y se acepta por compatibilidad con enlaces viejos.
  */
 export function usesEngine3D(ex: AssistantId, override: EngineOverride = ENGINE_OVERRIDE): boolean {
-  if (override === '2d') return !HAS_2D.includes(ex);
-  return override === '3d' || (ex !== 'curl' && ex !== 'press');
+  return override === '2d' ? !HAS_2D.includes(ex) : true;
 }
 
 export function isAssistantId(v: string | null): v is AssistantId {
