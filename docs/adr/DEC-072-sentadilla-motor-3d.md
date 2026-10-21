@@ -26,6 +26,8 @@ DEC-059 dejó la sentadilla, el curl y el press en el motor 2D de producción ha
 
 La sentadilla usa el motor 3D por defecto (`usesEngine3D` en `src/ui/workout/exercises.ts`). Curl y press siguen en 2D, con `?engine=3d` para probarlos, hasta resolver #58.
 
+- **Respaldo:** `?engine=2d` en la URL devuelve la sentadilla, el curl y el press al motor 2D, por si el 3D falla en algún celular. La ola 1 no tiene versión 2D y sigue en 3D. Es el mismo respaldo que tendrán curl y press al pasar al 3D por defecto (#58).
+
 - **Se mantienen:** el código 2D de la sentadilla (`src/exercises/squat.ts`), sus golden del PR 1 y el adaptador `squat2D`. Siguen documentando el comportamiento congelado y sirven a las pruebas del contrato (DEC-063). Se retiran con el curl y el press al completar #33.
 - **Cambios para quien entrena sentadillas:**
   - la preparación pide la calibración de pie (DEC-053) y nivelar el celular;
