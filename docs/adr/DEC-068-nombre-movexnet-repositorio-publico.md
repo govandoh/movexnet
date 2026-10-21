@@ -1,6 +1,6 @@
 # DEC-068 · Nombre del producto MovexNet y repositorio `movexnet`, que se mantiene público
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-17
 - **Decisores:** @govandoh (responsable del proyecto, decide en representación del equipo); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `proceso`, `repositorio`, `marca`

@@ -1,6 +1,6 @@
 # DEC-074 · Anti-trampa v1.1: series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** @govandoh (D, responsable del proyecto); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `anti-trampa`, `rankings`

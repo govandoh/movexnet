@@ -1,6 +1,6 @@
 # DEC-062 · Modelo y esfuerzo por agente, una issue por sesión y estado del proyecto a cargo del líder
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-05
 - **Decisores:** Leads de los workstreams B, D y E
 - **Etiquetas:** proceso, agentes, costo

@@ -1,6 +1,6 @@
 # DEC-073 · Curl y press en el motor 3D: umbrales calibrados con grabaciones reales
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** B (análisis, @ecaldcc), A (pose y captura, @ChejoUMG), D (@govandoh)
 - **Etiquetas:** `analysis-core`
