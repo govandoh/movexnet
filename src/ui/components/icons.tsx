@@ -2,7 +2,7 @@
  * Íconos de trazo (DEC-051: íconos, nunca emojis). Heredan el color con `currentColor`;
  * el tamaño lo pone el contenedor. Siempre decorativos: el texto o `aria-label` va aparte.
  */
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 function Stroke({ children, width = 2 }: { children: ReactNode; width?: number }) {
   return (
@@ -98,12 +98,14 @@ export const IconChevron = () => (
  * Logo de MovexNet: cinco nodos voltaje unidos por líneas índigo que forman una "M" (DEC-058,
  * DEC-068). Misma geometría que `public/favicon.svg` y los PNG de `scripts/generate-icons.mjs`.
  */
-export function MovexMark({ size = 32 }: { size?: number }) {
+export function MovexMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true">
+    <svg viewBox="0 0 40 40" width={size} height={size} className={className} aria-hidden="true">
       <path d="M8 32L8 8L20 21L32 8L32 32" fill="none" stroke="var(--color-indigo)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      {[[8, 32], [8, 8], [20, 21], [32, 8], [32, 32]].map(([cx, cy]) => (
-        <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="4" fill="var(--color-volt)" />
+      {/* Los nodos van en el orden del trazo de la "M": `--i` escalona la carga inicial. */}
+      {[[8, 32], [8, 8], [20, 21], [32, 8], [32, 32]].map(([cx, cy], i) => (
+        <circle key={`${cx}-${cy}`} className="movex-mark__node" style={{ '--i': i } as CSSProperties}
+          cx={cx} cy={cy} r="4" fill="var(--color-volt)" />
       ))}
     </svg>
   );

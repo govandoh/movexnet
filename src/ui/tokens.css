@@ -97,4 +97,8 @@
   --dur-sheet: 380ms;
   --dur-fade: 150ms;
   --stagger: 40ms;
+  /* Carga inicial: nada se muestra si carga antes del retraso; luego, un ciclo de los 5 nodos. */
+  --delay-loading: 300ms;
+  --dur-loading-cycle: 1200ms;
+  --stagger-loading: 120ms;
 }
