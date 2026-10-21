@@ -45,6 +45,22 @@ describe('PlankTracker', () => {
     expect(hold(new PlankTracker(), moveHips(plank, -0.14), 0, 1_000).formIssue).toBe('hip_pike')
   })
 
+  describe('con el lado lejano tapado, como de perfil (#59, DEC-071)', () => {
+    const hideRight = (w: Landmark3D[]) => w.map((p, i) =>
+      i === LM.RIGHT_SHOULDER || i === LM.RIGHT_HIP || i === LM.RIGHT_ANKLE ? { ...p, visibility: 0.1 } : p)
+
+    it('el tiempo sigue corriendo', () => {
+      const r = hold(new PlankTracker(), hideRight(plank), 0, 3_000)
+      expect(r.visible).toBe(true)
+      expect(r.holding).toBe(true)
+      expect(r.heldSeconds).toBeGreaterThanOrEqual(2)
+    })
+
+    it('detecta una cadera caída leve (8 cm, ~13°)', () => {
+      expect(hold(new PlankTracker(), hideRight(moveHips(plank, 0.08)), 0, 1_000).formIssue).toBe('hip_sag')
+    })
+  })
+
   it('de pie no cuenta tiempo', () => {
     const r = hold(new PlankTracker(), DEMOS.sentadilla.pose(0), 0, 3_000)
     expect(r.holding).toBe(false)

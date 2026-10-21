@@ -1,7 +1,7 @@
-// v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
+// v9: la navegación clona la respuesta antes de devolverla (error "Response body is already used"). v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
 // (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
 // seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v8';
+const CACHE = 'entrenador-ia-v9';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -28,7 +28,11 @@ self.addEventListener('fetch', e => {
     e.respondWith(
       fetch(e.request)
         .then(res => {
-          if (res.ok) caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+          if (res.ok) {
+            // Clonar antes de devolver `res`: después el navegador ya empezó a leerlo.
+            const copy = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, copy));
+          }
           return res;
         })
         .catch(async () => (await caches.match(e.request)) ?? Response.error())

@@ -179,8 +179,9 @@ describe('Tracker3D: curl de bíceps', () => {
   })
 
   it('el codo que se adelanta dispara elbow_drift', () => {
+    // Despegue claro (más de CURL_MAX_ELBOW_DRIFT_DEG = 50°, DEC-073).
     const drift = (w: Landmark3D[]) => w.map((p, i) =>
-      i === LM.LEFT_ELBOW || i === LM.RIGHT_ELBOW ? { ...p, z: p.z - 0.18 } : p)
+      i === LM.LEFT_ELBOW || i === LM.RIGHT_ELBOW ? { ...p, z: p.z - 0.4 } : p)
     expect(run(CURL_3D, demo, { fps: 30, transform: drift }).issues).toContain('elbow_drift')
   })
 })
@@ -219,13 +220,13 @@ describe('Tracker3D: press de hombro', () => {
     expect(res.formIssue).not.toBe('lumbar_arch')
   })
 
-  it('bajar el codo por debajo de 80° dispara unsafe_low_elbow', () => {
+  it('bajar el codo por debajo de 80° no da aviso en 3D: no se distingue de un press bien hecho (DEC-073)', () => {
     const low = (w: Landmark3D[]) => w.map((p, i) =>
       i === LM.LEFT_WRIST || i === LM.RIGHT_WRIST ? { ...p, y: p.y + 0.12, x: p.x * 0.6 } : p)
     const tracker = new Tracker3D(PRESS_3D)
     const res = tracker.update(low(demo.pose(0)), 0)
     expect(res.primaryAngle).toBeLessThan(80)
-    expect(res.formIssue).toBe('unsafe_low_elbow')
+    expect(res.formIssue).not.toBe('unsafe_low_elbow')
   })
 })
 

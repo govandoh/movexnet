@@ -4,7 +4,7 @@ import { GOOD_DEPTH_ANGLE } from '../../exercises/squat';
 import { GOOD_FORM_ANGLE } from '../../exercises/bicepCurl';
 import { GOOD_LOCKOUT_ANGLE } from '../../exercises/shoulderPress';
 import {
-  BRIDGE_GOOD_EXTENSION_DEG, DEFINITIONS_3D, LUNGE_GOOD_DEPTH_DEG, PUSHUP_GOOD_DEPTH_DEG,
+  BRIDGE_GOOD_EXTENSION_DEG, CURL_GOOD_CONTRACTION_3D_DEG, DEFINITIONS_3D, LUNGE_GOOD_DEPTH_DEG, PUSHUP_GOOD_DEPTH_DEG,
 } from '../../exercises/definitions3d';
 import type { FatigueLevel } from '../../analysis/fatigue';
 import type { FatigueSummary } from '../../domain/sessionHistory';
@@ -33,13 +33,17 @@ export function definitionFor(ex: AssistantId) {
 }
 
 /**
- * Frase de técnica al confirmar el pico o fondo, a partir del extremo alcanzado. Es la
- * misma para los dos motores: mínimo de rodilla o de codo, o máximo de codo en el press.
+ * Frase de técnica al confirmar el pico o fondo, a partir del extremo alcanzado: mínimo de
+ * rodilla o de codo, o máximo de codo en el press. En el curl el umbral depende del motor,
+ * porque el 3D mide el codo menos doblado de lo que está (DEC-073).
  */
-export function peakPhrase(ex: AssistantId, extremeDeg: number): string {
+export function peakPhrase(ex: AssistantId, extremeDeg: number, engine3D = false): string {
   switch (ex) {
     case 'squat': return extremeDeg < GOOD_DEPTH_ANGLE ? '¡Excelente profundidad!' : 'Baja un poco más';
-    case 'curl': return extremeDeg < GOOD_FORM_ANGLE ? '¡Excelente contracción!' : 'Sube un poco más';
+    case 'curl': {
+      const complete = engine3D ? extremeDeg <= CURL_GOOD_CONTRACTION_3D_DEG : extremeDeg < GOOD_FORM_ANGLE;
+      return complete ? '¡Excelente contracción!' : 'Sube un poco más';
+    }
     case 'press': return extremeDeg >= GOOD_LOCKOUT_ANGLE ? '¡Extensión completa!' : 'Extiende un poco más';
     case 'pushup': return extremeDeg <= PUSHUP_GOOD_DEPTH_DEG ? '¡Buena bajada!' : 'Baja más el pecho';
     case 'lunge': return extremeDeg <= LUNGE_GOOD_DEPTH_DEG ? '¡Buena profundidad!' : 'Baja un poco más';

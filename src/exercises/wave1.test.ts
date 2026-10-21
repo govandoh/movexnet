@@ -61,8 +61,38 @@ describe('flexiones: alineación del cuerpo', () => {
   const moveHips = (dy: number) => (w: Landmark3D[]) => w.map((p, i) =>
     i === LM.LEFT_HIP || i === LM.RIGHT_HIP ? { ...p, y: p.y + dy } : p)
 
-  it('la tabla recta mide ~180° con los puntos medios', () => {
-    expect(bodyLine(DEMOS.flexiones.pose(0)).angle).toBeGreaterThan(178)
+  /** Lado derecho tapado, como de perfil con la cámara a la izquierda. */
+  const hideRight = (w: Landmark3D[]) => w.map((p, i) =>
+    i === LM.RIGHT_SHOULDER || i === LM.RIGHT_HIP || i === LM.RIGHT_ANKLE ? { ...p, visibility: 0.1 } : p)
+
+  it('la tabla recta mide ~180° con un solo lado, en el plano vertical (DEC-071)', () => {
+    const line = bodyLine(DEMOS.flexiones.pose(0))!
+    expect(line.angle).toBeGreaterThan(178)
+    expect(Math.abs(line.deviationDeg)).toBeLessThan(1)
+  })
+
+  it('una cadera caída leve (6 cm, ~10°) dispara hip_sag; con el umbral anterior de 20° pasaba', () => {
+    expect(run(PUSHUP_3D, 'flexiones', { effortPhase: 3, transform: moveHips(0.06) }).issues).toContain('hip_sag')
+  })
+
+  it('con el lado lejano tapado sigue evaluando la cadera', () => {
+    const r = run(PUSHUP_3D, 'flexiones', { effortPhase: 3, transform: w => hideRight(moveHips(0.12)(w)) })
+    expect(r.issues).toContain('hip_sag')
+  })
+
+  it('arriba, descansando entre repeticiones, la cadera alta no avisa: solo se revisa durante la flexión', () => {
+    const pipeline = new FramePipeline(PUSHUP_3D)
+    const restingPiked = moveHips(-0.2)(DEMOS.flexiones.pose(0))
+    const issues: string[] = []
+    for (let t = 0; t <= 1000; t += 33) {
+      const r = pipeline.process({ world: restingPiked, t }).result
+      if (r.formIssue) issues.push(r.formIssue)
+    }
+    expect(issues).toEqual([])
+  })
+
+  it('una cadera apenas levantada (6 cm, ~−10°) no avisa', () => {
+    expect(run(PUSHUP_3D, 'flexiones', { effortPhase: 3, transform: moveHips(-0.06) }).issues).toEqual([])
   })
 
   it('la cadera caída dispara hip_sag', () => {

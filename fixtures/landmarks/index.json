@@ -141,6 +141,138 @@
         "badFeedback": true
       },
       "notes": "Ambos codos 70°→160°→70°: baja por debajo de SAFE_LOW_ANGLE=80 → debe aparecer feedback \"bad\" en la fase lowered."
+    },
+    {
+      "file": "curl-front-good-01.json",
+      "exercise": "curl",
+      "view": "front",
+      "quality": "good",
+      "source": "phone",
+      "fps": 19.6,
+      "frames": 552,
+      "durationMs": 27789,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 48-599 de 716 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "curl-front-partial-rom-01.json",
+      "exercise": "curl",
+      "view": "front",
+      "quality": "partial-rom",
+      "source": "phone",
+      "fps": 16.9,
+      "frames": 525,
+      "durationMs": 25852,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 74-598 de 599 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "curl-front-elbow-drift-01.json",
+      "exercise": "curl",
+      "view": "front",
+      "quality": "elbow-drift",
+      "source": "phone",
+      "fps": 18.2,
+      "frames": 521,
+      "durationMs": 26831,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: elbow_drift. Recorte de los frames 165-685 de 686 (toma completa en la carpeta privada del equipo). Se grabó con la URL de view=side; la vista real es frontal (corregida)."
+    },
+    {
+      "file": "curl-side-excess-speed-01.json",
+      "exercise": "curl",
+      "view": "side",
+      "quality": "excess-speed",
+      "source": "phone",
+      "fps": 13.1,
+      "frames": 533,
+      "durationMs": 28298,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: excess_speed. Recorte de los frames 314-846 de 847 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "curl-side-good-01.json",
+      "exercise": "curl",
+      "view": "side",
+      "quality": "good",
+      "source": "phone",
+      "fps": 16.5,
+      "frames": 484,
+      "durationMs": 24800,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 580-1063 de 1064 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "curl-side-partial-rom-01.json",
+      "exercise": "curl",
+      "view": "side",
+      "quality": "partial-rom",
+      "source": "phone",
+      "fps": 15.3,
+      "frames": 547,
+      "durationMs": 32990,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 14-560 de 567 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "press-front-good-02.json",
+      "exercise": "press",
+      "view": "front",
+      "quality": "good",
+      "source": "phone",
+      "fps": 16.3,
+      "frames": 539,
+      "durationMs": 27859,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 992-1530 de 1531 (toma completa en la carpeta privada del equipo). Se grabó con la URL de view=side; la vista real es frontal (corregida)."
+    },
+    {
+      "file": "press-front-partial-rom-01.json",
+      "exercise": "press",
+      "view": "front",
+      "quality": "partial-rom",
+      "source": "phone",
+      "fps": 17.6,
+      "frames": 518,
+      "durationMs": 27043,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Recorte de los frames 144-661 de 662 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "press-front-unsafe-low-elbow-01.json",
+      "exercise": "press",
+      "view": "front",
+      "quality": "unsafe-low-elbow",
+      "source": "phone",
+      "fps": 14.3,
+      "frames": 548,
+      "durationMs": 39034,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: unsafe_low_elbow. Recorte de los frames 2-549 de 602 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "press-side-good-01.json",
+      "exercise": "press",
+      "view": "side",
+      "quality": "good",
+      "source": "phone",
+      "fps": 15.6,
+      "frames": 546,
+      "durationMs": 28280,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: correct. Recorte de los frames 364-909 de 1264 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "press-side-partial-rom-01.json",
+      "exercise": "press",
+      "view": "side",
+      "quality": "partial-rom",
+      "source": "phone",
+      "fps": 19.8,
+      "frames": 534,
+      "durationMs": 26896,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: partial_rom. Toma completa."
+    },
+    {
+      "file": "press-side-unsafe-low-elbow-01.json",
+      "exercise": "press",
+      "view": "side",
+      "quality": "unsafe-low-elbow",
+      "source": "phone",
+      "fps": 10.1,
+      "frames": 539,
+      "durationMs": 26056,
+      "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: unsafe_low_elbow. Recorte de los frames 282-820 de 821 (toma completa en la carpeta privada del equipo)."
     }
   ]
 }

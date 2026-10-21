@@ -13,6 +13,8 @@ interface PrepPanelProps {
   bubbleRef: RefObject<HTMLDivElement | null>;
   onStart: () => void;
   onTechnique: () => void;
+  /** La voz está activa pero el navegador aún no la deja sonar: falta un primer toque. */
+  voiceLocked?: boolean;
 }
 
 function Check({ state }: { state: 'ok' | 'pending' | 'progress' }) {
@@ -28,7 +30,7 @@ function Check({ state }: { state: 'ok' | 'pending' | 'progress' }) {
  * La burbuja la mueve el bucle de cuadros sobre `bubbleRef`; aquí solo se pinta el estado,
  * que cambia pocas veces. La serie arranca sola cuando los tres puntos siguen listos.
  */
-export function PrepPanel({ ex, exercises, names, onSelect, prep, tilt, bubbleRef, onStart, onTechnique }: PrepPanelProps) {
+export function PrepPanel({ ex, exercises, names, onSelect, prep, tilt, bubbleRef, onStart, onTechnique, voiceLocked = false }: PrepPanelProps) {
   const levelled = prep.levelOk !== false;
   const levelText = prep.levelOk === null
     ? 'Sin sensor de movimiento: apoya el celular derecho'
@@ -70,6 +72,7 @@ export function PrepPanel({ ex, exercises, names, onSelect, prep, tilt, bubbleRe
         </ul>
         <button className="btn btn--primary btn--block" onClick={onStart}>Empezar serie</button>
         <p className="muted prep__hint">La serie arranca sola cuando los puntos están listos</p>
+        {voiceLocked && <p className="muted prep__hint" role="status">Toca la pantalla una vez para activar la voz</p>}
       </section>
     </div>
   );
