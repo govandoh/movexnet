@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Tracker3D, type Tracker3DResult } from './tracker3d.ts'
-import { CURL_3D, PRESS_3D, SQUAT_3D } from './definitions3d.ts'
+import { CURL_3D, CURL_ELBOW_DRIFT_HOLD_MS, PRESS_3D, SQUAT_3D } from './definitions3d.ts'
 import { DEMOS, type DemoDefinition } from './demoPoses.ts'
 import { FramePipeline } from '../analysis/framePipeline.ts'
 import { LM, type Landmark3D, type Vec3 } from '../geometry/vectors3d.ts'
@@ -183,6 +183,21 @@ describe('Tracker3D: curl de bíceps', () => {
     const drift = (w: Landmark3D[]) => w.map((p, i) =>
       i === LM.LEFT_ELBOW || i === LM.RIGHT_ELBOW ? { ...p, z: p.z - 0.4 } : p)
     expect(run(CURL_3D, demo, { fps: 30, transform: drift }).issues).toContain('elbow_drift')
+  })
+
+  it('un despegue de un instante no avisa; uno sostenido sí (DEC-075)', () => {
+    const drift = (w: Landmark3D[]) => w.map((p, i) =>
+      i === LM.LEFT_ELBOW || i === LM.RIGHT_ELBOW ? { ...p, z: p.z - 0.4 } : p)
+    const frames = playDemo(demo, { fps: 30 })
+    const t0 = frames[0].t + 1000
+    const issuesWithDrift = (ms: number) => {
+      const tracker = new Tracker3D(CURL_3D)
+      return frames
+        .map(f => tracker.update(f.t >= t0 && f.t < t0 + ms ? drift(f.world) : f.world, f.t).formIssue)
+        .filter(i => i === 'elbow_drift')
+    }
+    expect(issuesWithDrift(CURL_ELBOW_DRIFT_HOLD_MS - 100)).toEqual([])
+    expect(issuesWithDrift(CURL_ELBOW_DRIFT_HOLD_MS + 400).length).toBeGreaterThan(0)
   })
 })
 

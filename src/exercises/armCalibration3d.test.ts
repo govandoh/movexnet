@@ -1,5 +1,5 @@
 /**
- * Curl y press en el motor 3D contra grabaciones reales (DEC-073, issue #58).
+ * Curl y press en el motor 3D contra grabaciones reales (DEC-073 y DEC-075, issue #58).
  *
  * Fixtures de una persona (s01, Xiaomi 15T con Chrome), con 6–8 repeticiones reales por
  * toma. Cada archivo es un recorte de menos de 2 MB de la toma completa, así que trae parte
@@ -50,8 +50,12 @@ describe('curl 3D con grabaciones reales (DEC-073)', () => {
     expect(play('curl-side-partial-rom-01', CURL_3D).reps).toBeLessThanOrEqual(1);
   });
 
-  it.each(['curl-side-good-01', 'curl-front-good-01'])('%s: "pega el codo" sale en menos del 5 % de los frames', name => {
-    expect(play(name, CURL_3D).issueRate('elbow_drift')).toBeLessThan(0.05);
+  it.each(['curl-side-good-01', 'curl-front-good-01'])('%s: sin "pega el codo" en curls bien hechos (DEC-075)', name => {
+    expect(play(name, CURL_3D).issueRate('elbow_drift')).toBe(0);
+  });
+
+  it('con el codo despegado, "pega el codo" sí sale (DEC-075)', () => {
+    expect(play('curl-front-elbow-drift-01', CURL_3D).issueRate('elbow_drift')).toBeGreaterThan(0);
   });
 });
 

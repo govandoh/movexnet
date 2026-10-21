@@ -65,7 +65,7 @@ Resultados en las tomas completas, con la decisión aplicada:
 
 - **Una sola persona y un solo celular.** Los umbrales se validan con #16 antes de retirar el motor 2D.
 - **"Cuida los hombros" no existe en 3D.** Abajo, el codo 3D midió 9–55° en presses bien hechos de perfil y no se separa de bajar de más. Vuelve cuando haya una medida que distinga los dos casos.
-- **"Pega el codo" con 50° solo detecta despegues claros.** En la toma de codo despegado salió en el 9 % de los frames; distinguirlo bien requiere una medida por repetición, no por frame.
+- **"Pega el codo" con 50° solo detecta despegues claros.** En la toma de codo despegado salió en el 9 % de los frames; distinguirlo bien requiere una medida por repetición, no por frame. Los avisos falsos de un instante se filtran en DEC-075.
 - **Los tirones del curl no se rechazan:** la toma con tirones contó 9. Hace falta un límite de velocidad pico, que hoy no existe en `QualityThresholds`.
 - **El press de perfil bajando los codos de más casi no cuenta** (1 de 6–8). Queda pendiente con más datos.
 - `src/analysis/setSummary.ts` conserva la etiqueta de `unsafe_low_elbow` para el motor 2D, que sí emite ese aviso.

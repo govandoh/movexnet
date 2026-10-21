@@ -35,6 +35,12 @@ const SQUAT_MAX_ASYMMETRY = 0.18;
 // grabaciones de #58 el brazo superior se separa de la vertical 20–23° de mediana y 45–52°
 // en el p95 aun con el codo quieto. 50° deja el aviso para el despegue claro (DEC-073).
 export const CURL_MAX_ELBOW_DRIFT_DEG = 50;
+/**
+ * Tiempo que el codo debe seguir despegado para avisar, en ms. Aun con 50°, el 3D da saltos
+ * de 0.1–0.3 s en curls bien hechos (3 de 5 repeticiones de perfil con aviso falso); un
+ * despegue real dura 0.6–1 s en las grabaciones de #58 (DEC-075).
+ */
+export const CURL_ELBOW_DRIFT_HOLD_MS = 400;
 
 /**
  * Codo por debajo de este ángulo = contracción completa en el curl, en grados. El 3D (`lite`)
@@ -159,6 +165,7 @@ export const CURL_3D: ExerciseDefinition3D = {
       : { level: 'warning', message: 'Sube un poco más' };
   },
   notVisibleMessage: 'Asegúrate de que tu brazo sea visible',
+  issueHoldMs: { elbow_drift: CURL_ELBOW_DRIFT_HOLD_MS },
   calibrateDuringSet: true,
 };
 

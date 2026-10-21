@@ -85,6 +85,12 @@ export interface ExerciseDefinition3D {
   quality: Partial<QualityThresholds>;
   /** Primera comprobación de forma que falla, en orden de prioridad (seguridad primero). */
   formCheck(ctx: FormContext): FormIssue | null;
+  /**
+   * Tiempo mínimo, en ms, que un problema de forma debe repetirse en frames seguidos antes
+   * de avisar, por código. Filtra los saltos de un instante del 3D (DEC-075). Sin entrada,
+   * el aviso sale en el primer frame.
+   */
+  issueHoldMs?: Partial<Record<string, number>>;
   /** Feedback de técnica cuando no hay problema de forma. */
   phaseFeedback(ctx: FormContext): Feedback;
   notVisibleMessage: string;
@@ -142,6 +148,8 @@ export class Tracker3D {
   /** Asimetría en el punto de esfuerzo del ciclo en curso (la que se pasa a la fatiga). */
   private effortAsymmetry = 0;
   private extreme = { angle: NaN, world: null as Landmark3D[] | null };
+  /** Problema de forma que se está repitiendo y desde cuándo (ms), para `issueHoldMs`. */
+  private pendingIssue: { code: string; sinceMs: number } | null = null;
 
   constructor(def: ExerciseDefinition3D) {
     this.def = def;
@@ -165,7 +173,10 @@ export class Tracker3D {
       : 'frontal';
 
     const sides = this.visibleSides(world);
-    if (sides.length === 0) return this.idle(orientation);
+    if (sides.length === 0) {
+      this.pendingIssue = null;
+      return this.idle(orientation);
+    }
 
     const angles: Partial<Record<Side, number>> = {};
     for (const s of sides) angles[s] = def.sideAngle(world, s);
@@ -235,7 +246,7 @@ export class Tracker3D {
         : this.combined.peakReached,
       asymmetry, fatigue,
     };
-    const issue = def.formCheck(ctx);
+    const issue = this.heldIssue(def.formCheck(ctx), timeMs);
     const feedback = this.feedback(ctx, issue);
 
     return {
@@ -275,12 +286,27 @@ export class Tracker3D {
     this.fatigue.reset();
     this.effortAsymmetry = 0;
     this.extreme = { angle: NaN, world: null };
+    this.pendingIssue = null;
   }
 
   /** Cierra la serie sin borrar el conteo: reinicia la línea base de fatiga. */
   startNewSet(): void {
     this.fatigue.reset();
     this.analyzer.reset();
+  }
+
+  /**
+   * Aplica `issueHoldMs`: un problema con tiempo de espera solo se informa cuando lleva ese
+   * tiempo repitiéndose sin interrupción. Cualquier frame sin él, o con otro, reinicia la cuenta.
+   */
+  private heldIssue(issue: FormIssue | null, timeMs: number): FormIssue | null {
+    if (!issue) {
+      this.pendingIssue = null;
+      return null;
+    }
+    const holdMs = this.def.issueHoldMs?.[issue.code] ?? 0;
+    if (this.pendingIssue?.code !== issue.code) this.pendingIssue = { code: issue.code, sinceMs: timeMs };
+    return timeMs - this.pendingIssue.sinceMs >= holdMs ? issue : null;
   }
 
   private visibleSides(world: readonly Landmark3D[]): Side[] {
