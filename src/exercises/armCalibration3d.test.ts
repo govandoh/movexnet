@@ -1,5 +1,5 @@
 /**
- * Curl y press en el motor 3D contra grabaciones reales (DEC-073 y DEC-075, issue #58).
+ * Curl y press en el motor 3D contra grabaciones reales (DEC-073, DEC-075 y DEC-077, issue #58).
  *
  * Fixtures de una persona (s01, Xiaomi 15T con Chrome), con 6–8 repeticiones reales por
  * toma. Cada archivo es un recorte de menos de 2 MB de la toma completa, así que trae parte
@@ -50,8 +50,9 @@ describe('curl 3D con grabaciones reales (DEC-073)', () => {
     expect(play('curl-side-partial-rom-01', CURL_3D).reps).toBeLessThanOrEqual(1);
   });
 
-  it.each(['curl-side-good-01', 'curl-front-good-01'])('%s: sin "pega el codo" en curls bien hechos (DEC-075)', name => {
-    expect(play(name, CURL_3D).issueRate('elbow_drift')).toBe(0);
+  it.each(['curl-side-good-01', 'curl-front-good-01'])('%s: sin avisos de técnica en curls bien hechos (DEC-075, DEC-077)', name => {
+    const r = play(name, CURL_3D);
+    for (const code of ['elbow_drift', 'asymmetry']) expect(r.issueRate(code)).toBe(0);
   });
 
   it.each(['curl-front-elbow-drift-01', 'curl-front-elbow-drift-02'])(
@@ -73,7 +74,8 @@ describe('press 3D con grabaciones reales (DEC-073)', () => {
     expect(play(name, PRESS_3D).reps).toBe(0);
   });
 
-  it.each(['press-side-good-01', 'press-front-good-02'])('%s: sin aviso de "cuida los hombros"', name => {
-    expect(play(name, PRESS_3D).issueRate('unsafe_low_elbow')).toBe(0);
+  it.each(['press-side-good-01', 'press-front-good-02'])('%s: sin ningún aviso de técnica (DEC-077)', name => {
+    const r = play(name, PRESS_3D);
+    for (const code of ['unsafe_low_elbow', 'lumbar_arch', 'asymmetry']) expect(r.issueRate(code)).toBe(0);
   });
 });

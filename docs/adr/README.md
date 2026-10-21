@@ -105,8 +105,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-074](DEC-074-antitrampa-v1-1.md) | Anti-trampa v1.1: `missing_duration` en series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones con fin efectivo de 3 h | 2026-10-20 | Propuesta |
 | [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D: abducción aparte (35°) y despegue sostenido 400 ms (`issueHoldMs`) | 2026-10-20 | Propuesta |
 | [DEC-076](DEC-076-voz-aviso-tecnica-en-pico.md) | La voz dice el aviso de técnica en el pico en vez del elogio, solo para avisos validados (`VOICED_TECHNIQUE_ISSUES`) | 2026-10-20 | Propuesta |
+| [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Propuesta |
 
-Próximo número libre: **DEC-077** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-078** (provisional hasta el merge, ver DEC-062).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 

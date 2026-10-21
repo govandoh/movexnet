@@ -206,10 +206,18 @@ describe('Tracker3D: press de hombro', () => {
   const PHONE_TILT = 32
   const tilted = (w: Landmark3D[]) => tiltPose(w, PHONE_TILT, 0)
 
-  it('con el celular inclinado 32° y sin nivelar da avisos falsos de arqueo', () => {
-    // Sin acelerómetro ni calibración (el press no ve los tobillos): la inclinación pasa tal cual.
+  it('con el celular inclinado 32° y sin nivelar no da avisos falsos de arqueo (DEC-077)', () => {
+    // Sin acelerómetro ni calibración la inclinación pasa tal cual, pero es la misma en el
+    // reposo y arriba: el arqueo se mide como cambio respecto al reposo y se cancela.
     const tracker = new Tracker3D(PRESS_3D)
     const issues = playDemo(demo, { fps: 30 }).map(f => tracker.update(tilted(f.world), f.t).formIssue)
+    expect(issues).not.toContain('lumbar_arch')
+  })
+
+  it('el tronco que se va hacia atrás solo al empujar dispara lumbar_arch (DEC-077)', () => {
+    const tracker = new Tracker3D(PRESS_3D)
+    const issues = playDemo(demo, { fps: 30 })
+      .map(f => tracker.update(f.p > 0.5 ? tiltPose(f.world, 30, 0) : f.world, f.t).formIssue)
     expect(issues).toContain('lumbar_arch')
   })
 

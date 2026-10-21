@@ -43,6 +43,12 @@ export interface FormContext {
   peakReached: boolean;
   asymmetry: number;
   fatigue: FatigueState;
+  /**
+   * Valor de `restBaseline` promediado mientras el ciclo está en reposo, o `null` si la
+   * definición no lo usa o todavía no hubo reposo. Sirve para medir cambios respecto a la
+   * postura de partida en vez de valores absolutos (DEC-077).
+   */
+  restBaseline: number | null;
 }
 
 export interface FormIssue {
@@ -91,6 +97,11 @@ export interface ExerciseDefinition3D {
    * el aviso sale en el primer frame.
    */
   issueHoldMs?: Partial<Record<string, number>>;
+  /**
+   * Medida de la postura que se promedia en el reposo y llega a `formCheck` como
+   * `ctx.restBaseline`. Cancela los sesgos fijos del 3D según la vista (DEC-077).
+   */
+  restBaseline?: (world: readonly Landmark3D[]) => number;
   /** Feedback de técnica cuando no hay problema de forma. */
   phaseFeedback(ctx: FormContext): Feedback;
   notVisibleMessage: string;
@@ -132,6 +143,8 @@ export interface Tracker3DResult {
 }
 
 const MIN_VISIBILITY = 0.5;
+/** Constante de tiempo del promedio de `restBaseline`, en ms (DEC-077). */
+const BASELINE_TAU_MS = 1000;
 /** Diferencia de visibilidad entre lados a partir de la cual se asume vista lateral. */
 const LATERAL_VISIBILITY_DIFF = 0.35;
 
@@ -150,6 +163,8 @@ export class Tracker3D {
   private extreme = { angle: NaN, world: null as Landmark3D[] | null };
   /** Problema de forma que se está repitiendo y desde cuándo (ms), para `issueHoldMs`. */
   private pendingIssue: { code: string; sinceMs: number } | null = null;
+  /** Promedio de `def.restBaseline` en el reposo y el instante de su última muestra (ms). */
+  private baseline: { value: number; tMs: number } | null = null;
 
   constructor(def: ExerciseDefinition3D) {
     this.def = def;
@@ -239,12 +254,14 @@ export class Tracker3D {
     this.prevPhase = phase;
 
     const fatigue = this.fatigue.getState();
+    if (def.restBaseline && phase === 'rest') this.updateBaseline(def.restBaseline(world), timeMs);
     const ctx: FormContext = {
       world, phase, primaryAngle, extremeDeg,
       peakReached: def.perSideCycles
         ? sides.some(s => this.perSide[s].peakReached)
         : this.combined.peakReached,
       asymmetry, fatigue,
+      restBaseline: this.baseline?.value ?? null,
     };
     const issue = this.heldIssue(def.formCheck(ctx), timeMs);
     const feedback = this.feedback(ctx, issue);
@@ -287,12 +304,26 @@ export class Tracker3D {
     this.effortAsymmetry = 0;
     this.extreme = { angle: NaN, world: null };
     this.pendingIssue = null;
+    this.baseline = null;
   }
 
   /** Cierra la serie sin borrar el conteo: reinicia la línea base de fatiga. */
   startNewSet(): void {
     this.fatigue.reset();
     this.analyzer.reset();
+  }
+
+  /**
+   * Promedio exponencial con constante de tiempo `BASELINE_TAU_MS`: no depende de los fps.
+   * Tras una pausa larga sin reposo, la nueva muestra pesa casi todo.
+   */
+  private updateBaseline(value: number, timeMs: number): void {
+    if (!this.baseline) {
+      this.baseline = { value, tMs: timeMs };
+      return;
+    }
+    const alpha = 1 - Math.exp(-Math.max(0, timeMs - this.baseline.tMs) / BASELINE_TAU_MS);
+    this.baseline = { value: this.baseline.value + alpha * (value - this.baseline.value), tMs: timeMs };
   }
 
   /**
