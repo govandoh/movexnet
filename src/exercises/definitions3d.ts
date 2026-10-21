@@ -57,8 +57,20 @@ export const CURL_ELBOW_DRIFT_HOLD_MS = 400;
  */
 export const CURL_GOOD_CONTRACTION_3D_DEG = 70;
 /** Inclinación del tronco en el press que dispara `lumbar_arch`, en grados. */
-export const PRESS_MAX_TRUNK_LEAN_DEG = 25;
-const ARM_MAX_ASYMMETRY = 0.2;
+/**
+ * Cuánto más se inclina el tronco al empujar que con los brazos abajo para avisar
+ * `lumbar_arch`, en grados. Se mide como cambio y no como valor absoluto: de perfil el 3D
+ * marca 35–44° de inclinación con el cuerpo recto (fixtures de #84) y el límite absoluto de
+ * 25° avisaba en todas las repeticiones. En presses bien hechos el cambio llegó a 9° (DEC-077).
+ */
+export const PRESS_MAX_ARCH_DELTA_DEG = 15;
+/**
+ * Asimetría entre codos que dispara el aviso en el press, como fracción. De frente, el 3D da
+ * 0.20–0.27 en el pico de presses bien hechos; con el límite de 0.2 avisaba casi siempre (DEC-077).
+ */
+export const PRESS_MAX_ASYMMETRY = 0.35;
+/** Tiempo que deben sostenerse los avisos del press para decirse, en ms (DEC-077). */
+export const PRESS_ISSUE_HOLD_MS = 400;
 
 const SIDE = {
   left:  { shoulder: LM.LEFT_SHOULDER,  elbow: LM.LEFT_ELBOW,  wrist: LM.LEFT_WRIST,  hip: LM.LEFT_HIP,  knee: LM.LEFT_KNEE,  ankle: LM.LEFT_ANKLE },
@@ -171,9 +183,8 @@ export const CURL_3D: ExerciseDefinition3D = {
         return { code: 'elbow_drift', level: 'bad', message: 'Pega el codo al cuerpo, estás usando impulso' };
       }
     }
-    if (ctx.phase === 'effort' && ctx.asymmetry > ARM_MAX_ASYMMETRY) {
-      return { code: 'asymmetry', level: 'warning', message: 'Un brazo va adelantado, iguala el recorrido' };
-    }
+    // Sin aviso de asimetría en 3D: de frente, el curl bien hecho dio 0.03–0.73 en el pico
+    // (el antebrazo va hacia la cámara) y no se distingue de uno desparejo (DEC-077).
     return null;
   },
   phaseFeedback(ctx: FormContext) {
@@ -220,13 +231,15 @@ export const PRESS_3D: ExerciseDefinition3D = {
     // estimados) y con los brazos por encima del reposo, que es cuando hay carga arriba.
     // fitnetv2 lo evaluaba en todas las fases y sin exigir cadera (DEC-054).
     const armsUp = ctx.phase === 'effort' || ctx.primaryAngle > PRESS_3D.cycle.restDeg;
-    if (armsUp && areVisible(ctx.world, HIPS, MIN_VISIBILITY) && torsoLean(ctx.world) > PRESS_MAX_TRUNK_LEAN_DEG) {
+    // Se compara con la inclinación en el reposo (`restBaseline`), no con la vertical (DEC-077).
+    if (armsUp && ctx.restBaseline !== null && areVisible(ctx.world, HIPS, MIN_VISIBILITY)
+      && torsoLean(ctx.world) - ctx.restBaseline > PRESS_MAX_ARCH_DELTA_DEG) {
       return { code: 'lumbar_arch', level: 'bad', message: 'Aprieta el abdomen, estás arqueando la espalda' };
     }
     // Sin aviso de "cuida los hombros" en 3D: abajo, el codo 3D midió 9–55° en presses bien
     // hechos de perfil y no se distingue de bajar de más, así que el aviso salía casi siempre.
     // Vuelve cuando haya una medida que separe los dos casos (DEC-073, #58).
-    if (ctx.phase === 'effort' && ctx.asymmetry > ARM_MAX_ASYMMETRY) {
+    if (ctx.phase === 'effort' && ctx.asymmetry > PRESS_MAX_ASYMMETRY) {
       return { code: 'asymmetry', level: 'warning', message: 'Un brazo sube más que el otro' };
     }
     return null;
@@ -243,6 +256,8 @@ export const PRESS_3D: ExerciseDefinition3D = {
       : { level: 'warning', message: 'Extiende un poco más' };
   },
   notVisibleMessage: 'Asegúrate de que tus brazos sean visibles',
+  issueHoldMs: { lumbar_arch: PRESS_ISSUE_HOLD_MS, asymmetry: PRESS_ISSUE_HOLD_MS },
+  restBaseline: torsoLean,
   calibrateDuringSet: false,
 };
 

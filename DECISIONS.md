@@ -58,5 +58,6 @@ Acceso rápido a las más citadas desde el código:
 | DEC-074 | Anti-trampa v1.1: series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones (propuesta) | [docs/adr/DEC-074-antitrampa-v1-1.md](docs/adr/DEC-074-antitrampa-v1-1.md) |
 | DEC-075 | "Pega el codo" en el motor 3D: abducción aparte y despegue sostenido 400 ms (propuesta) | [docs/adr/DEC-075-codo-despegado-persistencia.md](docs/adr/DEC-075-codo-despegado-persistencia.md) |
 | DEC-076 | La voz dice el aviso de técnica en el pico en vez del elogio (propuesta) | [docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md](docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md) |
+| DEC-077 | Avisos de técnica del press y del curl en 3D sin falsos positivos (propuesta) | [docs/adr/DEC-077-avisos-press-curl-3d.md](docs/adr/DEC-077-avisos-press-curl-3d.md) |
 
 No agregar decisiones nuevas a este archivo: crear `docs/adr/DEC-NNN-*.md` y actualizar el índice de `docs/adr/README.md`.
