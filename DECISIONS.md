@@ -48,7 +48,7 @@ Acceso rápido a las más citadas desde el código:
 | DEC-056 | Rutina personalizada: cuestionario libre, generador por reglas, catálogo por olas, paywall en el programa completo | [docs/adr/DEC-056-rutina-personalizada-catalogo-paywall.md](docs/adr/DEC-056-rutina-personalizada-catalogo-paywall.md) |
 | DEC-057 | Motor de conteo 3D configurable por ejercicio, activable con `?engine=3d` | [docs/adr/DEC-057-motor-3d-configurable-flag.md](docs/adr/DEC-057-motor-3d-configurable-flag.md) |
 | DEC-058 | Identidad visual "la red de 33 puntos", sistema de movimiento y skills de animación | [docs/adr/DEC-058-identidad-visual-movimiento.md](docs/adr/DEC-058-identidad-visual-movimiento.md) |
-| DEC-059 | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D | [docs/adr/DEC-059-ola1-motor3d-sin-flag.md](docs/adr/DEC-059-ola1-motor3d-sin-flag.md) |
+| DEC-059 | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D (reemplazada en esa parte por DEC-072 y DEC-078) | [docs/adr/DEC-059-ola1-motor3d-sin-flag.md](docs/adr/DEC-059-ola1-motor3d-sin-flag.md) |
 | DEC-060 | Responsive y áreas seguras como regla de diseño y funcionalidad | [docs/adr/DEC-060-responsive-areas-seguras.md](docs/adr/DEC-060-responsive-areas-seguras.md) |
 | DEC-061 | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | [docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md](docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md) |
 | DEC-064 | Un consentimiento de grabación vale para una sola grabación | [docs/adr/DEC-064-consentimiento-una-grabacion.md](docs/adr/DEC-064-consentimiento-una-grabacion.md) |
@@ -59,5 +59,6 @@ Acceso rápido a las más citadas desde el código:
 | DEC-075 | "Pega el codo" en el motor 3D: abducción aparte y despegue sostenido 400 ms (propuesta) | [docs/adr/DEC-075-codo-despegado-persistencia.md](docs/adr/DEC-075-codo-despegado-persistencia.md) |
 | DEC-076 | La voz dice el aviso de técnica en el pico en vez del elogio (propuesta) | [docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md](docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md) |
 | DEC-077 | Avisos de técnica del press y del curl en 3D sin falsos positivos (propuesta) | [docs/adr/DEC-077-avisos-press-curl-3d.md](docs/adr/DEC-077-avisos-press-curl-3d.md) |
+| DEC-078 | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo (propuesta) | [docs/adr/DEC-078-motor-3d-por-defecto.md](docs/adr/DEC-078-motor-3d-por-defecto.md) |
 
 No agregar decisiones nuevas a este archivo: crear `docs/adr/DEC-NNN-*.md` y actualizar el índice de `docs/adr/README.md`.

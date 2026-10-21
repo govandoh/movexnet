@@ -1,7 +1,7 @@
 import { LM, calculateAngle3D, type Landmark3D, type Vec3 } from '../geometry/vectors3d.ts';
 import { GOOD_DEPTH_ANGLE } from './squat.ts';
-import { GOOD_FORM_ANGLE } from './bicepCurl.ts';
 import { GOOD_LOCKOUT_ANGLE } from './shoulderPress.ts';
+import { CURL_GOOD_CONTRACTION_3D_DEG } from './definitions3d.ts';
 
 /**
  * Demostraciones animadas de técnica correcta para los ejercicios con análisis 3D
@@ -455,7 +455,8 @@ export const DEMOS: Record<string, DemoDefinition> = {
       calculateAngle3D(w[LM.RIGHT_SHOULDER], w[LM.RIGHT_ELBOW], w[LM.RIGHT_WRIST]),
     ),
     measureLabel: 'Codo',
-    targetText: `La app cuenta la contracción como completa por debajo de ${GOOD_FORM_ANGLE}° de codo.`,
+    // Umbral del motor 3D, el predeterminado desde DEC-078 (con `?engine=2d` es el de bicepCurl.ts).
+    targetText: `La app cuenta la contracción como completa por debajo de ${CURL_GOOD_CONTRACTION_3D_DEG}° de codo.`,
   },
   'press-hombro': {
     initialRotation: -Math.PI / 7,

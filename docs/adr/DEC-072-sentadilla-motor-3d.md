@@ -5,6 +5,7 @@
 - **Decisores:** lead del workstream B (Análisis & Runtime); revisión de E por `src/ui/workout/exercises.ts`
 - **Etiquetas:** `analysis-core`, `ui`, `producto`
 - **Reemplaza en parte a:** DEC-059 (la sentadilla ya no sigue en 2D)
+- **Ampliada por:** DEC-078 (curl y press también pasan al 3D por defecto)
 
 ## Contexto y problema
 
