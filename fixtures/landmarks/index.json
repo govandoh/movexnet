@@ -273,6 +273,28 @@
       "frames": 539,
       "durationMs": 26056,
       "notes": "Xiaomi 15T, Chrome, cámara trasera, sujeto s01. Guion DEC-055: unsafe_low_elbow. Recorte de los frames 282-820 de 821 (toma completa en la carpeta privada del equipo)."
+    },
+    {
+      "file": "squat-side-good-02.json",
+      "exercise": "squat",
+      "view": "side",
+      "quality": "good",
+      "source": "phone",
+      "fps": 30,
+      "frames": 584,
+      "durationMs": 19435,
+      "notes": "iPhone 17 Pro Max, Brave, de perfil, sujeto s02. Guion DEC-055: correct. Recorte de los frames 885-2051 de 3179, un cuadro de cada dos (la toma es a 59.3 fps); toma completa fuera del repo."
+    },
+    {
+      "file": "squat-side-excess-speed-01.json",
+      "exercise": "squat",
+      "view": "side",
+      "quality": "excess-speed",
+      "source": "phone",
+      "fps": 30,
+      "frames": 585,
+      "durationMs": 19487,
+      "notes": "iPhone 17 Pro Max, Brave, de perfil, sujeto s02. Guion DEC-055: excess_speed. Recorte de los frames 113-1281 de 1762, un cuadro de cada dos (la toma es a 59.8 fps); toma completa fuera del repo."
     }
   ]
 }
