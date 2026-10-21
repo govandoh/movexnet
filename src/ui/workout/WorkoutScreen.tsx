@@ -16,7 +16,7 @@ import { appActions, useAppState } from '../state/appStore';
 import { ASSISTED, ASSISTED_NAMES, catalogIdFor, createWorkoutTrackers, isAssistantId, usesEngine3D } from './exercises';
 import {
   DEFAULT_TARGET_REPS, FEEDBACK_STRATEGY, PLANK_ANNOUNCE_EVERY_S, PLANK_WARNING_MIN_MS,
-  fatigueSummary, peakPhrase,
+  fatigueSummary, spokenPeakPhrase,
 } from './coaching';
 import { AUTO_START_MS, LEVEL_OK_DEG, bodyInFrame, bubbleOffset, isReady, phoneTilt, type PrepState } from './prep';
 import { PrepPanel } from './PrepPanel';
@@ -381,7 +381,10 @@ export function WorkoutScreen() {
       }
       for (const u of policyRef.current.decide({
         now, reps: b.validReps, repCounted,
-        peakPhrase: peakDeg === null ? null : peakPhrase(current, peakDeg, usesEngine3D(current)),
+        peakPhrase: peakDeg === null ? null : spokenPeakPhrase(
+          current, peakDeg, usesEngine3D(current),
+          result3D?.formIssue ? { code: result3D.formIssue, message: result3D.feedbackMessage } : null,
+        ),
         rejectionMessage: rejection,
       })) speak(u);
 

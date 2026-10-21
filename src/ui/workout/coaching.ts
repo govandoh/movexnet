@@ -52,6 +52,27 @@ export function peakPhrase(ex: AssistantId, extremeDeg: number, engine3D = false
   }
 }
 
+/**
+ * Avisos de técnica que la voz dice en el pico en lugar del elogio del recorrido (DEC-076).
+ * Solo entran los validados con grabaciones reales: en el press bien hecho, `lumbar_arch` y
+ * `asymmetry` salen en casi todos los picos (fixtures de #84) y la voz regañaría cada
+ * repetición. Se agregan aquí cuando dejen de dar falsos positivos.
+ */
+export const VOICED_TECHNIQUE_ISSUES: ReadonlySet<string> = new Set(['elbow_drift']);
+
+/**
+ * Frase que se dice al confirmar el pico o fondo. Si en ese frame hay un aviso de técnica de
+ * `VOICED_TECHNIQUE_ISSUES`, se dice el aviso: con los codos abiertos, la voz no debe decir
+ * "¡Excelente contracción!". Es el mismo frame que usa el resumen para marcar la calidad de
+ * la repetición (`SetSummaryBuilder.addFrame`).
+ */
+export function spokenPeakPhrase(
+  ex: AssistantId, extremeDeg: number, engine3D: boolean,
+  issue: { code: string; message: string } | null,
+): string {
+  return issue && VOICED_TECHNIQUE_ISSUES.has(issue.code) ? issue.message : peakPhrase(ex, extremeDeg, engine3D);
+}
+
 /** Nombre de la métrica angular que se muestra durante la serie. */
 export const EXTREME_LABEL: Record<AssistantId, string> = {
   squat: 'Profundidad', curl: 'Contracción', press: 'Extensión', pushup: 'Bajada',
