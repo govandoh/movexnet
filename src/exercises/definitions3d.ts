@@ -36,6 +36,14 @@ const SQUAT_MAX_ASYMMETRY = 0.18;
 // en el p95 aun con el codo quieto. 50° deja el aviso para el despegue claro (DEC-073).
 export const CURL_MAX_ELBOW_DRIFT_DEG = 50;
 /**
+ * Separación lateral del brazo (abducción) que dispara `elbow_drift`, en grados. Hacia los
+ * lados el brazo casi no se mueve en un curl bien hecho (p90 de 19–30° en las grabaciones
+ * de #58), así que el límite es más bajo que el total: con los codos abiertos se midieron
+ * 44° de mediana. El total (`CURL_MAX_ELBOW_DRIFT_DEG`) sigue cubriendo el adelanto del codo,
+ * que en un curl bueno llega a 36–44° arriba (DEC-075).
+ */
+export const CURL_MAX_ELBOW_ABDUCTION_DEG = 35;
+/**
  * Tiempo que el codo debe seguir despegado para avisar, en ms. Aun con 50°, el 3D da saltos
  * de 0.1–0.3 s en curls bien hechos (3 de 5 repeticiones de perfil con aviso falso); un
  * despegue real dura 0.6–1 s en las grabaciones de #58 (DEC-075).
@@ -67,6 +75,20 @@ function elbowAngle(w: readonly Landmark3D[], s: Side): number {
 }
 
 /** Desviación del brazo (hombro→codo) respecto a la vertical descendente (+Y), en grados. */
+/**
+ * Cuánto se abre el brazo hacia afuera del cuerpo, en grados (0 = pegado y vertical,
+ * negativo = hacia el centro). Se mide en el plano formado por la vertical y la línea de
+ * hombros, sin contar el adelanto del codo. El mundo ya viene nivelado: +y apunta abajo.
+ */
+function upperArmAbduction(w: readonly Landmark3D[], s: Side): number {
+  const j = SIDE[s];
+  const other = SIDE[s === 'left' ? 'right' : 'left'];
+  const shoulders = subtract(w[j.shoulder], w[other.shoulder]);
+  const outward = normalize({ x: shoulders.x, y: 0, z: shoulders.z });
+  const arm = subtract(w[j.elbow], w[j.shoulder]);
+  return (Math.atan2(dot(arm, outward), arm.y) * 180) / Math.PI;
+}
+
 function upperArmDrift(w: readonly Landmark3D[], s: Side): number {
   const j = SIDE[s];
   return angleBetween(subtract(w[j.elbow], w[j.shoulder]), { x: 0, y: 1, z: 0 });
@@ -144,7 +166,8 @@ export const CURL_3D: ExerciseDefinition3D = {
     // El balanceo invalida el estímulo del bíceps: se evalúa en todo el ciclo, por lado visible.
     for (const s of ['left', 'right'] as const) {
       if (!areVisible(ctx.world, armSideLandmarks(s), MIN_VISIBILITY)) continue;
-      if (upperArmDrift(ctx.world, s) > CURL_MAX_ELBOW_DRIFT_DEG) {
+      if (upperArmDrift(ctx.world, s) > CURL_MAX_ELBOW_DRIFT_DEG
+        || upperArmAbduction(ctx.world, s) > CURL_MAX_ELBOW_ABDUCTION_DEG) {
         return { code: 'elbow_drift', level: 'bad', message: 'Pega el codo al cuerpo, estás usando impulso' };
       }
     }

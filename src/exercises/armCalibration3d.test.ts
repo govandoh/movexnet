@@ -54,8 +54,8 @@ describe('curl 3D con grabaciones reales (DEC-073)', () => {
     expect(play(name, CURL_3D).issueRate('elbow_drift')).toBe(0);
   });
 
-  it('con el codo despegado, "pega el codo" sí sale (DEC-075)', () => {
-    expect(play('curl-front-elbow-drift-01', CURL_3D).issueRate('elbow_drift')).toBeGreaterThan(0);
+  it('con los codos abiertos hacia los lados, "pega el codo" sale casi todo el tiempo (DEC-075)', () => {
+    expect(play('curl-front-elbow-drift-01', CURL_3D).issueRate('elbow_drift')).toBeGreaterThan(0.8);
   });
 });
 

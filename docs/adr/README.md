@@ -103,7 +103,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-072](DEC-072-sentadilla-motor-3d.md) | La sentadilla pasa al motor 3D por defecto | 2026-10-20 | Propuesta |
 | [DEC-073](DEC-073-calibracion-brazos-3d.md) | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales (curl 140°/70°, press con suavidad mínima 0.4, sin aviso de hombros en 3D) | 2026-10-20 | Propuesta |
 | [DEC-074](DEC-074-antitrampa-v1-1.md) | Anti-trampa v1.1: `missing_duration` en series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones con fin efectivo de 3 h | 2026-10-20 | Propuesta |
-| [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D solo si el despegue dura 400 ms (`issueHoldMs` en `ExerciseDefinition3D`) | 2026-10-20 | Propuesta |
+| [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D: abducción aparte (35°) y despegue sostenido 400 ms (`issueHoldMs`) | 2026-10-20 | Propuesta |
 
 Próximo número libre: **DEC-076** (provisional hasta el merge, ver DEC-062).
 
