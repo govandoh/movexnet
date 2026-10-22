@@ -62,7 +62,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-031](DEC-031-onnx-runtime-web-wasm-hf-hub.md) | ONNX Runtime Web (WASM) + Hugging Face Hub para modelos | 2026-09-19 | Aceptada |
 | [DEC-032](DEC-032-organizacion-agentica-workstreams-codeowners.md) | Organización agéntica, workstreams y CODEOWNERS | 2026-09-19 | Aceptada |
 | [DEC-033](DEC-033-claude-coach-assistant-edge-function.md) | Claude `claude-opus-5` para `CoachAssistant` vía Edge Function | 2026-09-19 | Aceptada |
-| [DEC-034](DEC-034-via-implementacion-analisis-ia.md) | Vía de implementación del análisis por IA: features por repetición y COCO-17 (ajustada por DEC-035; Fases 2 y 3 reemplazadas por DEC-055) | 2026-09-22 | **Propuesta** |
+| [DEC-034](DEC-034-via-implementacion-analisis-ia.md) | Vía de implementación del análisis por IA: features por repetición y COCO-17 (ajustada por DEC-035; Fases 2 y 3 reemplazadas por DEC-055) | 2026-09-22 | Aceptada en lo vigente (2026-10-21) |
 | [DEC-035](DEC-035-proyecto-academico-sin-facturacion-real.md) | Proyecto académico de seminario: sin facturación real, pagos simulados, pesos preentrenados permitidos | 2026-09-22 | Aceptada |
 | [DEC-036](DEC-036-analisis-3d-world-landmarks.md) | Migración del análisis a 3D con `worldLandmarks` (fitnetv2 DEC-026) | 2026-09-19 | Aceptada en fitnetv2; rige al integrarse (DEC-054) |
 | [DEC-037](DEC-037-validacion-temporal-repeticiones.md) | Validación temporal de repeticiones (fitnetv2 DEC-027) | 2026-09-19 | Aceptada en fitnetv2; rige al integrarse (DEC-054) |
@@ -90,21 +90,21 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-059](DEC-059-ola1-motor3d-sin-flag.md) | La ola 1 del asistente usa el motor 3D sin flag; sentadilla, curl y press siguen en 2D hasta el issue #33 | 2026-09-24 | Aceptada (sentadilla: DEC-072; curl y press: DEC-078) |
 | [DEC-060](DEC-060-responsive-areas-seguras.md) | Responsive y áreas seguras como regla de diseño y funcionalidad: matriz de dispositivos, tokens `--safe-*` y auditoría automática | 2026-09-24 | Aceptada |
 | [DEC-061](DEC-061-tecnica-3d-y-mini-mapa.md) | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | 2026-09-24 | Aceptada |
-| [DEC-062](DEC-062-modelo-esfuerzo-y-trabajo-en-paralelo.md) | Modelo y esfuerzo por agente, una issue por sesión y estado del proyecto a cargo del líder | 2026-10-05 | Propuesta |
-| [DEC-063](DEC-063-contrato-exercise-tracker.md) | Contrato `ExerciseTracker` v1.0.0 y adaptadores de los contadores | 2026-10-07 | Propuesta |
+| [DEC-062](DEC-062-modelo-esfuerzo-y-trabajo-en-paralelo.md) | Modelo y esfuerzo por agente, una issue por sesión y estado del proyecto a cargo del líder | 2026-10-05 | Aceptada (2026-10-21) |
+| [DEC-063](DEC-063-contrato-exercise-tracker.md) | Contrato `ExerciseTracker` v1.0.0 y adaptadores de los contadores | 2026-10-07 | Aceptada (2026-10-21) |
 | [DEC-064](DEC-064-consentimiento-una-grabacion.md) | Un consentimiento de grabación vale para una sola grabación (`unique` sobre `consent_id`) | 2026-10-10 | Aceptada |
-| [DEC-065](DEC-065-datasets-externos-alcance-academico.md) | Datasets externos: licencias de MM-Fit corregidas (código MIT, video CC BY 4.0, etiquetas sin licencia pública) y alcance solo académico | 2026-10-13 | Propuesta |
-| [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Propuesta |
-| [DEC-067](DEC-067-coste-ia-rankings-antitrampa-privacidad.md) | Tope de costo del asistente IA (USD 2/usuario/mes, modo simulado por defecto), rankings cada 15 min, reglas anti-trampa v1 y aviso de privacidad versionado | 2026-10-17 | Propuesta |
-| [DEC-068](DEC-068-nombre-movexnet-repositorio-publico.md) | Nombre del producto MovexNet, repositorio `movexnet` y visibilidad pública | 2026-10-17 | Propuesta |
-| [DEC-069](DEC-069-cuentas-supabase-auth.md) | Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor | 2026-10-19 | Propuesta |
-| [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Propuesta |
-| [DEC-071](DEC-071-linea-cuerpo-un-lado-ejercicios-suelo.md) | Línea del cuerpo con el lado más visible y ejercicios de suelo sin esperar la calibración de pie | 2026-10-20 | Propuesta |
-| [DEC-072](DEC-072-sentadilla-motor-3d.md) | La sentadilla pasa al motor 3D por defecto | 2026-10-20 | Propuesta |
-| [DEC-073](DEC-073-calibracion-brazos-3d.md) | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales (curl 140°/70°, press con suavidad mínima 0.4, sin aviso de hombros en 3D) | 2026-10-20 | Propuesta |
-| [DEC-074](DEC-074-antitrampa-v1-1.md) | Anti-trampa v1.1: `missing_duration` en series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones con fin efectivo de 3 h | 2026-10-20 | Propuesta |
-| [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D: abducción aparte (35°) y despegue sostenido 400 ms (`issueHoldMs`) | 2026-10-20 | Propuesta |
-| [DEC-076](DEC-076-voz-aviso-tecnica-en-pico.md) | La voz dice el aviso de técnica en el pico en vez del elogio, solo para avisos validados (`VOICED_TECHNIQUE_ISSUES`) | 2026-10-20 | Propuesta |
+| [DEC-065](DEC-065-datasets-externos-alcance-academico.md) | Datasets externos: licencias de MM-Fit corregidas (código MIT, video CC BY 4.0, etiquetas sin licencia pública) y alcance solo académico | 2026-10-13 | Aceptada (2026-10-21) |
+| [DEC-066](DEC-066-umbrales-reposo-3d-grabaciones.md) | Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales | 2026-10-14 | Aceptada (2026-10-21) |
+| [DEC-067](DEC-067-coste-ia-rankings-antitrampa-privacidad.md) | Tope de costo del asistente IA (USD 2/usuario/mes, modo simulado por defecto), rankings cada 15 min, reglas anti-trampa v1 y aviso de privacidad versionado | 2026-10-17 | Aceptada (2026-10-21) |
+| [DEC-068](DEC-068-nombre-movexnet-repositorio-publico.md) | Nombre del producto MovexNet, repositorio `movexnet` y visibilidad pública | 2026-10-17 | Aceptada (2026-10-21) |
+| [DEC-069](DEC-069-cuentas-supabase-auth.md) | Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor | 2026-10-19 | Aceptada (2026-10-21) |
+| [DEC-070](DEC-070-merge-sin-revision-obligatoria.md) | Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-071](DEC-071-linea-cuerpo-un-lado-ejercicios-suelo.md) | Línea del cuerpo con el lado más visible y ejercicios de suelo sin esperar la calibración de pie | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-072](DEC-072-sentadilla-motor-3d.md) | La sentadilla pasa al motor 3D por defecto | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-073](DEC-073-calibracion-brazos-3d.md) | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales (curl 140°/70°, press con suavidad mínima 0.4, sin aviso de hombros en 3D) | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-074](DEC-074-antitrampa-v1-1.md) | Anti-trampa v1.1: `missing_duration` en series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones con fin efectivo de 3 h | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D: abducción aparte (35°) y despegue sostenido 400 ms (`issueHoldMs`) | 2026-10-20 | Aceptada (2026-10-21) |
+| [DEC-076](DEC-076-voz-aviso-tecnica-en-pico.md) | La voz dice el aviso de técnica en el pico en vez del elogio, solo para avisos validados (`VOICED_TECHNIQUE_ISSUES`) | 2026-10-20 | Aceptada (2026-10-21) |
 | [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Propuesta |
 | [DEC-078](DEC-078-motor-3d-por-defecto.md) | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo y golden 3D con grabaciones reales | 2026-10-21 | Propuesta |
 | [DEC-079](DEC-079-sincronizacion-supabase-cola-offline.md) | Sincronización con Supabase: cola offline, series inmutables con ids del cliente, última escritura gana en rutinas y objetivos, historial previo como `imported` y datos de la cuenta fuera del dispositivo al cerrar sesión | 2026-10-21 | Propuesta |

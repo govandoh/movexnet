@@ -1,6 +1,6 @@
 # DEC-063 · Contrato `ExerciseTracker` v1.0.0 y adaptadores de los contadores
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-07
 - **Decisores:** leads de contratos B (Análisis & Runtime) y D (Backend de producto); revisión de E por `src/ui/**`
 - **Etiquetas:** contracts, analysis-core, ui

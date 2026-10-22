@@ -23,7 +23,7 @@ Acceso rápido a las más citadas desde el código:
 | DEC-025 | Service Worker network-first para HTML | [docs/adr/DEC-025-service-worker-network-first.md](docs/adr/DEC-025-service-worker-network-first.md) |
 | DEC-027 | Arquitectura híbrida de IA | [docs/adr/DEC-027-arquitectura-hibrida-ia.md](docs/adr/DEC-027-arquitectura-hibrida-ia.md) |
 | DEC-028 | Monorepo pnpm y fronteras de paquetes | [docs/adr/DEC-028-monorepo-pnpm-fronteras-paquetes.md](docs/adr/DEC-028-monorepo-pnpm-fronteras-paquetes.md) |
-| DEC-034 | Vía de implementación del análisis por IA (propuesta) | [docs/adr/DEC-034-via-implementacion-analisis-ia.md](docs/adr/DEC-034-via-implementacion-analisis-ia.md) |
+| DEC-034 | Vía de implementación del análisis por IA | [docs/adr/DEC-034-via-implementacion-analisis-ia.md](docs/adr/DEC-034-via-implementacion-analisis-ia.md) |
 | DEC-035 | Proyecto académico: sin facturación real, pagos simulados | [docs/adr/DEC-035-proyecto-academico-sin-facturacion-real.md](docs/adr/DEC-035-proyecto-academico-sin-facturacion-real.md) |
 | DEC-036 | Migración del análisis a 3D con `worldLandmarks` (fitnetv2 DEC-026) | [docs/adr/DEC-036-analisis-3d-world-landmarks.md](docs/adr/DEC-036-analisis-3d-world-landmarks.md) |
 | DEC-037 | Validación temporal de repeticiones (fitnetv2 DEC-027) | [docs/adr/DEC-037-validacion-temporal-repeticiones.md](docs/adr/DEC-037-validacion-temporal-repeticiones.md) |
@@ -52,12 +52,12 @@ Acceso rápido a las más citadas desde el código:
 | DEC-060 | Responsive y áreas seguras como regla de diseño y funcionalidad | [docs/adr/DEC-060-responsive-areas-seguras.md](docs/adr/DEC-060-responsive-areas-seguras.md) |
 | DEC-061 | Ficha de técnica con modelo 3D, mini mapa arrastrable y preferencias de vista | [docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md](docs/adr/DEC-061-tecnica-3d-y-mini-mapa.md) |
 | DEC-064 | Un consentimiento de grabación vale para una sola grabación | [docs/adr/DEC-064-consentimiento-una-grabacion.md](docs/adr/DEC-064-consentimiento-una-grabacion.md) |
-| DEC-065 | Datasets externos: licencias de MM-Fit corregidas y alcance solo académico (propuesta) | [docs/adr/DEC-065-datasets-externos-alcance-academico.md](docs/adr/DEC-065-datasets-externos-alcance-academico.md) |
-| DEC-069 | Cuentas con Supabase Auth: correo y contraseña, Brevo, Turnstile y puerta 18+ en el servidor (propuesta) | [docs/adr/DEC-069-cuentas-supabase-auth.md](docs/adr/DEC-069-cuentas-supabase-auth.md) |
-| DEC-073 | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales (propuesta) | [docs/adr/DEC-073-calibracion-brazos-3d.md](docs/adr/DEC-073-calibracion-brazos-3d.md) |
-| DEC-074 | Anti-trampa v1.1: series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones (propuesta) | [docs/adr/DEC-074-antitrampa-v1-1.md](docs/adr/DEC-074-antitrampa-v1-1.md) |
-| DEC-075 | "Pega el codo" en el motor 3D: abducción aparte y despegue sostenido 400 ms (propuesta) | [docs/adr/DEC-075-codo-despegado-persistencia.md](docs/adr/DEC-075-codo-despegado-persistencia.md) |
-| DEC-076 | La voz dice el aviso de técnica en el pico en vez del elogio (propuesta) | [docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md](docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md) |
+| DEC-065 | Datasets externos: licencias de MM-Fit corregidas y alcance solo académico | [docs/adr/DEC-065-datasets-externos-alcance-academico.md](docs/adr/DEC-065-datasets-externos-alcance-academico.md) |
+| DEC-069 | Cuentas con Supabase Auth: correo y contraseña, Brevo, Turnstile y puerta 18+ en el servidor | [docs/adr/DEC-069-cuentas-supabase-auth.md](docs/adr/DEC-069-cuentas-supabase-auth.md) |
+| DEC-073 | Curl y press en el motor 3D: umbrales calibrados con grabaciones reales | [docs/adr/DEC-073-calibracion-brazos-3d.md](docs/adr/DEC-073-calibracion-brazos-3d.md) |
+| DEC-074 | Anti-trampa v1.1: series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones | [docs/adr/DEC-074-antitrampa-v1-1.md](docs/adr/DEC-074-antitrampa-v1-1.md) |
+| DEC-075 | "Pega el codo" en el motor 3D: abducción aparte y despegue sostenido 400 ms | [docs/adr/DEC-075-codo-despegado-persistencia.md](docs/adr/DEC-075-codo-despegado-persistencia.md) |
+| DEC-076 | La voz dice el aviso de técnica en el pico en vez del elogio | [docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md](docs/adr/DEC-076-voz-aviso-tecnica-en-pico.md) |
 | DEC-077 | Avisos de técnica del press y del curl en 3D sin falsos positivos (propuesta) | [docs/adr/DEC-077-avisos-press-curl-3d.md](docs/adr/DEC-077-avisos-press-curl-3d.md) |
 | DEC-078 | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo (propuesta) | [docs/adr/DEC-078-motor-3d-por-defecto.md](docs/adr/DEC-078-motor-3d-por-defecto.md) |
 | DEC-079 | Sincronización con Supabase y cola offline (propuesta) | [docs/adr/DEC-079-sincronizacion-supabase-cola-offline.md](docs/adr/DEC-079-sincronizacion-supabase-cola-offline.md) |

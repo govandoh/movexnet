@@ -1,22 +1,12 @@
 ## Resumen
 <!-- Qué cambia y por qué, en 2–4 líneas. Enlaza la historia/issue: Closes #NN -->
 
-## Tipo de cambio
-- [ ] `feat` nueva funcionalidad
-- [ ] `fix` corrección
-- [ ] `refactor` sin cambio de comportamiento (golden intactos)
-- [ ] `test` / `fixtures`
-- [ ] `docs` / `adr`
-- [ ] `chore` tooling, CI, dependencias
+<!-- Tipo y workstream van como texto, no como casillas: GitHub cuenta cada casilla como tarea
+     pendiente, y el contador del PR debe mostrar solo la Definition of Done. -->
 
-## Workstream
-- [ ] A · Pose & Captura
-- [ ] B · Análisis & Runtime
-- [ ] C · ML Training
-- [ ] D · Backend de producto
-- [ ] E · App & UI
-- [ ] Plataforma / DevEx
-- [ ] Contratos (`packages/contracts`, `src/contracts`) → requiere rama `contracts/*` o `adr/*` y ADR
+**Tipo de cambio:** <!-- uno o varios: feat · fix · refactor (golden intactos) · test/fixtures · docs/adr · chore -->
+
+**Workstream:** <!-- uno o varios: A · Pose & Captura | B · Análisis & Runtime | C · ML Training | D · Backend de producto | E · App & UI | Plataforma / DevEx | Contratos (rama `contracts/*` o `adr/*` y ADR) -->
 
 ## ADR relacionada
 <!-- Obligatoria si el PR toca contratos, models/manifest.json o snapshots golden. -->

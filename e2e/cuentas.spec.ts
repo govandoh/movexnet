@@ -137,7 +137,8 @@ test('recuperación de contraseña desde otro navegador', async ({ page, browser
 
   const other = await browser.newContext({ ignoreHTTPSErrors: true });
   const otherPage = await other.newPage();
-  await skipOnboarding(otherPage);
+  // Sin saltar la bienvenida: el otro navegador nunca la vio y el enlace debe ir directo a
+  // "Contraseña nueva" (issue #75, Safari fuera de la PWA en iOS).
   await otherPage.goto(await mailLink(to, 'Recupera tu contraseña'));
   await expect(otherPage.getByRole('heading', { name: 'Contraseña nueva' })).toBeVisible();
   await otherPage.getByLabel('Contraseña nueva').fill(NEW_PASSWORD);

@@ -1,6 +1,6 @@
 # DEC-071 · Línea del cuerpo con el lado más visible y ejercicios de suelo sin esperar la calibración de pie
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** lead del workstream B (Análisis & Runtime); revisión de E por `src/ui/workout/WorkoutScreen.tsx`
 - **Etiquetas:** `analysis-core`, `umbrales`, `tecnica`

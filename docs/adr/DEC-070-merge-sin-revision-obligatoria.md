@@ -1,6 +1,6 @@
 # DEC-070 · Merge sin revisión obligatoria: CI como única puerta y el responsable hace el squash merge
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** @govandoh (responsable del proyecto, decide en representación del equipo)
 - **Etiquetas:** `proceso`, `repositorio`

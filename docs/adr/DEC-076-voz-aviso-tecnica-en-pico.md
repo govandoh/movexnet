@@ -1,6 +1,6 @@
 # DEC-076 · La voz dice el aviso de técnica en el pico en vez del elogio
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** A (pose y captura, @ChejoUMG), B (análisis y voz, @ecaldcc), E (app)
 - **Etiquetas:** `feedback`, `ui`

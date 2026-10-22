@@ -36,13 +36,22 @@ const AUTH_PARAMS = ['code', 'token_hash', 'type', 'error', 'error_code', 'error
 const LINK_TYPES: readonly EmailLinkType[] = ['email', 'recovery'];
 
 /**
+ * Si la URL trae un enlace del correo (confirmación, recuperación o su error). Se lee antes de
+ * que `startAccount` limpie la URL: la app la usa para no anteponer la bienvenida (issue #75).
+ */
+export function isEmailLinkUrl(href: string): boolean {
+  const params = new URL(href).searchParams;
+  return params.has('token_hash') || params.has('code') || params.has('error');
+}
+
+/**
  * Quita de la URL lo que dejó Auth. Si el canje funcionó, supabase-js ya borró `code`; si
  * falló, el código quedaría en el historial del navegador. Devuelve si había un error.
  */
 function cleanAuthParams(): boolean {
   const url = new URL(window.location.href);
   const failed = url.searchParams.has('error') || url.searchParams.has('code');
-  if (!url.searchParams.has('token_hash') && !url.searchParams.has('code') && !url.searchParams.has('error')) return false;
+  if (!isEmailLinkUrl(url.href)) return false;
   for (const p of AUTH_PARAMS) url.searchParams.delete(p);
   window.history.replaceState(window.history.state, '', url.toString());
   return failed;

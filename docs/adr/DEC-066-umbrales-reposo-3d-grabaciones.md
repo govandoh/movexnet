@@ -1,6 +1,6 @@
 # DEC-066 · Umbrales de reposo del motor 3D y de la calibración de pie, ajustados con grabaciones reales
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-14
 - **Decisores:** lead del workstream B (Análisis & Runtime); aprueban B, D y E (`docs/adr/README.md`)
 - **Etiquetas:** `analysis-core`, `umbrales`, `calibracion`

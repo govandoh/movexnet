@@ -1,6 +1,6 @@
 # DEC-065 · Datasets externos: licencias de MM-Fit corregidas y alcance académico
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-13
 - **Decisores:** @govandoh (responsable del proyecto); revisan B, D y E (`docs/adr/README.md`)
 - **Etiquetas:** `ml`, `datos`, `licencias`, `proceso`

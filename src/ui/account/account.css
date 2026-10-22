@@ -103,7 +103,16 @@
   font-size: var(--text-small);
 }
 
+/*
+ * El widget es invisible salvo que Cloudflare pida tocar la casilla (issue #75): solo entonces
+ * se reservan los 65 px del recuadro.
+ */
 .account-captcha {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.account-captcha[data-state='interactive'] .account-captcha__box {
   min-height: 65px;
 }
 

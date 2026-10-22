@@ -44,6 +44,8 @@ export default defineConfig({
     {
       name: 'sincronizacion-iphone',
       testMatch: /sincronizacion\.spec\.ts/,
+      // WebKit en Windows con el servidor de desarrollo es más lento que Chromium.
+      timeout: 60_000,
       use: { ...devices['iPhone 15'], baseURL: `https://localhost:${IPHONE_PORT}` },
     },
     { name: 'app', testMatch: /calendario\.spec\.ts/, use: { baseURL: `https://localhost:${APP_PORT}` } },

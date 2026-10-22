@@ -1,6 +1,6 @@
 # DEC-075 · "Pega el codo" en el motor 3D: abducción aparte y despegue sostenido 400 ms
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** A (pose y captura, @ChejoUMG), B (análisis, @ecaldcc)
 - **Etiquetas:** `analysis-core`

@@ -50,7 +50,12 @@ async function signIn(page: Page, email: string) {
 }
 
 async function syncState(page: Page) {
-  await page.getByRole('link', { name: 'Perfil' }).click();
+  // Cambio de ruta sin recargar (como tocar Perfil). Se reintenta: tras iniciar sesión o tocar
+  // "Listo" la app puede terminar una navegación a Hoy unos milisegundos después y pisarla.
+  await expect(async () => {
+    await page.evaluate(() => { window.location.hash = '#/perfil'; });
+    await expect(page.getByRole('heading', { name: 'Perfil' })).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
   return page.getByRole('status').filter({ hasText: 'Sincronización' });
 }
 
@@ -62,6 +67,8 @@ async function manualSet(page: Page) {
   await page.getByRole('button', { name: 'Terminar ejercicio' }).click();
   await expect(page.getByRole('heading', { name: 'Ejercicio terminado' })).toBeVisible();
   await page.getByRole('button', { name: 'Listo' }).click();
+  // "Listo" vuelve a Hoy: se espera a que termine para que no pise la navegación siguiente.
+  await expect(page).toHaveURL(/#\/$/);
 }
 
 test.beforeEach(async ({ page }) => {

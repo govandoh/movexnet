@@ -8,7 +8,8 @@ import { ExercisesScreen } from './ui/screens/ExercisesScreen';
 import { ProfileScreen } from './ui/screens/ProfileScreen';
 import { QuestionnaireScreen } from './ui/screens/QuestionnaireScreen';
 import { WorkoutScreen } from './ui/workout/WorkoutScreen';
-import { startAccount, useAccount } from './ui/state/accountStore';
+import { MovexMark } from './ui/components/icons';
+import { isEmailLinkUrl, startAccount, useAccount } from './ui/state/accountStore';
 import { startSyncStore } from './ui/state/syncStore';
 
 // El editor y el modo manual se cargan al entrar: así el shell inicial no los incluye (issue #34).
@@ -23,6 +24,11 @@ const NewPasswordScreen = lazy(() => account().then(m => ({ default: m.NewPasswo
 const PrivacyScreen = lazy(() => account().then(m => ({ default: m.PrivacyScreen })));
 const AccountWelcomeScreen = lazy(() => account().then(m => ({ default: m.AccountWelcomeScreen })));
 
+// Se lee antes de `startAccount`, que limpia la URL. Quien abre un enlace del correo ya tiene
+// cuenta: la bienvenida no se antepone a "Contraseña nueva" aunque el enlace se abra en otro
+// navegador, como Safari fuera de la PWA en iOS (issue #75).
+const OPENED_FROM_EMAIL_LINK = isEmailLinkUrl(window.location.href);
+
 // Antes de montar nada: el cliente de Supabase canjea el código del enlace del correo que
 // viene en la URL. No hace nada con las cuentas apagadas (DEC-069).
 startAccount();
@@ -31,8 +37,18 @@ startSyncStore();
 
 const ONBOARDING_KEY = 'ob_complete_v1';
 
+/**
+ * Carga inicial: el logo centrado sobre tinta. Aparece con retraso para que una carga corta
+ * (la sesión se lee del dispositivo) no parpadee, y sus nodos se encienden en el orden del
+ * trazo mientras dure (docs/DESIGN.md §6, "Carga inicial").
+ */
 function Loading() {
-  return <div className="screen" role="status" aria-live="polite"><p className="muted">Cargando…</p></div>;
+  return (
+    <div className="app-loading" role="status" aria-live="polite">
+      <MovexMark size={72} className="movex-mark--loading" />
+      <span className="visually-hidden">Cargando MovexNet</span>
+    </div>
+  );
 }
 
 /**
@@ -91,6 +107,7 @@ const router = createHashRouter([
 
 function App() {
   const [ready, setReady] = useState(() => {
+    if (OPENED_FROM_EMAIL_LINK) return true;
     try { return localStorage.getItem(ONBOARDING_KEY) === '1'; } catch { return false; }
   });
 
