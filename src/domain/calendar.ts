@@ -176,3 +176,42 @@ export function reminderTimes(
   }
   return reminders;
 }
+
+/** Días hacia adelante que se suben al servidor de push (DEC-080 §6). */
+export const PUSH_WINDOW_DAYS = 14;
+/** Tope de avisos por suscripción que acepta `replace_push_reminders`. */
+export const PUSH_MAX_REMINDERS = 30;
+
+/** Aviso listo para el servidor de push; la hora ya es absoluta (ISO 8601 en UTC). */
+export interface PushReminderItem {
+  sendAt: string;
+  title: string;
+  body: string;
+  /** Ruta de la app que abre el aviso (HashRouter). */
+  url: string;
+}
+
+/**
+ * Avisos de los próximos `PUSH_WINDOW_DAYS` días para Web Push (#88, DEC-080). Parte de
+ * `reminderTimes`, así que omite lo entrenado y lo bloqueado igual que el aviso local. El
+ * texto es solo el día del programa: nada de métricas ni datos de salud (DEC-080 §8).
+ * `dayLabel` da el nombre del día de la rutina (`routine.days[dayIndex].label`).
+ */
+export function pushReminderItems(
+  reminders: readonly Reminder[], now: Date, dayLabel: (session: ProgramSession) => string | undefined,
+): PushReminderItem[] {
+  const until = now.getTime() + PUSH_WINDOW_DAYS * 86_400_000;
+  return reminders
+    .filter(r => r.at > now.getTime() && r.at <= until)
+    .slice(0, PUSH_MAX_REMINDERS)
+    .map(r => {
+      const week = r.session.week + 1;
+      const label = dayLabel(r.session)?.trim();
+      return {
+        sendAt: new Date(r.at).toISOString(),
+        title: 'Hoy toca entrenar',
+        body: (label ? `Semana ${week} · ${label}` : `Semana ${week} de tu programa`).slice(0, 160),
+        url: `/#/rutinas?semana=${week}`,
+      };
+    });
+}

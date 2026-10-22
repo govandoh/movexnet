@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { IconCalendar, IconDumbbell, IconFigure, IconToday, IconUser } from './components/icons';
 import { useReminderScheduler } from './state/reminders';
+import { usePushReminders } from './state/pushReminders';
 
 /**
  * Contenedor de las pantallas de gestión: contenido desplazable y navegación inferior de
@@ -8,8 +9,10 @@ import { useReminderScheduler } from './state/reminders';
  * fuera: ocupa todo el alto y no comparte espacio con la barra.
  */
 export function AppShell() {
-  // Avisos del programa (#35) mientras la app está abierta o en segundo plano.
+  // Avisos del programa (#35) mientras la app está abierta o en segundo plano, y por Web Push
+  // con la app cerrada cuando hay cuenta (#88).
   useReminderScheduler();
+  usePushReminders();
   return (
     <div className="app-shell">
       <main className="app-content">

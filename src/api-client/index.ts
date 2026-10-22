@@ -4,7 +4,7 @@
  * sale de esta carpeta (regla de ESLint en `eslint.config.js`, DEC-028 y DEC-069).
  */
 
-import type { AuthRepository } from '../domain/ports.ts';
+import type { AuthRepository, PushRepository } from '../domain/ports.ts';
 import type { BrowserServices } from './browserClient.ts';
 import type { LocalPort, SyncEngine } from './syncEngine.ts';
 import { readAccountsConfig, type AccountsConfig } from './config.ts';
@@ -48,6 +48,20 @@ function loadServices(): Promise<BrowserServices | null> {
 /** Repositorio de cuentas, cargado bajo demanda; null si las cuentas están apagadas. */
 export async function loadAuthRepository(): Promise<AuthRepository | null> {
   return (await loadServices())?.auth ?? null;
+}
+
+/**
+ * Clave pública VAPID; null si las cuentas están apagadas o no hay clave. Sin ella no hay
+ * Web Push y los recordatorios se quedan en el aviso local (DEC-080).
+ */
+export function vapidPublicKey(): string | null {
+  return getAccountsConfig()?.vapidPublicKey ?? null;
+}
+
+/** Suscripción y avisos de Web Push (issue #88); null si las cuentas o el push están apagados. */
+export async function loadPushRepository(): Promise<PushRepository | null> {
+  if (!vapidPublicKey()) return null;
+  return (await loadServices())?.push ?? null;
 }
 
 /** Cierre de sesión sin motor en marcha: borra igual la cola y la marca de dueño (DEC-079). */

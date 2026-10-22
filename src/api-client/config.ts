@@ -13,6 +13,11 @@ export interface AccountsConfig {
   publishableKey: string;
   /** Site key pública de Cloudflare Turnstile; null si el captcha no está configurado. */
   turnstileSiteKey: string | null;
+  /**
+   * Clave pública VAPID para Web Push (DEC-080); null si no está o no tiene la forma de una
+   * clave P-256. Sin ella los recordatorios se quedan en el aviso local de la app abierta.
+   */
+  vapidPublicKey: string | null;
 }
 
 export type AccountsEnv = Record<string, string | boolean | undefined>;
@@ -33,7 +38,16 @@ export function readAccountsConfig(env: AccountsEnv): AccountsConfig | null {
     url: parseProjectUrl(str(env.VITE_SUPABASE_URL)),
     publishableKey: checkPublishableKey(str(env.VITE_SUPABASE_PUBLISHABLE_KEY)),
     turnstileSiteKey: str(env.VITE_TURNSTILE_SITE_KEY) || null,
+    vapidPublicKey: vapidKey(str(env.VITE_VAPID_PUBLIC_KEY)),
   };
+}
+
+/**
+ * Punto P-256 sin comprimir (65 bytes, primer byte 0x04) en base64url: 87 caracteres que
+ * empiezan por `B`. Una clave mal copiada apaga el push en vez de romper las cuentas.
+ */
+function vapidKey(raw: string): string | null {
+  return /^B[A-Za-z0-9_-]{86}$/.test(raw) ? raw : null;
 }
 
 function str(value: string | boolean | undefined): string {

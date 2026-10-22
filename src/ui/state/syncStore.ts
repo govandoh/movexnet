@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { forgetSync, startSync, type SyncSession, type SyncStatus } from '../../api-client/index.ts';
 import { newId, onLocalChange, syncLocal, type LocalChange } from './appStore';
 import { authRepository, watchAccount, type AccountState } from './accountStore';
+import { unsubscribePush } from './pushReminders';
 
 /**
  * Conecta la cuenta, el estado local y la sincronización (issue #87, DEC-079).
@@ -93,6 +94,8 @@ export function useSyncStatus(): SyncStatus | null {
  * la UI lo advierte antes con `useSyncStatus().pendingOps`.
  */
 export async function signOutAndForget(): Promise<void> {
+  // Antes del signOut: borrar la suscripción de push necesita la sesión (DEC-080 §6).
+  await unsubscribePush().catch(() => {});
   await starting;
   const s = session;
   const userId = account?.user?.id ?? null;

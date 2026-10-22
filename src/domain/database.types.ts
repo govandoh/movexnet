@@ -99,6 +99,40 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"push_reminders": {
+                  Row: {
+                    "body": string,"id": string,"send_at": string,"sent_at": string | null,"subscription_id": string,"title": string,"url": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"id"?: string,"send_at": string,"sent_at"?: string | null,"subscription_id": string,"title": string,"url": string
+                  }
+                  Update: {
+                    "body"?: string,"id"?: string,"send_at"?: string,"sent_at"?: string | null,"subscription_id"?: string,"title"?: string,"url"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "push_reminders_subscription_id_fkey"
+      columns: ["subscription_id"]
+isOneToOne: false
+      referencedRelation: "push_subscriptions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"push_subscriptions": {
+                  Row: {
+                    "auth": string,"created_at": string,"endpoint": string,"id": string,"p256dh": string,"updated_at": string,"user_agent": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "auth": string,"created_at"?: string,"endpoint": string,"id"?: string,"p256dh": string,"updated_at"?: string,"user_agent"?: string | null,"user_id"?: string
+                  }
+                  Update: {
+                    "auth"?: string,"created_at"?: string,"endpoint"?: string,"id"?: string,"p256dh"?: string,"updated_at"?: string,"user_agent"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"recording_consents": {
                   Row: {
                     "granted_at": string,"id": string,"revoked_at": string | null,"scope": string,"text_version": string,"user_id": string
@@ -311,8 +345,19 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "keepalive":
+            "claim_due_push_reminders":
+{ Args: { "p_limit"?: number }; Returns: {
+              "auth": string,"body": string,"endpoint": string,"p256dh": string,"reminder_id": string,"subscription_id": string,"title": string,"url": string
+            }[]
+                           },
+"keepalive":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"register_push_subscription":
+{ Args: { "p_auth": string,"p_endpoint": string,"p_p256dh": string,"p_user_agent"?: string }; Returns: string
+                           },
+"replace_push_reminders":
+{ Args: { "p_endpoint": string,"p_items": Json }; Returns: number
                            }
           }
           Enums: {

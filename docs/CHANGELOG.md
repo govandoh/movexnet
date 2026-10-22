@@ -6,6 +6,7 @@
 
 | Entregable | Contenido | Estado al cierre |
 |---|---|---|
+| Recordatorios con la app cerrada (#88, `DEC-080`) | Con cuenta, el aviso del programa llega a la hora elegida aunque la app esté cerrada (Android, y iPhone con la PWA instalada); dice solo el día ("Semana 2 · Pierna") y al tocarlo abre esa semana en Rutinas. Perfil indica si llega con la app cerrada. Apagar los recordatorios o cerrar sesión deja de enviarlos en ese celular. Sin cuenta sigue el aviso con la app abierta | Probado en local con Chrome de escritorio real (FCM): aviso entregado con la pestaña cerrada y con Chrome cerrado del todo; pgTAP, Vitest y Playwright. Falta desplegar la función y probar en Android y iPhone |
 | Cuentas en iPhone y pantalla de carga (#75) | El enlace de recuperación o de confirmación va directo a su pantalla aunque se abra en otro navegador, sin pasar por la bienvenida; el captcha ya no deja un recuadro vacío: solo aparece si Cloudflare pide tocar la casilla, y si falla se puede reintentar; al abrir la app ya no se lee "Cargando…" arriba: si tarda, aparece el logo con sus nodos encendiéndose | Probado con Playwright (carga lenta simulada, enlace en navegador nuevo, claves de prueba de Turnstile); falta probar en iPhone |
 
 ## Sprint 1 — Migración y datos (octubre 2026)

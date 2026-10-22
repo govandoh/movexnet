@@ -11,6 +11,7 @@
  */
 
 import type { SignUpInput } from './auth.ts';
+import type { PushReminderItem } from './calendar.ts';
 import type { CatalogExercise, EquipmentTag } from './catalog.ts';
 import type { Goal } from './progress.ts';
 import type { Routine } from './routines.ts';
@@ -196,4 +197,28 @@ export interface ConsentRepository {
   /** Consentimiento de una grabación; null si no existe. */
   forRecording(recordingId: string): Promise<RecordingConsent | null>;
   deleteRecording(recordingId: string): Promise<void>;
+}
+
+/** Suscripción de Web Push de este navegador (`PushSubscription.toJSON()`). */
+export interface PushSubscriptionInfo {
+  endpoint: string;
+  /** Clave pública ECDH del navegador, base64url. */
+  p256dh: string;
+  /** Secreto de autenticación del navegador, base64url. */
+  auth: string;
+  userAgent: string | null;
+}
+
+/**
+ * Recordatorios con la app cerrada (issue #88, DEC-080). Los avisos van por suscripción: cada
+ * navegador sube los suyos, con su hora. El `user_id` lo pone la base; el envío lo hace la
+ * Edge Function `send-reminders`, nunca el cliente.
+ */
+export interface PushRepository {
+  /** Idempotente: se llama al activar y en cada apertura de la app. */
+  register(subscription: PushSubscriptionInfo): Promise<void>;
+  /** Reemplaza en una transacción los avisos pendientes de esa suscripción. */
+  replaceReminders(endpoint: string, items: readonly PushReminderItem[]): Promise<void>;
+  /** Borra la suscripción y, en cascada, sus avisos. */
+  unregister(endpoint: string): Promise<void>;
 }

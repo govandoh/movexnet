@@ -103,3 +103,18 @@ test('el recordatorio avisa a la hora elegida el día de la sesión, una sola ve
   await page.clock.fastForward('05:00');
   expect(await sent()).toBe(0);
 });
+
+test('el enlace de un recordatorio abre la semana del aviso (#88)', async ({ page }) => {
+  await seed(page);
+  await page.goto('/#/rutinas?semana=3');
+  const tabs = page.getByRole('tablist', { name: 'Semanas del programa' });
+  await expect(tabs.getByRole('tab', { name: 'Semana 3', exact: true })).toHaveAttribute('aria-selected', 'true');
+
+  // Elegir otra semana a mano gana sobre el enlace.
+  await tabs.getByRole('tab', { name: 'Semana 1', exact: true }).click();
+  await expect(tabs.getByRole('tab', { name: 'Semana 1', exact: true })).toHaveAttribute('aria-selected', 'true');
+
+  // Una semana que no existe se ignora y queda la semana en curso (la 2 el 21 de octubre).
+  await page.goto('/#/rutinas?semana=99');
+  await expect(tabs.getByRole('tab', { name: 'Semana 2', exact: true })).toHaveAttribute('aria-selected', 'true');
+});

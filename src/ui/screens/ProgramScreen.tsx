@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAppState } from '../state/appStore';
 import { useProgram, useProgramSessions } from '../state/useProgram';
 import { ProgramCalendar } from './ProgramCalendar';
@@ -20,12 +20,21 @@ function dose(e: PlannedExercise): string {
   return e.holdSeconds !== undefined ? `${e.sets} × ${e.holdSeconds} s` : `${e.sets} × ${e.reps}`;
 }
 
+/** Semana (0 = semana 1) de `?semana=N`, el enlace de los recordatorios (#88); null si no vale. */
+function linkedWeek(raw: string | null, unlockedWeeks: number): number | null {
+  const n = Number(raw) - 1;
+  return raw !== null && Number.isInteger(n) && n >= 0 && n < unlockedWeeks ? n : null;
+}
+
 export function ProgramScreen() {
   const now = new Date();
   const { questionnaire, entitlement } = useAppState();
   const program = useProgram(now);
   const sessions = useProgramSessions(now);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [params] = useSearchParams();
+  // La semana elegida a mano vale para el enlace con que se eligió: un aviso nuevo la reemplaza.
+  const link = params.toString();
+  const [picked, setPicked] = useState<{ week: number; link: string } | null>(null);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [technique, setTechnique] = useState<string | null>(null);
 
@@ -43,12 +52,13 @@ export function ProgramScreen() {
     );
   }
 
+  const selected = picked?.link === link ? picked.week : linkedWeek(params.get('semana'), program.unlockedWeeks);
   const week = selected ?? Math.min(program.week, program.unlockedWeeks - 1);
   const days = weekPlan(program.routine, week);
 
   function pickWeek(w: number) {
     if (w >= program!.unlockedWeeks) setPremiumOpen(true);
-    else setSelected(w);
+    else setPicked({ week: w, link });
   }
 
   return (

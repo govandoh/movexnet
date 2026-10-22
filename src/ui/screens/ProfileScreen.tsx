@@ -11,31 +11,43 @@ import { useAccount } from '../state/accountStore';
 import { signOutAndForget, useSyncStatus } from '../state/syncStore';
 import type { SyncStatus } from '../../api-client/index.ts';
 import { notificationPermission, requestNotificationPermission, type PermissionState } from '../state/reminders';
+import { subscribePush, unsubscribePush, usePushActive } from '../state/pushReminders';
 
 const ONBOARDING_KEY = 'ob_complete_v1';
 
 /**
  * Recordatorios del programa (#35): se activan con permiso de notificaciones y avisan el día
- * de la sesión a la hora elegida. Sin servidor de push, solo con la app abierta o en segundo
- * plano (ver src/ui/state/reminders.ts).
+ * de la sesión a la hora elegida. Con cuenta llegan por Web Push también con la app cerrada
+ * (#88, src/ui/state/pushReminders.ts); sin cuenta, con la app abierta o en segundo plano.
  */
 function RemindersRow() {
   const { reminders, questionnaire } = useAppState();
+  const account = useAccount();
+  const pushActive = usePushActive();
   const [permission, setPermission] = useState<PermissionState>(notificationPermission);
   const on = reminders.enabled && permission === 'granted';
   const time = `${String(reminders.hour).padStart(2, '0')}:${String(reminders.minute).padStart(2, '0')}`;
 
   async function toggle() {
-    if (on) return appActions.setReminders({ enabled: false });
+    if (on) {
+      appActions.setReminders({ enabled: false });
+      void unsubscribePush();
+      return;
+    }
     const result = permission === 'granted' ? 'granted' : await requestNotificationPermission();
     setPermission(result);
-    if (result === 'granted') appActions.setReminders({ enabled: true });
+    if (result !== 'granted') return;
+    appActions.setReminders({ enabled: true });
+    // Desde el mismo toque: Safari en iOS lo exige para suscribirse. Si falla, se reintenta
+    // al subir los avisos y mientras tanto queda el aviso local.
+    if (account.status === 'signed_in' && account.user) void subscribePush(account.user.id).catch(() => {});
   }
 
   const meta = !questionnaire ? 'Arma tu programa para recibir avisos de tus sesiones'
     : permission === 'unsupported' ? 'Este navegador no permite notificaciones. En iPhone, instala la app en la pantalla de inicio'
       : permission === 'denied' ? 'Las notificaciones están bloqueadas: actívalas para MovexNet en los ajustes del navegador'
-        : on ? `El día que toca entrenar, a las ${time}, con la app abierta o en segundo plano` : 'Un aviso el día que toca entrenar';
+        : on && pushActive ? `El día que toca entrenar, a las ${time}, aunque la app esté cerrada`
+          : on ? `El día que toca entrenar, a las ${time}, con la app abierta o en segundo plano` : 'Un aviso el día que toca entrenar';
 
   return (
     <>

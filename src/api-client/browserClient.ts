@@ -12,6 +12,7 @@ import { SupabaseAuthRepository } from './supabaseAuthRepository.ts';
 import { SupabaseWorkoutRepository } from './supabaseWorkoutRepository.ts';
 import { SupabaseProfileRepository } from './supabaseProfileRepository.ts';
 import { SupabaseGoalRepository, SupabaseRoutineRepository } from './supabaseRoutineRepository.ts';
+import { SupabasePushRepository } from './supabasePushRepository.ts';
 import type { SyncRepositories } from './syncEngine.ts';
 
 /** Clave propia en vez de `sb-<ref>-auth-token` para poder borrarla sin conocer el proyecto. */
@@ -31,6 +32,8 @@ export interface BrowserServices {
   auth: SupabaseAuthRepository;
   /** Repositorios de datos de la cuenta con sesión; `userId` solo filtra, autoriza la RLS. */
   data(userId: string): SyncRepositories;
+  /** Suscripción y avisos de Web Push de la cuenta con sesión (DEC-080). */
+  push: SupabasePushRepository;
 }
 
 export function createBrowserServices(config: AccountsConfig): BrowserServices {
@@ -60,5 +63,6 @@ export function createBrowserServices(config: AccountsConfig): BrowserServices {
       routines: new SupabaseRoutineRepository(client),
       goals: new SupabaseGoalRepository(client),
     }),
+    push: new SupabasePushRepository(client),
   };
 }

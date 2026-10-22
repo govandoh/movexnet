@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-  nextSessions, programWeek, reminderTimes, scheduleProgram, sessionsBetween, withStatus,
+  nextSessions, programWeek, pushReminderItems, reminderTimes, scheduleProgram, sessionsBetween, withStatus,
+  PUSH_MAX_REMINDERS,
 } from './calendar.ts'
 import { PROGRAM_WEEKS } from './routineGenerator.ts'
 import type { SetRecord } from './sessionHistory.ts'
@@ -178,5 +179,50 @@ describe('reminderTimes', () => {
   it('acota la hora a valores válidos', () => {
     const r = reminderTimes(sessions, [], new Date(2026, 9, 6), { hour: 40, minute: -5 })
     expect(r[0].at).toBe(new Date(2026, 9, 7, 23, 0).getTime())
+  })
+})
+
+describe('pushReminderItems', () => {
+  const sessions = scheduleProgram(MWF, WED, { weeks: 8 })
+  const at18 = { hour: 18, minute: 0 }
+  const label = (s: { dayIndex: number }) => ['Pierna', 'Torso', 'Cuerpo completo'][s.dayIndex]
+
+  it('sube solo los avisos de los próximos 14 días, con hora absoluta', () => {
+    const now = new Date(2026, 9, 12, 10, 0)
+    const items = pushReminderItems(reminderTimes(sessions, [], now, at18), now, label)
+    // Del lunes 12 a las 10:00 al lunes 26 a las 10:00: el aviso del 26 a las 18:00 queda fuera.
+    expect(items.map(i => new Date(i.sendAt).getDate())).toEqual([12, 14, 16, 19, 21, 23])
+    expect(items[0].sendAt).toBe(new Date(2026, 9, 12, 18, 0).toISOString())
+  })
+
+  it('el texto es solo el día del programa y abre su semana', () => {
+    const now = new Date(2026, 9, 12, 10, 0)
+    const [first] = pushReminderItems(reminderTimes(sessions, [], now, at18), now, label)
+    expect(first).toEqual({
+      sendAt: new Date(2026, 9, 12, 18, 0).toISOString(),
+      title: 'Hoy toca entrenar',
+      // El programa empezó el miércoles 7: el lunes 12 aún es la semana 1.
+      body: 'Semana 1 · Pierna',
+      url: '/#/rutinas?semana=1',
+    })
+  })
+
+  it('sin nombre del día, dice solo la semana', () => {
+    const now = new Date(2026, 9, 12, 10, 0)
+    const [first] = pushReminderItems(reminderTimes(sessions, [], now, at18), now, () => undefined)
+    expect(first.body).toBe('Semana 1 de tu programa')
+  })
+
+  it('al entrenar un día, su aviso deja de subirse', () => {
+    const now = new Date(2026, 9, 12, 10, 0)
+    const items = pushReminderItems(reminderTimes(sessions, [rec(new Date(2026, 9, 12, 7))], now, at18), now, label)
+    expect(items[0].sendAt).toBe(new Date(2026, 9, 14, 18, 0).toISOString())
+  })
+
+  it('respeta el tope de avisos por suscripción', () => {
+    const daily = scheduleProgram([0, 1, 2, 3, 4, 5, 6].map(weekday => ({ weekday })), WED, { weeks: 8 })
+    const many = [...daily, ...daily, ...daily].sort((a, b) => a.date.localeCompare(b.date))
+    const now = new Date(2026, 9, 8, 6, 0)
+    expect(pushReminderItems(reminderTimes(many, [], now, at18), now, label)).toHaveLength(PUSH_MAX_REMINDERS)
   })
 })

@@ -19,7 +19,15 @@ describe('readAccountsConfig', () => {
       url: 'https://abcdefgh.supabase.co',
       publishableKey: 'sb_publishable_AbC123_x-y',
       turnstileSiteKey: '0x4AAA',
+      vapidPublicKey: null,
     })
+  })
+
+  it('lee la clave pública VAPID y descarta una mal formada', () => {
+    const key = 'B' + 'A'.repeat(86)
+    expect(readAccountsConfig({ ...base, VITE_VAPID_PUBLIC_KEY: key })?.vapidPublicKey).toBe(key)
+    expect(readAccountsConfig({ ...base, VITE_VAPID_PUBLIC_KEY: key.slice(1) })?.vapidPublicKey).toBeNull()
+    expect(readAccountsConfig({ ...base, VITE_VAPID_PUBLIC_KEY: 'sb_secret_xyz' })?.vapidPublicKey).toBeNull()
   })
 
   it('rechaza una clave secreta', () => {

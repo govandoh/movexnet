@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import { reminderTimes } from '../../domain/calendar';
 import { dayKey } from '../../domain/sessionHistory';
 import { useAppState } from './appStore';
+import { usePushActive } from './pushReminders';
 import { useProgramSessions } from './useProgram';
 
 /**
  * Recordatorios de las sesiones del programa (#35). El cálculo es del dominio
  * (`reminderTimes`); aquí solo se programa el aviso del día.
  *
- * Límite conocido: sin un servidor que envíe push, el aviso llega con la app abierta o en
- * segundo plano, no con la app cerrada. Con la app cerrada hace falta Web Push sobre
- * Supabase (historia aparte, con su DEC). En iOS las notificaciones solo existen con la PWA
+ * Este aviso local llega con la app abierta o en segundo plano. Con cuenta y clave VAPID, el
+ * aviso llega por Web Push también con la app cerrada (`pushReminders.ts`, DEC-080) y este
+ * no corre, para no avisar dos veces. En iOS las notificaciones solo existen con la PWA
  * instalada (iOS 16.4 o más).
  */
 
@@ -71,9 +72,10 @@ export function useReminderScheduler(): void {
   const sessions = useProgramSessions(now);
   const [tick, setTick] = useState(0);
   const permission = notificationPermission();
+  const pushActive = usePushActive();
 
   useEffect(() => {
-    if (!reminders.enabled || permission !== 'granted' || !questionnaire) return;
+    if (!reminders.enabled || permission !== 'granted' || !questionnaire || pushActive) return;
     const last = lastNotified();
     const next = reminderTimes(sessions, history, new Date(), reminders)
       .find(r => r.session.date !== last);
@@ -89,5 +91,5 @@ export function useReminderScheduler(): void {
       setTick(t => t + 1);
     }, Math.min(Math.max(delay, 0), MAX_DELAY_MS));
     return () => window.clearTimeout(timer);
-  }, [reminders, permission, questionnaire, sessions, history, tick]);
+  }, [reminders, permission, questionnaire, sessions, history, tick, pushActive]);
 }
