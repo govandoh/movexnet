@@ -115,6 +115,7 @@ Aplicación de las reglas de Emil Kowalski (`.claude/skills/animate`, `review-an
 | Demo 3D de la técnica | Continuo con la ficha abierta | Explicación | three.js en un `requestAnimationFrame` propio, solo con la ficha abierta | Esqueleto de 33 puntos en bucle y giro lento de la cámara hasta que el usuario lo toca | Suavizado 0,25 por cuadro | Sin giro automático ni suavizado |
 | Mini mapa 3D: soltar tras arrastrar | Ocasional | Espacial | `transform` directo al arrastrar; transición CSS al soltar | El panel se ancla al borde más cercano | `--ease-drawer`, 380 ms | Salto sin transición |
 | Consejos de la serie | Ocasional | Estado | `@starting-style` | Opacidad y `translateY(-6px)` al aparecer | `--ease-out`, 180 ms | Solo aparición |
+| Carga inicial (sesión o pantalla diferida) | Al abrir la app | Estado | Animación CSS (corre fuera del hilo principal mientras carga el código) | El logo `MovexMark` entra con opacidad y `scale(0.96)` tras `--delay-loading` (300 ms): si carga antes, solo se ve tinta, sin parpadeo. Después, sus 5 nodos se encienden en el orden del trazo de la "M" (opacidad 0,35 a 1 y `scale(0.8)` a 1), en bucle | Entrada `--ease-out`, 240 ms; ciclo `--ease-in-out`, `--dur-loading-cycle` (1200 ms), 120 ms entre nodos | Solo fundido, nodos encendidos y quietos |
 
 ### Reglas
 

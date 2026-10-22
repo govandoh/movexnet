@@ -2,6 +2,12 @@
 
 > Lo ya entregado, por hito. El estado vivo está en `docs/STATUS.md` y las decisiones en `docs/adr/README.md`. Se agrega una entrada cuando un PR mergeado cambia algo visible para el usuario o cierra un hito (DEC-062).
 
+## Sprint 2 — Datos reales, calendario y seguridad (octubre y noviembre 2026)
+
+| Entregable | Contenido | Estado al cierre |
+|---|---|---|
+| Cuentas en iPhone y pantalla de carga (#75) | El enlace de recuperación o de confirmación va directo a su pantalla aunque se abra en otro navegador, sin pasar por la bienvenida; el captcha ya no deja un recuadro vacío: solo aparece si Cloudflare pide tocar la casilla, y si falla se puede reintentar; al abrir la app ya no se lee "Cargando…" arriba: si tarda, aparece el logo con sus nodos encendiéndose | Probado con Playwright (carga lenta simulada, enlace en navegador nuevo, claves de prueba de Turnstile); falta probar en iPhone |
+
 ## Sprint 1 — Migración y datos (octubre 2026)
 
 | Entregable | Contenido | Estado al cierre |

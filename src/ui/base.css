@@ -587,6 +587,37 @@ a {
 .notice--amber { background: var(--tint-amber); color: var(--color-amber); }
 .notice--indigo { background: var(--tint-indigo); color: var(--color-indigo-text); }
 
+/* ---------- Carga inicial (DESIGN.md §6) ---------- */
+
+/*
+ * Animación CSS y no JS: corre fuera del hilo principal mientras se carga el código. El retraso
+ * con `both` deja la pantalla en tinta si la sesión se lee antes; así no parpadea nada.
+ */
+.app-loading {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--safe-top) var(--gutter-right) var(--safe-bottom) var(--gutter-left);
+  animation: app-loading-in var(--dur-base) var(--ease-out) var(--delay-loading) both;
+}
+
+@keyframes app-loading-in {
+  from { opacity: 0; transform: scale(0.96); }
+}
+
+.movex-mark--loading .movex-mark__node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: movex-node-pulse var(--dur-loading-cycle) var(--ease-in-out) infinite both;
+  animation-delay: calc(var(--delay-loading) + var(--i) * var(--stagger-loading));
+}
+
+/* Cada nodo se enciende al pasar el ciclo por él, en el orden del trazo de la "M". */
+@keyframes movex-node-pulse {
+  0%, 60%, 100% { opacity: 0.35; transform: scale(0.8); }
+  25% { opacity: 1; transform: scale(1); }
+}
+
 /* ---------- Movimiento reducido: sin desplazamientos ni escalas, quedan fundidos ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -614,4 +645,16 @@ a {
   .node-ring--celebrate circle[data-on='true'] {
     animation: none;
   }
+
+  .app-loading {
+    animation-name: app-loading-fade;
+  }
+
+  .movex-mark--loading .movex-mark__node {
+    animation: none;
+  }
+}
+
+@keyframes app-loading-fade {
+  from { opacity: 0; }
 }
