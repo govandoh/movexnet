@@ -53,14 +53,14 @@ export type Database = {
                   ]
                 },"goals": {
                   Row: {
-                    "created_at": string,"deadline": string | null,"id": string,"metric_name": string,"status": string,"target": number,"user_id": string
+                    "created_at": string,"deadline": string | null,"id": string,"metric_name": string,"status": string,"target": number,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"deadline"?: string | null,"id"?: string,"metric_name": string,"status"?: string,"target": number,"user_id": string
+                    "created_at"?: string,"deadline"?: string | null,"id"?: string,"metric_name": string,"status"?: string,"target": number,"updated_at"?: string,"user_id"?: string
                   }
                   Update: {
-                    "created_at"?: string,"deadline"?: string | null,"id"?: string,"metric_name"?: string,"status"?: string,"target"?: number,"user_id"?: string
+                    "created_at"?: string,"deadline"?: string | null,"id"?: string,"metric_name"?: string,"status"?: string,"target"?: number,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     
@@ -71,7 +71,7 @@ export type Database = {
                   }
                   ComputedFields: never
                   Insert: {
-                    "computed_at"?: string,"id"?: string,"name": string,"schema_version"?: number,"scope": string,"session_id": string,"set_id"?: string | null,"unit": string,"user_id": string,"value": number
+                    "computed_at"?: string,"id"?: string,"name": string,"schema_version"?: number,"scope": string,"session_id": string,"set_id"?: string | null,"unit": string,"user_id"?: string,"value": number
                   }
                   Update: {
                     "computed_at"?: string,"id"?: string,"name"?: string,"schema_version"?: number,"scope"?: string,"session_id"?: string,"set_id"?: string | null,"unit"?: string,"user_id"?: string,"value"?: number
@@ -87,14 +87,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "birth_month": number | null,"birth_year": number | null,"created_at": string,"days_per_week": number,"display_name": string,"equipment": (string)[],"experience_level": string,"goal": string,"height_cm": number | null,"preferred_camera": string,"privacy_accepted_at": string | null,"privacy_version": string | null,"program_type": string,"public_profile": boolean,"session_minutes": number,"training_location": string,"updated_at": string,"user_id": string,"weight_kg": number | null
+                    "birth_month": number | null,"birth_year": number | null,"created_at": string,"days_per_week": number,"display_name": string,"equipment": (string)[],"experience_level": string,"goal": string,"height_cm": number | null,"preferred_camera": string,"privacy_accepted_at": string | null,"privacy_version": string | null,"program_started_at": string | null,"program_type": string,"public_profile": boolean,"session_minutes": number,"training_location": string,"updated_at": string,"user_id": string,"weight_kg": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name": string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id": string,"weight_kg"?: number | null
+                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name": string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_started_at"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id": string,"weight_kg"?: number | null
                   }
                   Update: {
-                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name"?: string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id"?: string,"weight_kg"?: number | null
+                    "birth_month"?: number | null,"birth_year"?: number | null,"created_at"?: string,"days_per_week"?: number,"display_name"?: string,"equipment"?: (string)[],"experience_level"?: string,"goal"?: string,"height_cm"?: number | null,"preferred_camera"?: string,"privacy_accepted_at"?: string | null,"privacy_version"?: string | null,"program_started_at"?: string | null,"program_type"?: string,"public_profile"?: boolean,"session_minutes"?: number,"training_location"?: string,"updated_at"?: string,"user_id"?: string,"weight_kg"?: number | null
                   }
                   Relationships: [
                     
@@ -139,13 +139,27 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"routines": {
+                  Row: {
+                    "active": boolean,"created_at": string,"days": NonNullable<Json>,"id": string,"name": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"created_at"?: string,"days"?: NonNullable<Json>,"id": string,"name": string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "active"?: boolean,"created_at"?: string,"days"?: NonNullable<Json>,"id"?: string,"name"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"set_logs": {
                   Row: {
                     "duration_ms": number | null,"exercise_id": string,"flag_reasons": (string)[],"flagged": boolean,"id": string,"load_kg": number | null,"method": string,"method_params": NonNullable<Json>,"reps": number | null,"rpe": number | null,"session_id": string,"source": string,"started_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -171,7 +185,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -185,7 +199,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -199,7 +213,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -213,7 +227,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -227,7 +241,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -241,7 +255,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -255,7 +269,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -269,7 +283,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id": string
+                    "duration_ms"?: number | null,"exercise_id": string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id": string,"source"?: string,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "duration_ms"?: number | null,"exercise_id"?: string,"flag_reasons"?: (string)[],"flagged"?: boolean,"id"?: string,"load_kg"?: number | null,"method"?: string,"method_params"?: NonNullable<Json>,"reps"?: number | null,"rpe"?: number | null,"session_id"?: string,"source"?: string,"started_at"?: string,"user_id"?: string
@@ -283,7 +297,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "device"?: string | null,"ended_at"?: string | null,"id"?: string,"model_versions"?: NonNullable<Json>,"routine_day_id"?: string | null,"started_at"?: string,"user_id": string
+                    "device"?: string | null,"ended_at"?: string | null,"id"?: string,"model_versions"?: NonNullable<Json>,"routine_day_id"?: string | null,"started_at"?: string,"user_id"?: string
                   }
                   Update: {
                     "device"?: string | null,"ended_at"?: string | null,"id"?: string,"model_versions"?: NonNullable<Json>,"routine_day_id"?: string | null,"started_at"?: string,"user_id"?: string
