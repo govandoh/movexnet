@@ -15,6 +15,14 @@ import { subscribePush, unsubscribePush, usePushActive } from '../state/pushRemi
 
 const ONBOARDING_KEY = 'ob_complete_v1';
 
+const pad = (n: number) => String(n).padStart(2, '0');
+const HOURS = Array.from({ length: 24 }, (_, h) => h);
+/** Cada 5 minutos, como el cron que envía los avisos; conserva un minuto guardado fuera de la lista. */
+function minuteOptions(current: number): number[] {
+  const steps = Array.from({ length: 12 }, (_, i) => i * 5);
+  return steps.includes(current) ? steps : [...steps, current].sort((a, b) => a - b);
+}
+
 /**
  * Recordatorios del programa (#35): se activan con permiso de notificaciones y avisan el día
  * de la sesión a la hora elegida. Con cuenta llegan por Web Push también con la app cerrada
@@ -26,7 +34,7 @@ function RemindersRow() {
   const pushActive = usePushActive();
   const [permission, setPermission] = useState<PermissionState>(notificationPermission);
   const on = reminders.enabled && permission === 'granted';
-  const time = `${String(reminders.hour).padStart(2, '0')}:${String(reminders.minute).padStart(2, '0')}`;
+  const time = `${pad(reminders.hour)}:${pad(reminders.minute)}`;
 
   async function toggle() {
     if (on) {
@@ -60,14 +68,23 @@ function RemindersRow() {
         <span className={`pill ${on ? 'pill--volt' : 'pill--neutral'}`}>{on ? 'Activados' : 'Apagados'}</span>
       </button>
       {on && (
-        <label className="list-row">
-          <span className="list-row__main"><span className="list-row__title">Hora del aviso</span></span>
-          <input className="reminder-time" type="time" value={time} step={300}
-            onChange={e => {
-              const [h, m] = e.target.value.split(':').map(Number);
-              if (Number.isInteger(h) && Number.isInteger(m)) appActions.setReminders({ hour: h, minute: m });
-            }} />
-        </label>
+        // Dos listas y no `<input type="time">`: el reloj nativo de Chrome en Android corta el
+        // botón "Establecer" en pantallas angostas o con letra grande. La lista abre un
+        // selector nativo de un toque (Android) o la rueda (iOS), sin botones que se corten.
+        <div className="list-row" role="group" aria-labelledby="reminder-time-label">
+          <span className="list-row__main"><span className="list-row__title" id="reminder-time-label">Hora del aviso</span></span>
+          <span className="reminder-time">
+            <select className="reminder-time__field" aria-label="Hora" value={reminders.hour}
+              onChange={e => appActions.setReminders({ hour: Number(e.target.value) })}>
+              {HOURS.map(h => <option key={h} value={h}>{pad(h)}</option>)}
+            </select>
+            <span aria-hidden="true">:</span>
+            <select className="reminder-time__field" aria-label="Minutos" value={reminders.minute}
+              onChange={e => appActions.setReminders({ minute: Number(e.target.value) })}>
+              {minuteOptions(reminders.minute).map(m => <option key={m} value={m}>{pad(m)}</option>)}
+            </select>
+          </span>
+        </div>
       )}
     </>
   );

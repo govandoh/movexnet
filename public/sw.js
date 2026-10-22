@@ -1,7 +1,7 @@
-// v10: recordatorios por Web Push con la app cerrada y el toque abre la semana del aviso (#88, DEC-080). v9: la navegación clona la respuesta antes de devolverla (error "Response body is already used"). v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
+// v11: ícono pequeño de la notificación en Android con la "M" en blanco sobre transparente (badge-96.png); antes salía un cuadro blanco. v10: recordatorios por Web Push con la app cerrada y el toque abre la semana del aviso (#88, DEC-080). v9: la navegación clona la respuesta antes de devolverla (error "Response body is already used"). v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
 // (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
 // seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v10';
+const CACHE = 'entrenador-ia-v11';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -55,6 +55,10 @@ self.addEventListener('fetch', e => {
 });
 
 const ICON = '/icons/icon-192.png';
+// Ícono de la barra de estado en Android: solo cuenta la transparencia, así que va la "M" en
+// blanco sobre transparente. Con el ícono de la app (cuadrado opaco) Android pinta un cuadro
+// blanco. iOS no usa `icon` ni `badge`: muestra el ícono de la PWA instalada.
+const BADGE = '/icons/badge-96.png';
 // Mismo `tag` que el aviso local (src/ui/state/reminders.ts): uno reemplaza al otro.
 const REMINDER_TAG = 'movexnet-recordatorio';
 
@@ -77,7 +81,7 @@ self.addEventListener('push', e => {
   const body = typeof data.body === 'string' ? data.body : 'Tu sesión del programa te espera en MovexNet.';
   e.waitUntil(
     self.registration.showNotification(title, {
-      body, icon: ICON, badge: ICON, tag: REMINDER_TAG, data: { url: appUrl(data.url) },
+      body, icon: ICON, badge: BADGE, tag: REMINDER_TAG, data: { url: appUrl(data.url) },
     })
   );
 });

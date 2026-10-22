@@ -127,7 +127,8 @@ test('activar los recordatorios suscribe el navegador y sube los avisos de 14 dÃ
   }
 
   // Cambiar la hora reemplaza los avisos.
-  await page.locator('input.reminder-time').fill('07:30');
+  await page.getByRole('combobox', { name: 'Hora', exact: true }).selectOption('7');
+  await page.getByRole('combobox', { name: 'Minutos' }).selectOption('30');
   await expect.poll(
     async () => (await subscriptions(user.id))[0]?.push_reminders.every(r => new Date(r.send_at).getMinutes() === 30),
     { timeout: 15_000 },
