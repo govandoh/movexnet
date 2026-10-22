@@ -183,6 +183,8 @@ async function withSafe(ctx, dev) {
       await b.first().evaluate(el => el.click());
     };
     await page.goto(BASE + '#/entrenar?ex=squat'); await page.waitForTimeout(9000);
+    // La hoja de la primera vez entra con una transición de 380 ms que no avanza mientras MediaPipe carga: se espera a que termine.
+    await page.waitForFunction(() => { const s = document.querySelector('.sheet'); return s && getComputedStyle(s).transform === 'none'; }, null, { timeout: 40000 }).catch(() => {});
     // La primera vez con el ejercicio la ficha de técnica se abre sola (DEC-061).
     all.push(...await audit(page, dev, 'entrenar-ficha-primera-vez'));
     await tap('Entendido, empezar', 'entrenar-ficha-primera-vez');

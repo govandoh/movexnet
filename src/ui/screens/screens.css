@@ -215,6 +215,14 @@
   text-align: left;
 }
 
+/* Las filas de ejercicios cortan el texto con puntos suspensivos en vez de desbordar (DESIGN.md §7). */
+.exercise-row .list-row__title,
+.exercise-row .list-row__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .cues {
   font-size: var(--text-small);
   color: var(--color-text-muted);
@@ -432,12 +440,13 @@
   border-bottom: none;
 }
 
+/* 4 px a la derecha: el chevron girando a 45° ocupa 4 px más que su caja y desbordaba la fila. */
 .exercise-row__inner {
   min-height: 56px;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 8px 0;
+  padding: 8px 4px 8px 0;
 }
 
 .chevron {
