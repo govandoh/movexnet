@@ -398,6 +398,11 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# Recordatorios por Web Push (issue #88, DEC-080). La llama pg_cron con `x-cron-secret`, no un
+# usuario: sin verificación de JWT en la puerta; la función comprueba el secreto.
+[functions.send-reminders]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

@@ -33,6 +33,8 @@ create index push_subscriptions_user_id_idx on public.push_subscriptions (user_i
 alter table public.push_subscriptions enable row level security;
 revoke all on public.push_subscriptions from anon, authenticated;
 grant select, delete on public.push_subscriptions to authenticated;
+-- La Edge Function borra las suscripciones vencidas (404 o 410 del servicio de push).
+grant select, delete on public.push_subscriptions to service_role;
 
 create policy push_subscriptions_owner_select on public.push_subscriptions
   for select to authenticated using (user_id = (select auth.uid()));
