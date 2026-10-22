@@ -18,25 +18,27 @@ export function step(call: FakeCall | undefined, name: string): unknown[] | unde
 
 export function fakeDb(reply: (call: FakeCall) => PostgrestResult = () => ({ data: null, error: null, status: 201 })) {
   const calls: FakeCall[] = [];
+  function chain(call: FakeCall): object {
+    calls.push(call);
+    const builder: object = new Proxy({}, {
+      get(_target, prop) {
+        if (prop === 'then') {
+          return (resolve: (v: PostgrestResult) => unknown, reject: (e: unknown) => unknown) =>
+            Promise.resolve().then(() => reply(call)).then(resolve, reject);
+        }
+        return (...args: unknown[]) => {
+          call.steps.push([String(prop), args]);
+          return builder;
+        };
+      },
+    });
+    return builder;
+  }
   const db = {
-    from(table: string) {
-      const call: FakeCall = { table, steps: [] };
-      calls.push(call);
-      const builder: object = new Proxy({}, {
-        get(_target, prop) {
-          if (prop === 'then') {
-            return (resolve: (v: PostgrestResult) => unknown, reject: (e: unknown) => unknown) =>
-              Promise.resolve().then(() => reply(call)).then(resolve, reject);
-          }
-          return (...args: unknown[]) => {
-            call.steps.push([String(prop), args]);
-            return builder;
-          };
-        },
-      });
-      return builder;
-    },
+    from: (table: string) => chain({ table, steps: [] }),
+    /** Las funciones de la base se registran como `rpc:<nombre>` con un paso `args`. */
+    rpc: (fn: string, args: unknown) => chain({ table: `rpc:${fn}`, steps: [['args', [args]]] }),
   };
-  // El adaptador espera un SupabaseClient tipado; el doble solo implementa `from`.
+  // El adaptador espera un SupabaseClient tipado; el doble solo implementa `from` y `rpc`.
   return { db: db as never, calls };
 }
