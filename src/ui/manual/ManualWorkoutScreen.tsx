@@ -74,9 +74,12 @@ function ManualWorkout({ plan }: { plan: ManualPlan }) {
 
   useWakeLock();
 
-  /** Guarda una sola vez, y solo si hubo trabajo: así un montaje doble o una salida sin series no bloquea nada. */
+  /**
+   * Guarda una sola vez, y solo si hubo trabajo: así un montaje doble o una salida sin series no
+   * bloquea nada. Las series del ejercicio forman una sesión ya cerrada (DEC-079).
+   */
   function saveOnce(s: ManualState): void {
-    const records = manualRecords(s, newId);
+    const records = manualRecords(s, newId, newId());
     if (savedRef.current || records.length === 0) return;
     savedRef.current = true;
     appActions.addSets(records);

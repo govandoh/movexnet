@@ -3,15 +3,20 @@ import { isSetRecord, type SetRecord } from '../../domain/sessionHistory';
 import { FREE_ENTITLEMENT, isEntitlement, type Entitlement } from '../../domain/payment';
 import type { Questionnaire } from '../../domain/routineGenerator';
 import { ALL_EQUIPMENT } from '../../domain/catalog';
-import { activate, resolveStoredRoutines, type Routine } from '../../domain/routines';
+import { ROUTINE_TEMPLATES, activate, instantiateTemplate, resolveStoredRoutines, type Routine } from '../../domain/routines';
 import { isGoal, type Goal } from '../../domain/progress';
+import type { ProgramState } from '../../domain/sync';
 
 /**
  * Estado local de la app (historial, cuestionario, suscripción simulada, voz).
  *
- * Vive en `localStorage` mientras no exista `api-client` (DEC-024: siempre con try/catch y
- * validación). Si el almacenamiento está bloqueado, la app funciona igual con el estado en
- * memoria de la sesión: nunca se pierde lo que ya se tenía por un error de escritura.
+ * Vive en `localStorage` (DEC-024: siempre con try/catch y validación). Si el almacenamiento
+ * está bloqueado, la app funciona igual con el estado en memoria de la sesión: nunca se
+ * pierde lo que ya se tenía por un error de escritura.
+ *
+ * Con cuenta, el dispositivo sigue siendo la primera copia: cada cambio se guarda aquí y se
+ * avisa por `onLocalChange` para que la sincronización lo suba (issue #87, DEC-079). Lo que
+ * baja de la nube entra por `syncLocal.write`, que no vuelve a avisar.
  */
 
 export interface AppState {
@@ -107,9 +112,22 @@ const KEYS = {
 /** Tope de objetivos: la lista del perfil es corta a propósito. */
 export const MAX_GOALS = 6;
 
-/** Id único para entidades locales; `crypto.randomUUID` no existe en contextos inseguros. */
+/**
+ * UUID v4 para entidades locales: las tablas de la nube usan `uuid` (DEC-079).
+ * `crypto.randomUUID` no existe en contextos inseguros (HTTP en la LAN), `getRandomValues` sí.
+ */
 export function newId(): string {
-  try { return crypto.randomUUID(); } catch { return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`; }
+  try { return crypto.randomUUID(); } catch { /* contexto inseguro */ }
+  const b = new Uint8Array(16);
+  try {
+    crypto.getRandomValues(b);
+  } catch {
+    for (let i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256);
+  }
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const h = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
 /** Series que se conservan en el dispositivo. */
@@ -210,6 +228,40 @@ function set(next: Partial<AppState>): void {
   for (const l of listeners) l();
 }
 
+/** Cambio hecho por la persona en este dispositivo, para la sincronización (DEC-079). */
+export type LocalChange =
+  /** `close`: la sesión termina con estas series (modo manual). */
+  | { type: 'sets'; records: SetRecord[]; close: boolean }
+  | { type: 'session_end'; sessionId: string; endedAt: string }
+  | { type: 'routines'; upserted: Routine[]; deleted: string[] }
+  | { type: 'goals'; upserted: Goal[]; deleted: string[] }
+  | { type: 'program'; program: ProgramState };
+
+const changeListeners = new Set<(change: LocalChange) => void>();
+
+export function onLocalChange(listener: (change: LocalChange) => void): () => void {
+  changeListeners.add(listener);
+  return () => changeListeners.delete(listener);
+}
+
+function emit(change: LocalChange): void {
+  for (const l of changeListeners) l(change);
+}
+
+/**
+ * Guarda las rutinas marcando con la hora del cambio las que se tocaron (decide cuál gana al
+ * sincronizar) y avisa solo de esas. El estado es inmutable: lo que no cambió conserva la
+ * misma referencia.
+ */
+function setRoutines(next: readonly Routine[], deleted: readonly string[]): void {
+  const prev = state.routines;
+  const now = Date.now();
+  const routines = next.map(r => (prev.includes(r) ? r : { ...r, updatedAt: Math.max(r.updatedAt, now) }));
+  set({ routines });
+  const upserted = routines.filter(r => !prev.includes(r));
+  if (upserted.length > 0 || deleted.length > 0) emit({ type: 'routines', upserted, deleted: [...deleted] });
+}
+
 function subscribe(listener: () => void): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -220,38 +272,49 @@ export function useAppState(): AppState {
 }
 
 export const appActions = {
+  /** Serie de la cámara; su sesión sigue abierta hasta `endSession`. */
   addSet(record: SetRecord): void {
     set({ history: [...state.history, record].slice(-MAX_HISTORY) });
+    emit({ type: 'sets', records: [record], close: false });
   },
-  /** Varias series de golpe (modo manual): una sola escritura y una sola notificación. */
+  /** Varias series de golpe (modo manual): una sola escritura y una sola notificación; cierran su sesión. */
   addSets(records: readonly SetRecord[]): void {
     if (records.length === 0) return;
     set({ history: [...state.history, ...records].slice(-MAX_HISTORY) });
+    emit({ type: 'sets', records: [...records], close: true });
+  },
+  /** Fin de la visita a la cámara: cerrar la sesión evita falsos solapamientos (DEC-074). */
+  endSession(sessionId: string, endedAt: string): void {
+    emit({ type: 'session_end', sessionId, endedAt });
   },
   /** Crea o reemplaza una rutina por id. */
   saveRoutine(routine: Routine): void {
     const exists = state.routines.some(r => r.id === routine.id);
     const routines = exists ? state.routines.map(r => (r.id === routine.id ? routine : r)) : [...state.routines, routine];
     // Si la rutina guardada llega activa, desactiva las demás.
-    set({ routines: routine.active ? activate(routines, routine.id) : routines });
+    setRoutines(routine.active ? activate(routines, routine.id) : routines, []);
   },
   deleteRoutine(id: string): void {
-    set({ routines: state.routines.filter(r => r.id !== id) });
+    setRoutines(state.routines.filter(r => r.id !== id), [id]);
   },
   /** Deja activa solo la rutina `id` (o ninguna con `null`). */
   activateRoutine(id: string | null): void {
-    set({ routines: activate(state.routines, id) });
+    setRoutines(activate(state.routines, id), []);
   },
   saveGoal(goal: Goal): void {
     const exists = state.goals.some(g => g.id === goal.id);
     if (!exists && state.goals.length >= MAX_GOALS) return;
-    set({ goals: exists ? state.goals.map(g => (g.id === goal.id ? goal : g)) : [...state.goals, goal] });
+    const saved = { ...goal, updatedAt: Date.now() };
+    set({ goals: exists ? state.goals.map(g => (g.id === goal.id ? saved : g)) : [...state.goals, saved] });
+    emit({ type: 'goals', upserted: [saved], deleted: [] });
   },
   deleteGoal(id: string): void {
     set({ goals: state.goals.filter(g => g.id !== id) });
+    emit({ type: 'goals', upserted: [], deleted: [id] });
   },
   saveQuestionnaire(q: Questionnaire, now: Date): void {
     set({ questionnaire: q, programStartedAt: now.toISOString() });
+    emit({ type: 'program', program: { questionnaire: q, programStartedAt: state.programStartedAt } });
   },
   setEntitlement(e: Entitlement): void {
     set({ entitlement: e });
@@ -268,6 +331,47 @@ export const appActions = {
   markTechniqueSeen(exerciseId: string): void {
     if (state.view.seenTechnique.includes(exerciseId)) return;
     set({ view: { ...state.view, seenTechnique: [...state.view.seenTechnique, exerciseId].slice(-MAX_SEEN) } });
+  },
+};
+
+/**
+ * Datos de la cuenta para la sincronización (`LocalPort` de `api-client`). `write` no avisa
+ * por `onLocalChange`: lo que baja de la nube no se vuelve a subir.
+ */
+export const syncLocal = {
+  read() {
+    return {
+      history: state.history,
+      routines: state.routines,
+      goals: state.goals,
+      program: { questionnaire: state.questionnaire, programStartedAt: state.programStartedAt },
+    };
+  },
+  write(patch: { history?: SetRecord[]; routines?: Routine[]; goals?: Goal[]; program?: ProgramState }): void {
+    const next: Partial<AppState> = {};
+    if (patch.history) next.history = patch.history.slice(-MAX_HISTORY);
+    if (patch.routines) next.routines = patch.routines;
+    if (patch.goals) next.goals = patch.goals.slice(0, MAX_GOALS);
+    if (patch.program) {
+      next.questionnaire = patch.program.questionnaire;
+      next.programStartedAt = patch.program.programStartedAt;
+    }
+    set(next);
+  },
+  /**
+   * Cierre de sesión: el historial, el programa, las rutinas y los objetivos son de la cuenta
+   * y no los debe ver quien use el celular después (DEC-079). Las rutinas vuelven a ser las
+   * plantillas; voz, vista y recordatorios son del dispositivo y se quedan.
+   */
+  clear(): void {
+    try { localStorage.removeItem(KEYS.routinesBackup); } catch { /* bloqueado: no hay respaldo */ }
+    set({
+      history: [],
+      questionnaire: null,
+      programStartedAt: null,
+      routines: ROUTINE_TEMPLATES.map(t => instantiateTemplate(t, newId, Date.now())),
+      goals: [],
+    });
   },
 };
 

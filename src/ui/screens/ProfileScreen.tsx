@@ -7,7 +7,9 @@ import { totals } from '../../domain/sessionHistory';
 import { computeStats } from '../../domain/progress';
 import { AchievementsSection, GoalsSection, ProgressStats } from './ProgressSections';
 import { MockPaymentProvider } from '../../domain/payment';
-import { authRepository, useAccount } from '../state/accountStore';
+import { useAccount } from '../state/accountStore';
+import { signOutAndForget, useSyncStatus } from '../state/syncStore';
+import type { SyncStatus } from '../../api-client/index.ts';
 import { notificationPermission, requestNotificationPermission, type PermissionState } from '../state/reminders';
 
 const ONBOARDING_KEY = 'ob_complete_v1';
@@ -59,20 +61,66 @@ function RemindersRow() {
   );
 }
 
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+/** Texto del estado de la sincronización (issue #87). */
+function describeSync(s: SyncStatus): { label: string; meta: string; pill: string } {
+  const pending = s.pendingSets > 0 ? `Pendiente: ${plural(s.pendingSets, 'serie', 'series')}`
+    : s.pendingOps > 0 ? `${plural(s.pendingOps, 'cambio', 'cambios')} por subir` : '';
+  const failed = s.failed > 0 ? ` · ${plural(s.failed, 'cambio no se pudo', 'cambios no se pudieron')} guardar en la nube` : '';
+  switch (s.state) {
+    case 'offline':
+      return { label: 'Sin conexión', meta: `${pending ? `${pending}. ` : ''}Se sube solo al volver la red${failed}`, pill: 'pill--amber' };
+    case 'retrying':
+      return { label: 'Pendiente', meta: `${pending || 'Cambios por subir'}. Se reintenta solo${failed}`, pill: 'pill--amber' };
+    case 'syncing':
+    case 'pending':
+      return { label: 'Pendiente', meta: `${pending || 'Subiendo cambios'}${failed}`, pill: 'pill--neutral' };
+    case 'synced':
+      return { label: 'Sincronizado', meta: `Tu historial y tu programa están guardados en tu cuenta${failed}`, pill: 'pill--volt' };
+  }
+}
+
+function SyncRow() {
+  const sync = useSyncStatus();
+  if (!sync) return null;
+  const { label, meta, pill } = describeSync(sync);
+  return (
+    <div className="list-row" role="status" aria-live="polite">
+      <span className="list-row__main">
+        <span className="list-row__title">Sincronización</span>
+        <span className="list-row__meta">{meta}</span>
+      </span>
+      <span className={`pill ${pill}`}>{label}</span>
+    </div>
+  );
+}
+
 /** Estado de la cuenta (issue #60). Con las cuentas apagadas no se muestra nada. */
 function AccountSection() {
   const { status, user } = useAccount();
+  const sync = useSyncStatus();
   const [busy, setBusy] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   if (status === 'disabled') return null;
 
   async function signOut() {
+    // Lo que no se subió se pierde al cerrar sesión (DEC-079): primero se avisa.
+    if (!confirming && sync && sync.pendingOps > 0) {
+      setConfirming(true);
+      return;
+    }
     setBusy(true);
     try {
-      await (await authRepository()).signOut();
+      await signOutAndForget();
     } finally {
       setBusy(false);
+      setConfirming(false);
     }
   }
+
+  const unsent = sync ? (sync.pendingSets > 0 ? plural(sync.pendingSets, 'serie', 'series') : plural(sync.pendingOps, 'cambio', 'cambios')) : '';
+  const pendingWarning = `${unsent} sin subir se perderán. Conéctate a internet para guardarlas antes de salir.`;
 
   return (
     <section className="card card--framed">
@@ -102,15 +150,23 @@ function AccountSection() {
               <span className="list-row__meta">{user.email}</span>
             </span>
           </div>
+          <SyncRow />
           <Link className="list-row exercise-row" to="/cuenta/nueva-clave">
             <span className="list-row__main"><span className="list-row__title">Cambiar contraseña</span></span>
           </Link>
           <button className="list-row exercise-row" onClick={signOut} disabled={busy}>
             <span className="list-row__main">
-              <span className="list-row__title">{busy ? 'Cerrando sesión…' : 'Cerrar sesión'}</span>
-              <span className="list-row__meta">En este celular</span>
+              <span className="list-row__title">
+                {busy ? 'Cerrando sesión…' : confirming ? 'Cerrar sesión de todos modos' : 'Cerrar sesión'}
+              </span>
+              <span className="list-row__meta">{confirming ? pendingWarning : 'En este celular'}</span>
             </span>
           </button>
+          {confirming && !busy && (
+            <button className="list-row exercise-row" onClick={() => setConfirming(false)}>
+              <span className="list-row__main"><span className="list-row__title">Cancelar</span></span>
+            </button>
+          )}
         </>
       )}
       <Link className="list-row exercise-row" to="/privacidad">

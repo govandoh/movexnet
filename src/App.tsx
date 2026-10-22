@@ -9,6 +9,7 @@ import { ProfileScreen } from './ui/screens/ProfileScreen';
 import { QuestionnaireScreen } from './ui/screens/QuestionnaireScreen';
 import { WorkoutScreen } from './ui/workout/WorkoutScreen';
 import { startAccount, useAccount } from './ui/state/accountStore';
+import { startSyncStore } from './ui/state/syncStore';
 
 // El editor y el modo manual se cargan al entrar: así el shell inicial no los incluye (issue #34).
 const RoutineEditorScreen = lazy(() => import('./ui/routines/RoutineEditorScreen').then(m => ({ default: m.RoutineEditorScreen })));
@@ -25,6 +26,8 @@ const AccountWelcomeScreen = lazy(() => account().then(m => ({ default: m.Accoun
 // Antes de montar nada: el cliente de Supabase canjea el código del enlace del correo que
 // viene en la URL. No hace nada con las cuentas apagadas (DEC-069).
 startAccount();
+// Con sesión, sube y baja el historial, el programa, las rutinas y los objetivos (DEC-079).
+startSyncStore();
 
 const ONBOARDING_KEY = 'ob_complete_v1';
 
