@@ -49,6 +49,13 @@ export default defineConfig({
       use: { ...devices['iPhone 15'], baseURL: `https://localhost:${IPHONE_PORT}` },
     },
     { name: 'app', testMatch: /calendario\.spec\.ts/, use: { baseURL: `https://localhost:${APP_PORT}` } },
+    // Web Push (#88): el servicio de push del navegador se simula en la página; se prueba la
+    // suscripción y los avisos en la base local, y la baja al apagar o cerrar sesión.
+    {
+      name: 'push',
+      testMatch: /recordatorios-push\.spec\.ts/,
+      use: { baseURL: `https://localhost:${PORT}` },
+    },
   ],
   webServer: [
     {
@@ -62,6 +69,8 @@ export default defineConfig({
         VITE_SUPABASE_URL: LOCAL_SUPABASE,
         VITE_SUPABASE_PUBLISHABLE_KEY: localPublishableKey(),
         VITE_TURNSTILE_SITE_KEY: '',
+        // Solo la forma de una clave pública P-256: el push del navegador se simula en la prueba.
+        VITE_VAPID_PUBLIC_KEY: `B${'A'.repeat(86)}`,
       },
     },
     {
