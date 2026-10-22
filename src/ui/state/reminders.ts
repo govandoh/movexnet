@@ -22,6 +22,8 @@ const MAX_DELAY_MS = 2_147_000_000;
 /** Último día avisado: evita repetir el aviso al recargar la app ese mismo día (DEC-024). */
 const LAST_KEY = 'fitnet_reminder_last_v1';
 const ICON = '/icons/icon-192.png';
+/** "M" en blanco sobre transparente: Android pinta un cuadro blanco con el ícono opaco (ver public/sw.js). */
+const BADGE = '/icons/badge-96.png';
 
 export function notificationPermission(): PermissionState {
   return typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'unsupported';
@@ -52,7 +54,7 @@ export async function showReminder(title: string, body: string): Promise<void> {
   try {
     const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : undefined;
     if (reg) {
-      await reg.showNotification(title, { body, tag: 'movexnet-recordatorio', icon: ICON, badge: ICON, data: { url: '/#/' } });
+      await reg.showNotification(title, { body, tag: 'movexnet-recordatorio', icon: ICON, badge: BADGE, data: { url: '/#/' } });
       return;
     }
   } catch {

@@ -132,16 +132,40 @@
   padding: 0 var(--space-3);
 }
 
-/* Hora del recordatorio en Perfil: 16 px para que iOS no haga zoom (DESIGN.md §7). */
+/* Hora del recordatorio en Perfil: hora y minutos en dos listas dentro de una sola caja.
+   16 px para que iOS no haga zoom (DESIGN.md §7); cada lista ocupa el alto táctil completo. */
 .reminder-time {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
   min-height: var(--touch);
-  padding: 0 var(--space-3);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-chip);
   border: 1px solid var(--color-line);
   background: var(--color-surface-2);
   color: var(--color-text);
   font-size: var(--text-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.reminder-time__field {
+  min-height: var(--touch);
+  min-width: var(--touch);
+  padding: 0 var(--space-1);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
   color-scheme: dark;
+}
+
+.reminder-time__field:focus-visible {
+  outline: 2px solid var(--color-volt);
+  outline-offset: -2px;
+  border-radius: var(--radius-chip);
 }
 
 /* "Ver calendario" en Hoy: área táctil de 40 px o más sin mover el renglón (DEC-060). */
