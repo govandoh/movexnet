@@ -12,6 +12,9 @@
 
 import type { SignUpInput } from './auth.ts';
 import type { CatalogExercise, EquipmentTag } from './catalog.ts';
+import type { Goal } from './progress.ts';
+import type { Routine } from './routines.ts';
+import type { SetSource } from './sessionHistory.ts';
 import type {
   ExperienceLevel, ProgramType, TrainingGoal, TrainingLocation, TrainingMethod,
 } from './routineGenerator.ts';
@@ -33,13 +36,18 @@ export interface Profile {
   programType: ProgramType;
   preferredCamera: 'user' | 'environment';
   publicProfile: boolean;
+  /** Inicio del programa del cuestionario, ISO 8601; null si no hay cuestionario (DEC-079). */
+  programStartedAt: string | null;
 }
 
 export interface ProfileRepository {
   /** null si no hay sesión. El perfil lo crea el alta de la cuenta (`AuthRepository.signUp`). */
   get(): Promise<Profile | null>;
-  /** Actualiza los campos editables; la aceptación del aviso y la fecha no se tocan (DEC-069). */
-  save(profile: Profile): Promise<void>;
+  /**
+   * Actualiza solo los campos dados, para no pisar con datos viejos lo que se editó en otro
+   * dispositivo. La aceptación del aviso y la fecha no se tocan (DEC-069).
+   */
+  update(patch: Partial<Profile>): Promise<void>;
 }
 
 /** Usuario autenticado; sin datos del perfil (esos van por `ProfileRepository`). */
@@ -106,6 +114,10 @@ export interface WorkoutSession {
 export interface SetLog {
   id: string;
   sessionId: string;
+  /** Solo `camera` puntúa (DEC-067); `imported` es el historial previo a la sincronización. */
+  source: SetSource;
+  /** ms de la serie; obligatorio en las de cámara o quedan `missing_duration` (DEC-074). */
+  durationMs: number | null;
   exerciseId: string;
   method: TrainingMethod;
   methodParams: Record<string, unknown>;
@@ -117,6 +129,8 @@ export interface SetLog {
 
 /** Valor agregado con nombre (docs/METRICS.md); única entrada del CoachAssistant. */
 export interface MetricValue {
+  /** Lo asigna el cliente, como el de la serie, para que reenviar no duplique. */
+  id: string;
   sessionId: string;
   setId: string | null;
   scope: 'set' | 'session';
@@ -127,14 +141,37 @@ export interface MetricValue {
   computedAt: string;
 }
 
+/**
+ * Sesiones, series y métricas. Los ids los asigna el cliente y todo se inserta sin actualizar
+ * (DEC-079): reenviar lo que ya llegó no duplica ni falla, así la cola offline puede
+ * reintentar sin saber qué parte de un lote se guardó. Los errores son `SyncError` (`sync.ts`).
+ */
 export interface WorkoutRepository {
-  startSession(input: Pick<WorkoutSession, 'device' | 'modelVersions'>): Promise<WorkoutSession>;
+  /** Crea la sesión; con `endedAt` ya cerrada (historial previo, modo manual). */
+  startSession(session: WorkoutSession): Promise<void>;
   endSession(sessionId: string, endedAt: string): Promise<void>;
-  /** `id` y `startedAt` los asigna el cliente para que la cola offline sea idempotente. */
-  logSet(set: SetLog): Promise<void>;
+  logSets(sets: readonly SetLog[]): Promise<void>;
   logMetrics(metrics: readonly MetricValue[]): Promise<void>;
   /** Series del usuario en un rango; `from` incluido, `to` excluido (poda por partición). */
   listSets(range: { from: string; to: string }): Promise<SetLog[]>;
+  /** Métricas por serie con `computedAt` en el rango (la app usa el cierre de la serie). */
+  listSetMetrics(range: { from: string; to: string }): Promise<MetricValue[]>;
+}
+
+/**
+ * Rutinas y objetivos: gana la última escritura según `updatedAt` (DEC-079). La base ignora
+ * una escritura más vieja que la guardada; borrar es definitivo.
+ */
+export interface RoutineRepository {
+  list(): Promise<Routine[]>;
+  upsert(routines: readonly Routine[]): Promise<void>;
+  remove(ids: readonly string[]): Promise<void>;
+}
+
+export interface GoalRepository {
+  list(): Promise<Goal[]>;
+  upsert(goals: readonly Goal[]): Promise<void>;
+  remove(ids: readonly string[]): Promise<void>;
 }
 
 export interface RecordingConsent {
