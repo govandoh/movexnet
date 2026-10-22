@@ -2,7 +2,7 @@
 
 > Responsabilidad de este archivo: qué datos se recolectan y cuáles no, consentimiento, retención y borrado, seguridad de acceso (RLS), residencia y uso de datasets externos. Decisiones: `DEC-026` (regla de privacidad), `DEC-029` (Supabase `us-east-1`), `DEC-033` (qué recibe el LLM). Esquema JSON de grabaciones: `ML-PIPELINE.md` §2.
 
-**Estado:** la app en producción no recolecta ningún dato (todo ocurre en el cliente; solo usa `localStorage` para `ob_complete_v1` y `preferred_camera`). Lo que sigue aplica desde que exista backend (Fase 2) y captura con consentimiento (PR 8).
+**Estado:** con cuenta (`DEC-069`), el historial de series y sus métricas, el cuestionario, el inicio del programa, las rutinas y los objetivos se guardan primero en el dispositivo y se sincronizan con Supabase (`DEC-079`). Al cerrar sesión desde la app, esos datos y la cola de lo pendiente se borran del dispositivo; siguen en la cuenta. Sin cuenta nada sale del dispositivo. La captura con consentimiento llega con el PR 8.
 
 ## 1. Qué datos se recolectan y cuáles no
 
@@ -11,7 +11,8 @@
 | **Video de la cámara** | **Nunca.** No se transmite, no se sube, no se guarda en servidor. | Solo en memoria del dispositivo durante la sesión. | Regla dura (`AGENTS.md`). En modo captura puede guardarse **localmente** para etiquetar y se borra al terminar. |
 | Imagen clave por rep (segunda opinión) | Solo bajo petición explícita del usuario premium, una imagen, con aviso en pantalla. | Edge Function; no se persiste tras responder. | `DEC-027`. Pendiente de DEC propia antes de implementarse. |
 | Landmarks (`LandmarkFrame[]`) | Solo con `RecordingConsent` activo. | Supabase Storage (bucket privado) + tabla `recordings`. | Consentimiento explícito por grabación (§2). |
-| Métricas por rep/serie/sesión (`Rep`, `Set`, `Metric`) | Sí, para usuarios autenticados. | Postgres. | Base del historial, progreso y coaching. Sin cuenta, nada sale del dispositivo. |
+| Métricas por rep/serie/sesión (`Rep`, `Set`, `Metric`) | Sí, para usuarios autenticados. | Postgres. | Base del historial, progreso y coaching. Por serie: repeticiones, origen (`camera`, `manual`, `imported`), duración y las métricas de `METRICS.md` §3 (`DEC-079`). Sin cuenta, nada sale del dispositivo. |
+| Rutinas, objetivos y programa | Sí, para usuarios autenticados. | Postgres (`routines`, `goals`, `profiles.program_started_at`). | Editables y borrables por el usuario; gana la última escritura (`DEC-079`). |
 | Perfil (nombre, mes y año de nacimiento, altura, peso, nivel) | Opcional salvo nombre. | Postgres. | Editable y borrable por el usuario. |
 | RPE y notas de sesión | Opcional. | Postgres. | — |
 | Mensajes de coaching | Sí, entre entrenador, cliente y asistente. | Postgres + Realtime. | Visibles solo a las partes de la `CoachingRelationship`. |

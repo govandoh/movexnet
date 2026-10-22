@@ -107,6 +107,7 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-076](DEC-076-voz-aviso-tecnica-en-pico.md) | La voz dice el aviso de técnica en el pico en vez del elogio, solo para avisos validados (`VOICED_TECHNIQUE_ISSUES`) | 2026-10-20 | Aceptada (2026-10-21) |
 | [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Propuesta |
 | [DEC-078](DEC-078-motor-3d-por-defecto.md) | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo y golden 3D con grabaciones reales | 2026-10-21 | Propuesta |
+| [DEC-079](DEC-079-sincronizacion-supabase-cola-offline.md) | Sincronización con Supabase: cola offline, series inmutables con ids del cliente, última escritura gana en rutinas y objetivos, historial previo como `imported` y datos de la cuenta fuera del dispositivo al cerrar sesión | 2026-10-21 | Propuesta |
 
 Próximo número libre: **DEC-079** (provisional hasta el merge, ver DEC-062).
 

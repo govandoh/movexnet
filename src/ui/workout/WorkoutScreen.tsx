@@ -12,7 +12,7 @@ import { SetSummaryBuilder, type SetSummary } from '../../analysis/setSummary';
 import { FeedbackPolicy } from '../../feedback/feedbackPolicy';
 import type { AssistantId } from '../../domain/catalog';
 import { useSpeech, useSpeechReady } from '../useSpeech';
-import { appActions, useAppState } from '../state/appStore';
+import { appActions, newId, useAppState } from '../state/appStore';
 import { ASSISTED, ASSISTED_NAMES, catalogIdFor, createWorkoutTrackers, isAssistantId, usesEngine3D } from './exercises';
 import {
   DEFAULT_TARGET_REPS, FEEDBACK_STRATEGY, PLANK_ANNOUNCE_EVERY_S, PLANK_WARNING_MIN_MS,
@@ -51,10 +51,6 @@ function serializeError(err: unknown): string {
   // Un Event (fallo al descargar el WASM o el modelo) no trae mensaje útil.
   if (typeof Event !== 'undefined' && err instanceof Event) return 'no se pudo descargar el detector de poses; revisa tu conexión.';
   try { return JSON.stringify(err); } catch { return String(err); }
-}
-
-function newId(): string {
-  try { return crypto.randomUUID(); } catch { return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`; }
 }
 
 const EMPTY_HUD: HudState = { reps: 0, level: 'idle', message: '', extreme: null, lastConcentricMs: null, qualities: [], rejected: 0 };
@@ -132,6 +128,11 @@ export function WorkoutScreen() {
   // Con la ficha de técnica abierta no se cuenta ni arranca la serie: la persona se acerca
   // al celular a leer y no debe sumar ni perder repeticiones.
   const pausedRef = useRef(false);
+  // Una sesión por visita a la pantalla (DEC-079): se abre con la primera serie y se cierra al
+  // salir. La duración de cada serie va del arranque al cierre (DEC-074).
+  const [sessionId] = useState(newId);
+  const setStartedAtRef = useRef<number | null>(null);
+  useEffect(() => () => appActions.endSession(sessionId, new Date().toISOString()), [sessionId]);
 
   const rawSpeak = useSpeech();
   // Sin un primer toque el navegador no deja hablar: la preparación lo pide (DEC-071).
@@ -169,6 +170,7 @@ export function WorkoutScreen() {
     resetCounters(exRef.current);
     pipeline.startNewSet();
     readySinceRef.current = null;
+    setStartedAtRef.current = Date.now();
     phaseRef.current = 'active';
     setPhase('active');
     speak(exRef.current === 'plank' ? 'Mantén la posición' : '¡Vamos!');
@@ -185,10 +187,16 @@ export function WorkoutScreen() {
     setSummary({ summary: s, heldSeconds: held });
     setPhase('summary');
     const valid = timed ? held ?? 0 : s?.validReps ?? 0;
-    // Misma construcción que el modo manual (`domain/sessionBuild`): el historial no distingue el origen.
+    const now = new Date();
+    const startedAt = setStartedAtRef.current;
+    // Misma construcción que el modo manual (`domain/sessionBuild`); el origen y la duración
+    // solo los usa la sincronización (anti-trampa, DEC-074).
     const record = buildSetRecord({
       id: newId(),
-      now: new Date(),
+      now,
+      sessionId,
+      source: 'camera',
+      durationMs: startedAt === null ? null : Math.max(0, now.getTime() - startedAt),
       exerciseId: catalogIdFor(current),
       validReps: valid,
       rejectedReps: s?.rejectedReps ?? 0,

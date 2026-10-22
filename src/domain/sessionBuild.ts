@@ -1,5 +1,5 @@
 import { getExercise } from './catalog.ts';
-import type { FatigueSummary, SetRecord } from './sessionHistory.ts';
+import type { FatigueSummary, SetRecord, SetSource } from './sessionHistory.ts';
 import type { ManualPlan, ManualState } from './manualWorkout.ts';
 import { completedSets } from './manualWorkout.ts';
 import type { Routine, RoutineExercise } from './routines.ts';
@@ -41,6 +41,10 @@ export interface SetInput {
   goodReps?: number;
   timed: boolean;
   fatigue?: FatigueSummary | null;
+  /** Sesión, origen y duración medida, para la sincronización (DEC-074, DEC-079). */
+  sessionId?: string;
+  source?: SetSource;
+  durationMs?: number | null;
 }
 
 /**
@@ -58,14 +62,21 @@ export function buildSetRecord(i: SetInput): SetRecord | null {
     goodReps: i.timed ? i.validReps : Math.min(i.validReps, i.goodReps ?? i.validReps),
     timed: i.timed,
     fatigue: i.fatigue ?? null,
+    ...(i.sessionId !== undefined ? { sessionId: i.sessionId } : {}),
+    ...(i.source !== undefined ? { source: i.source } : {}),
+    ...(i.durationMs !== undefined ? { durationMs: i.durationMs } : {}),
   };
 }
 
-/** Una serie por cada serie cerrada con trabajo real del modo manual. */
-export function manualRecords(s: ManualState, makeId: () => string): SetRecord[] {
+/**
+ * Una serie por cada serie cerrada con trabajo real del modo manual. Todas van a la misma
+ * sesión; sin duración, porque la declara la persona y no la mide la cámara (DEC-074).
+ */
+export function manualRecords(s: ManualState, makeId: () => string, sessionId?: string): SetRecord[] {
   return completedSets(s).flatMap(d => {
     const r = buildSetRecord({
       id: makeId(), now: new Date(d.at), exerciseId: s.plan.exerciseId, validReps: d.amount, timed: d.timed,
+      ...(sessionId !== undefined ? { sessionId, source: 'manual' as const, durationMs: null } : {}),
     });
     return r ? [r] : [];
   });

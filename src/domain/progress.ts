@@ -76,6 +76,8 @@ export interface Goal {
   target: number;
   /** Alta del objetivo, epoch en ms. */
   createdAt: number;
+  /** Último cambio, epoch en ms: decide qué versión gana al sincronizar (DEC-079). */
+  updatedAt?: number;
 }
 
 /** Rango válido del objetivo de cada tipo: [mínimo, máximo]. */
@@ -122,6 +124,7 @@ export function isGoal(v: unknown): v is Goal {
   const g = v as Record<string, unknown>;
   if (typeof g.id !== 'string' || typeof g.createdAt !== 'number' || typeof g.target !== 'number') return false;
   if (typeof g.kind !== 'string' || !(g.kind in GOAL_RANGE)) return false;
+  if (g.updatedAt !== undefined && typeof g.updatedAt !== 'number') return false;
   const [min, max] = GOAL_RANGE[g.kind as GoalKind];
   return Number.isFinite(g.target) && g.target >= min && g.target <= max;
 }

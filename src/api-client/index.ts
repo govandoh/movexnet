@@ -1,14 +1,18 @@
 /**
  * Punto de entrada de `api-client` (carpeta interina; pasa a `packages/api-client` en el PR 6).
- * Es lo único que la UI importa para las cuentas; el SDK de Supabase no sale de esta carpeta
- * (regla de ESLint en `eslint.config.js`, DEC-028 y DEC-069).
+ * Es lo único que la UI importa para las cuentas y la sincronización; el SDK de Supabase no
+ * sale de esta carpeta (regla de ESLint en `eslint.config.js`, DEC-028 y DEC-069).
  */
 
 import type { AuthRepository } from '../domain/ports.ts';
+import type { BrowserServices } from './browserClient.ts';
+import type { LocalPort, SyncEngine } from './syncEngine.ts';
 import { readAccountsConfig, type AccountsConfig } from './config.ts';
 
+export type { LocalData, LocalPort, SyncEngine, SyncStatus } from './syncEngine.ts';
+
 let config: AccountsConfig | null | undefined;
-let repository: Promise<AuthRepository | null> | null = null;
+let services: Promise<BrowserServices | null> | null = null;
 
 /**
  * Configuración de las cuentas; null si están apagadas o mal configuradas. Una configuración
@@ -31,13 +35,51 @@ export function accountsEnabled(): boolean {
   return getAccountsConfig() !== null;
 }
 
-/** Repositorio de cuentas, cargado bajo demanda; null si las cuentas están apagadas. */
-export function loadAuthRepository(): Promise<AuthRepository | null> {
-  repository ??= (async () => {
+function loadServices(): Promise<BrowserServices | null> {
+  services ??= (async () => {
     const cfg = getAccountsConfig();
     if (!cfg) return null;
-    const { createBrowserAuthRepository } = await import('./browserClient.ts');
-    return createBrowserAuthRepository(cfg);
+    const { createBrowserServices } = await import('./browserClient.ts');
+    return createBrowserServices(cfg);
   })();
-  return repository;
+  return services;
+}
+
+/** Repositorio de cuentas, cargado bajo demanda; null si las cuentas están apagadas. */
+export async function loadAuthRepository(): Promise<AuthRepository | null> {
+  return (await loadServices())?.auth ?? null;
+}
+
+/** Cierre de sesión sin motor en marcha: borra igual la cola y la marca de dueño (DEC-079). */
+export async function forgetSync(userId: string): Promise<void> {
+  const { forgetAccount, browserStore } = await import('./syncEngine.ts');
+  forgetAccount(browserStore, userId);
+}
+
+export interface SyncSession {
+  engine: SyncEngine;
+  /** Quita los disparadores del navegador y detiene los reintentos. */
+  stop(): void;
+}
+
+/**
+ * Arranca la sincronización de la cuenta con sesión (issue #87, DEC-079); null si las cuentas
+ * están apagadas: sin cuenta nada sale del dispositivo.
+ */
+export async function startSync(userId: string, local: LocalPort, makeId: () => string): Promise<SyncSession | null> {
+  const s = await loadServices();
+  if (!s) return null;
+  const { SyncEngine, attachBrowserTriggers, browserStore } = await import('./syncEngine.ts');
+  const engine = new SyncEngine({
+    userId, repos: s.data(userId), local, store: browserStore, makeId, isOnline: () => navigator.onLine,
+  });
+  const detach = attachBrowserTriggers(engine);
+  void engine.start();
+  return {
+    engine,
+    stop: () => {
+      detach();
+      engine.stop();
+    },
+  };
 }

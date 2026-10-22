@@ -24,7 +24,19 @@ export interface SetRecord {
   /** true si el ejercicio se mide por tiempo (plancha): `validReps` son segundos. */
   timed: boolean;
   fatigue: FatigueSummary | null;
+  /**
+   * Sesión a la que pertenece (una visita a la cámara o un ejercicio manual). Los registros
+   * anteriores a la sincronización no la tienen: se agrupan por día al subirlos (DEC-079).
+   */
+  sessionId?: string;
+  /** Origen de la serie (DEC-067); sin él, la serie es anterior a la sincronización. */
+  source?: SetSource;
+  /** Duración medida por la cámara, en ms; `null` en el modo manual (DEC-074). */
+  durationMs?: number | null;
 }
+
+/** `imported`: historial local anterior a la sincronización; nunca puntúa (DEC-079). */
+export type SetSource = 'camera' | 'manual' | 'imported';
 
 export interface DayStats {
   sets: number;
@@ -114,5 +126,9 @@ export function isSetRecord(v: unknown): v is SetRecord {
   return typeof r.id === 'string' && typeof r.completedAt === 'string' && !Number.isNaN(Date.parse(r.completedAt)) &&
     typeof r.exerciseId === 'string' && typeof r.validReps === 'number' && typeof r.rejectedReps === 'number' &&
     typeof r.goodReps === 'number' && typeof r.timed === 'boolean' &&
-    (r.fatigue === null || r.fatigue === 'baja' || r.fatigue === 'moderada' || r.fatigue === 'alta');
+    (r.fatigue === null || r.fatigue === 'baja' || r.fatigue === 'moderada' || r.fatigue === 'alta') &&
+    (r.sessionId === undefined || typeof r.sessionId === 'string') &&
+    (r.source === undefined || r.source === 'camera' || r.source === 'manual' || r.source === 'imported') &&
+    (r.durationMs === undefined || r.durationMs === null ||
+      (typeof r.durationMs === 'number' && Number.isFinite(r.durationMs) && r.durationMs >= 0));
 }

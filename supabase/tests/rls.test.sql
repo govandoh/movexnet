@@ -1,7 +1,7 @@
 -- Tests de RLS con pgTAP. Se ejecutan con `pnpm db:test` (supabase test db).
 -- Criterio de la issue #17: un usuario no lee ni escribe datos de otro.
 begin;
-select plan(47);
+select plan(48);
 
 -- Dos usuarios y un anónimo. Las filas se crean como superusuario (sin RLS). El perfil lo
 -- crea el trigger de alta con los datos del registro (migración de cuentas, #60).
@@ -145,14 +145,18 @@ insert into public.set_logs (id, user_id, session_id, exercise_id, reps, source,
   ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 10, 'camera', 20000),
   ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 150, 'camera', 300000),
   ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 10, 'camera', 5000);
-insert into public.set_logs (id, user_id, session_id, exercise_id, reps, flagged) values
-  ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 5, true);
+-- Desde DEC-079 el cliente no tiene privilegio para enviar las marcas (antes se sobrescribían).
+select throws_ok($$insert into public.set_logs (user_id, session_id, exercise_id, reps, flagged)
+    values ('00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 5, false)$$,
+  '42501', null, 'el cliente no puede fijar flagged al insertar');
+insert into public.set_logs (id, session_id, exercise_id, reps) values
+  ('30000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 5);
 
 select is((select flagged from public.set_logs where id = '30000000-0000-0000-0000-000000000001'), false, 'una serie plausible no se marca');
 select is((select flag_reasons from public.set_logs where id = '30000000-0000-0000-0000-000000000002'), array['reps_gt_100'], 'más de 100 reps se marca');
 select is((select flag_reasons from public.set_logs where id = '30000000-0000-0000-0000-000000000003'), array['rep_lt_800ms'], 'menos de 800 ms por rep se marca');
 select is((select source from public.set_logs where id = '30000000-0000-0000-0000-000000000004'), 'manual', 'el origen por defecto es manual');
-select is((select flagged from public.set_logs where id = '30000000-0000-0000-0000-000000000004'), false, 'el cliente no puede fijar flagged al insertar');
+select is((select user_id from public.set_logs where id = '30000000-0000-0000-0000-000000000004'), '00000000-0000-0000-0000-00000000000a'::uuid, 'sin user_id, la base pone el del usuario');
 select throws_ok($$insert into public.set_logs (user_id, session_id, exercise_id, source) values ('00000000-0000-0000-0000-00000000000a', '10000000-0000-0000-0000-00000000000a', 'sentadilla', 'otro')$$,
   '23514', null, 'origen inválido rechazado');
 

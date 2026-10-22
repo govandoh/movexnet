@@ -97,6 +97,14 @@ async function verifyLinkInUrl(repo: AuthRepository): Promise<boolean> {
   }
 }
 
+/** Fuera de React (sincronización, `syncStore.ts`): avisa en cada cambio de la cuenta. */
+export function watchAccount(listener: (s: AccountState) => void): () => void {
+  const l = () => listener(state);
+  listeners.add(l);
+  listener(state);
+  return () => listeners.delete(l);
+}
+
 export function useAccount(): AccountState {
   return useSyncExternalStore(
     cb => { listeners.add(cb); return () => listeners.delete(cb); },
