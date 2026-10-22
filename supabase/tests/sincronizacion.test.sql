@@ -1,7 +1,7 @@
 -- Tests de la sincronización (issue #87, DEC-079): rutinas y objetivos por dueño, última
 -- escritura gana, inserción idempotente de series y lo que el cliente no puede tocar.
 begin;
-select plan(27);
+select plan(28);
 
 insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
 values
@@ -55,6 +55,9 @@ insert into public.routines (id, name, active, updated_at) values ('60000000-000
   on conflict (id) do update set name = excluded.name, active = excluded.active, updated_at = excluded.updated_at;
 select is((select name || ' ' || active from public.routines where id = '60000000-0000-0000-0000-0000000000f1'), 'Pierna y glúteo false',
   'una escritura más nueva se aplica');
+insert into public.routines (id, name, updated_at) values ('60000000-0000-0000-0000-0000000000f3', 'Reloj adelantado', '2099-01-01');
+select ok((select updated_at <= now() + interval '1 day' from public.routines where id = '60000000-0000-0000-0000-0000000000f3'),
+  'un reloj adelantado no fija una hora futura que bloquee la fila');
 select lives_ok(
   $$delete from public.routines where id = '60000000-0000-0000-0000-0000000000f1'$$,
   'A borra su rutina');

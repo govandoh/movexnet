@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
-import { startSync, type SyncSession, type SyncStatus } from '../../api-client/index.ts';
+import { forgetSync, startSync, type SyncSession, type SyncStatus } from '../../api-client/index.ts';
 import { newId, onLocalChange, syncLocal, type LocalChange } from './appStore';
-import { authRepository, watchAccount } from './accountStore';
+import { authRepository, watchAccount, type AccountState } from './accountStore';
 
 /**
  * Conecta la cuenta, el estado local y la sincronización (issue #87, DEC-079).
@@ -13,6 +13,8 @@ import { authRepository, watchAccount } from './accountStore';
  * - Cerrar sesión desde la app (`signOutAndForget`) borra la cola y los datos de la cuenta.
  */
 
+/** Última cuenta conocida: el cierre de sesión necesita su id aunque el motor no haya cargado. */
+let account: AccountState | null = null;
 let session: SyncSession | null = null;
 let sessionUser: string | null = null;
 let starting: Promise<void> | null = null;
@@ -53,7 +55,8 @@ export function startSyncStore(): void {
   if (started) return;
   started = true;
   onLocalChange(forward);
-  watchAccount(account => {
+  watchAccount(next => {
+    account = next;
     const userId = account.status === 'signed_in' ? account.user?.id ?? null : null;
     if (userId === sessionUser) return;
     stopSession();
@@ -92,8 +95,13 @@ export function useSyncStatus(): SyncStatus | null {
 export async function signOutAndForget(): Promise<void> {
   await starting;
   const s = session;
+  const userId = account?.user?.id ?? null;
   stopSession();
   if (s) s.engine.discard();
-  else syncLocal.clear();
+  else {
+    // El motor no llegó a cargar: igual se borran la cola, la marca y los datos de la cuenta.
+    syncLocal.clear();
+    if (userId) await forgetSync(userId).catch(() => {});
+  }
   await (await authRepository()).signOut();
 }

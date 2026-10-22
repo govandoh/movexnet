@@ -50,6 +50,12 @@ export async function loadAuthRepository(): Promise<AuthRepository | null> {
   return (await loadServices())?.auth ?? null;
 }
 
+/** Cierre de sesión sin motor en marcha: borra igual la cola y la marca de dueño (DEC-079). */
+export async function forgetSync(userId: string): Promise<void> {
+  const { forgetAccount, browserStore } = await import('./syncEngine.ts');
+  forgetAccount(browserStore, userId);
+}
+
 export interface SyncSession {
   engine: SyncEngine;
   /** Quita los disparadores del navegador y detiene los reintentos. */

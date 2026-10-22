@@ -85,7 +85,10 @@ export const queueKey = (userId: string) => `${QUEUE_PREFIX}${userId}`;
 export const PULL_INTERVAL_MS = 5 * 60_000;
 /** Ventana que se baja de la nube: un año de series. */
 const PULL_WINDOW_MS = 365 * 86_400_000;
-/** Sesiones recientes ya enviadas, para no volver a abrirlas. */
+/**
+ * Sesiones recientes ya enviadas, para no volver a abrirlas. Si una serie llega para una que
+ * ya salió de la ventana, se reenvía su `session`: inocuo, la inserción ignora duplicados.
+ */
 const KNOWN_SESSIONS = 20;
 
 interface PersistedState {
@@ -178,8 +181,7 @@ export class SyncEngine {
   /** Cierre de sesión desde la app: la cola, la marca de dueño y los datos locales se borran. */
   discard(): void {
     this.stop();
-    this.d.store.remove(queueKey(this.d.userId));
-    if (this.d.store.get(OWNER_KEY) === this.d.userId) this.d.store.remove(OWNER_KEY);
+    forgetAccount(this.d.store, this.d.userId);
     this.d.local.clear();
     this.state = { ...EMPTY };
     this.notify();
@@ -503,6 +505,15 @@ export function attachBrowserTriggers(engine: SyncEngine): () => void {
     window.removeEventListener('offline', onOffline);
     document.removeEventListener('visibilitychange', onVisible);
   };
+}
+
+/**
+ * Borra la cola y la marca de dueño de una cuenta sin arrancar el motor: cierre de sesión
+ * cuando el motor no llegó a cargar (DEC-079 §10).
+ */
+export function forgetAccount(store: KeyValueStore, userId: string): void {
+  store.remove(queueKey(userId));
+  if (store.get(OWNER_KEY) === userId) store.remove(OWNER_KEY);
 }
 
 /** `localStorage` defensivo (DEC-024): si falla, el motor sigue con su estado en memoria. */

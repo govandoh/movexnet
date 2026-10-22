@@ -44,10 +44,13 @@ grant update (program_started_at) on public.profiles to authenticated;
 -- BEFORE UPDATE: si llega una versión más vieja que la guardada (otro dispositivo escribió
 -- después), se descarta la fila sin error. Igual `updated_at` se aplica: reintentar la misma
 -- escritura es idempotente. También vale para el `upsert` (ON CONFLICT DO UPDATE).
+-- Un reloj adelantado bloquearía la fila para siempre: la hora del cliente se acota a un día
+-- después de la del servidor, también al insertar.
 create function private.keep_newest() returns trigger
 language plpgsql set search_path = '' as $$
 begin
-  if new.updated_at < old.updated_at then
+  new.updated_at := least(new.updated_at, now() + interval '1 day');
+  if tg_op = 'UPDATE' and new.updated_at < old.updated_at then
     return null;
   end if;
   return new;
@@ -58,7 +61,7 @@ revoke all on function private.keep_newest() from public, anon, authenticated;
 -- `metric_name` guarda el tipo de objetivo de la app (`GoalKind` en src/domain/progress.ts).
 alter table public.goals add column updated_at timestamptz not null default now();
 
-create trigger goals_keep_newest before update on public.goals
+create trigger goals_keep_newest before insert or update on public.goals
   for each row execute function private.keep_newest();
 
 -- ── Rutinas ─────────────────────────────────────────────────────────────────
@@ -87,5 +90,5 @@ create policy routines_owner on public.routines
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
-create trigger routines_keep_newest before update on public.routines
+create trigger routines_keep_newest before insert or update on public.routines
   for each row execute function private.keep_newest();
