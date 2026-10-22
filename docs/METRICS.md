@@ -69,6 +69,10 @@ Ventana: todas las reps de un `Set` (para `rest_pause` y `dropset`, además por 
 | `reps` | conteo de eventos `complete` | reps | Implementado (reglas). |
 | `set_volume` | `reps · loadKg` (si hay carga) | kg | — |
 | `mean_form_score` | media de `form_score` | 0–100 | — |
+| `rejected_reps` | ciclos descartados por la validación temporal (demasiado rápidos, recorrido corto) | reps | Implementado (`SetSummary.rejectedReps`). Se sincroniza por serie (`DEC-079`). |
+| `clean_reps` | repeticiones válidas que terminaron sin aviso de técnica; en el modo manual, igual a `reps` | reps | Implementado (`SetRecord.goodReps`). Base del porcentaje de técnica de Hoy y Perfil. Se sincroniza (`DEC-079`). |
+| `fatigue_level` | nivel de fatiga resumido al cerrar la serie: 0 baja, 1 moderada, 2 alta (`fatigueSummary`, a partir de `FatigueDetector`) | ordinal 0–2 | Implementado. Solo series de cámara con repeticiones; no sustituye a `fatigue_index`. Se sincroniza (`DEC-079`). |
+| `hold_seconds` | segundos sostenidos en un ejercicio por tiempo (plancha) | s | Implementado. En esas series `reps` queda vacío: guardar segundos como repeticiones dispararía `reps_gt_100` (`DEC-067`, `DEC-079`). |
 
 **Fatiga de fitnetv2 (implementada, pendiente de reconciliar).** `FatigueDetector` (`src/analysis/fatigue.ts`, `DEC-038`) usa otra fórmula: `score = min(100, velDrop% · 2 + romLoss% · 1.5 + asymEMA · 40)`, con línea base en las 3 primeras reps y media de las 3 últimas. Niveles: `moderate` si caída de velocidad ≥ 10 % o score ≥ 22; `high` si ≥ 20 % o ≥ 45; `critical` si ≥ 30 % o ≥ 70. Difiere de `fatigue_index` (pesos, normalización y ventanas). **Roles fijados en `DEC-057`:** `FatigueDetector` da el nivel en tiempo real durante la serie (feedback y sugerencia de descanso) y su `score` no se persiste; `fatigue_index` es la métrica persistida por serie, calculada al cerrarla. El término de asimetría recibe ahora la asimetría del punto de esfuerzo (`Tracker3D`), no la del frame de cierre.
 
