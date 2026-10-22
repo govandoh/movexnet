@@ -34,6 +34,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'cuentas', testMatch: /cuentas\.spec\.ts/, use: { baseURL: `https://localhost:${PORT}` } },
+    { name: 'sincronizacion', testMatch: /sincronizacion\.spec\.ts/, use: { baseURL: `https://localhost:${PORT}` } },
     { name: 'app', testMatch: /calendario\.spec\.ts/, use: { baseURL: `https://localhost:${APP_PORT}` } },
   ],
   webServer: [
