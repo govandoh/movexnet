@@ -1,7 +1,7 @@
-// v9: la navegación clona la respuesta antes de devolverla (error "Response body is already used"). v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
+// v10: recordatorios por Web Push con la app cerrada y el toque abre la semana del aviso (#88, DEC-080). v9: la navegación clona la respuesta antes de devolverla (error "Response body is already used"). v8: abrir la app al tocar un recordatorio del programa (#35). v7: logo "M" de MovexNet en los íconos de la PWA (DEC-068). v6: nombre MovexNet en manifest y título (DEC-068). v5: íconos PNG para instalar la PWA (Android, iOS) y manifest sin bloqueo de orientación
 // (DEC-060). El manifest se sirve cache-first: sin subir la versión, quien ya abrió la app
 // seguiría con el manifest viejo. Subir en cada cambio (DEC-025).
-const CACHE = 'entrenador-ia-v9';
+const CACHE = 'entrenador-ia-v10';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -54,14 +54,47 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// Recordatorios del programa (#35): tocar el aviso enfoca la app si ya está abierta o la abre.
+const ICON = '/icons/icon-192.png';
+// Mismo `tag` que el aviso local (src/ui/state/reminders.ts): uno reemplaza al otro.
+const REMINDER_TAG = 'movexnet-recordatorio';
+
+/** Solo rutas de la app: un contenido raro nunca abre otra web. */
+function appUrl(raw) {
+  const url = new URL(typeof raw === 'string' && raw.startsWith('/') ? raw : '/', self.location.origin);
+  return url.origin === self.location.origin ? url.href : self.location.origin + '/';
+}
+
+// Recordatorios con la app cerrada (#88, DEC-080): el contenido llega cifrado desde la Edge
+// Function `send-reminders` como {title, body, url}. `userVisibleOnly` obliga a mostrar algo.
+self.addEventListener('push', e => {
+  let data = {};
+  try {
+    data = e.data ? e.data.json() : {};
+  } catch {
+    // Contenido ilegible: igual se muestra el aviso genérico.
+  }
+  const title = typeof data.title === 'string' && data.title ? data.title : 'Hoy toca entrenar';
+  const body = typeof data.body === 'string' ? data.body : 'Tu sesión del programa te espera en MovexNet.';
+  e.waitUntil(
+    self.registration.showNotification(title, {
+      body, icon: ICON, badge: ICON, tag: REMINDER_TAG, data: { url: appUrl(data.url) },
+    })
+  );
+});
+
+// Recordatorios del programa (#35, #88): tocar el aviso enfoca la app y la lleva a la semana del
+// aviso, o la abre ahí. Enfocar va primero: el permiso para hacerlo dura poco tras el toque.
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const url = new URL(e.notification.data?.url ?? '/', self.location.origin).href;
+  const url = appUrl(e.notification.data?.url);
   e.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async list => {
       const open = list.find(c => c.url.startsWith(self.location.origin));
-      return open ? open.focus() : self.clients.openWindow(url);
+      if (!open) return self.clients.openWindow(url);
+      const focused = await open.focus();
+      // `navigate` falla en una ventana que este service worker no controla; queda enfocada.
+      if (focused.url !== url) await focused.navigate(url).catch(() => {});
+      return focused;
     })
   );
 });
