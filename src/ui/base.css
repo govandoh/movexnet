@@ -344,6 +344,13 @@ a {
 .pill--indigo { background: var(--tint-indigo); color: var(--color-indigo-text); }
 .pill--neutral { background: var(--color-surface-2); color: var(--color-text); }
 
+/* Píldora que es botón (p. ej. "Nivelar"): objetivo táctil de 40 px o más (DEC-060). */
+button.pill {
+  height: auto;
+  min-height: var(--touch);
+  touch-action: manipulation;
+}
+
 .badge-assist {
   display: inline-flex;
   align-items: center;
