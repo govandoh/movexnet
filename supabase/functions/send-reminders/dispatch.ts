@@ -105,8 +105,8 @@ async function deliver(r: ClaimedReminder, env: DispatchEnv, deps: DispatchDeps)
   try {
     const status = await sendPush(r, payload, env.vapid, { ttlSeconds: TTL_S, topic: TOPIC }, deps);
     if (status >= 200 && status < 300) return 'sent';
-    if (status === 404 || status === 410) return 'gone';
     deps.log(`aviso ${r.reminder_id}: el servicio de push respondió ${status}`);
+    if (status === 404 || status === 410) return 'gone';
   } catch (e) {
     deps.log(`aviso ${r.reminder_id}: ${e instanceof Error ? e.name : 'error'} al enviar`);
   }

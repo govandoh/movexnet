@@ -97,7 +97,8 @@ describe('handleRequest', () => {
     // Cada aviso se intenta una sola vez, y los logs no llevan endpoints.
     expect(calls.filter(c => c.url === broken)).toHaveLength(1);
     expect(logs.join('\n')).not.toMatch(/https?:\/\//);
-    expect(logs).toHaveLength(2);
+    // 410, 410, 404, 500 y la excepción de red; el envío correcto no deja log.
+    expect(logs).toHaveLength(5);
   });
 
   it('no envía a un endpoint que no es de un servicio de push y borra su suscripción', async () => {
