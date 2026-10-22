@@ -108,8 +108,9 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Propuesta |
 | [DEC-078](DEC-078-motor-3d-por-defecto.md) | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo y golden 3D con grabaciones reales | 2026-10-21 | Propuesta |
 | [DEC-079](DEC-079-sincronizacion-supabase-cola-offline.md) | Sincronización con Supabase: cola offline, series inmutables con ids del cliente, última escritura gana en rutinas y objetivos, historial previo como `imported` y datos de la cuenta fuera del dispositivo al cerrar sesión | 2026-10-21 | Propuesta |
+| [DEC-080](DEC-080-web-push-recordatorios.md) | Recordatorios con la app cerrada: Web Push con VAPID propio sobre Web Crypto, avisos por suscripción calculados por el cliente (14 días) y envío como mucho una vez con `pg_cron`, `pg_net` y secreto en Vault | 2026-10-22 | Propuesta |
 
-Próximo número libre: **DEC-079** (provisional hasta el merge, ver DEC-062).
+Próximo número libre: **DEC-081** (provisional hasta el merge, ver DEC-062).
 
 **Decisiones importadas de fitnetv2.** DEC-036..053 son las DEC-026..043 de `ecaldcc/07-FitNet` renumeradas con +10 (tabla completa en `DEC-054`). Conservan su contenido literal y añaden notas de integración.
 

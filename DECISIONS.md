@@ -61,5 +61,6 @@ Acceso rápido a las más citadas desde el código:
 | DEC-077 | Avisos de técnica del press y del curl en 3D sin falsos positivos (propuesta) | [docs/adr/DEC-077-avisos-press-curl-3d.md](docs/adr/DEC-077-avisos-press-curl-3d.md) |
 | DEC-078 | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo (propuesta) | [docs/adr/DEC-078-motor-3d-por-defecto.md](docs/adr/DEC-078-motor-3d-por-defecto.md) |
 | DEC-079 | Sincronización con Supabase y cola offline (propuesta) | [docs/adr/DEC-079-sincronizacion-supabase-cola-offline.md](docs/adr/DEC-079-sincronizacion-supabase-cola-offline.md) |
+| DEC-080 | Recordatorios con la app cerrada: Web Push sobre Supabase (propuesta) | [docs/adr/DEC-080-web-push-recordatorios.md](docs/adr/DEC-080-web-push-recordatorios.md) |
 
 No agregar decisiones nuevas a este archivo: crear `docs/adr/DEC-NNN-*.md` y actualizar el índice de `docs/adr/README.md`.
