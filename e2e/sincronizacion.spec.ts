@@ -22,7 +22,8 @@ const admin = { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'ap
 
 /** Cuenta confirmada; el trigger de alta exige nombre, año, mes y aviso vigente (DEC-069). */
 async function createUser(tag: string): Promise<{ id: string; email: string }> {
-  const email = `e2e-${run}-${tag}@test.local`;
+  // El proyecto va en el correo: Android e iPhone corren el mismo archivo.
+  const email = `e2e-${run}-${test.info().project.name}-${tag}@test.local`;
   const res = await fetch(`${API}/auth/v1/admin/users`, {
     method: 'POST',
     headers: admin,
@@ -93,6 +94,16 @@ test('con cuenta, una serie hecha sin red llega a Supabase al volver la red', as
   expect(sessions[0].ended_at).not.toBeNull();
   const metrics = await rows<{ name: string }>('metrics', user.id);
   expect(metrics.map(m => m.name).sort()).toEqual(['clean_reps', 'rejected_reps']);
+});
+
+test('con red, la serie llega a Supabase en cuanto se guarda', async ({ page }) => {
+  const user = await createUser('online');
+  await signIn(page, user.email);
+  await page.goto('/#/manual?ex=press-banca');
+  await manualSet(page);
+  await expect(await syncState(page)).toContainText('Sincronizado');
+  const sets = await rows<{ source: string; reps: number }>('set_logs', user.id);
+  expect(sets).toEqual([expect.objectContaining({ source: 'manual', reps: 8 })]);
 });
 
 test('la primera sincronización sube el historial previo una sola vez', async ({ page }) => {
