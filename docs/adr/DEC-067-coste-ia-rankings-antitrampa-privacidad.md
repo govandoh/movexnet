@@ -1,6 +1,6 @@
 # DEC-067 · Tope de costo del asistente IA, frescura de rankings, reglas anti-trampa y aviso de privacidad
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-17
 - **Decisores:** @govandoh (responsable del proyecto, decide en representación del equipo); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `coach-assistant`, `rankings`, `privacidad`, `proceso`

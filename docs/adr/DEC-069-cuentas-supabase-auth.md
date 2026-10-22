@@ -1,6 +1,6 @@
 # DEC-069 · Cuentas con Supabase Auth: correo y contraseña, SMTP de Brevo, Turnstile y puerta 18+ en el servidor
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-19
 - **Decisores:** @govandoh (D, responsable del proyecto); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `auth`, `seguridad`, `privacidad`, `dependencia`

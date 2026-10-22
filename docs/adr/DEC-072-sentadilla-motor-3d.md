@@ -1,6 +1,6 @@
 # DEC-072 · La sentadilla pasa al motor 3D por defecto
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-21, por el responsable del proyecto)
 - **Fecha:** 2026-10-20
 - **Decisores:** lead del workstream B (Análisis & Runtime); revisión de E por `src/ui/workout/exercises.ts`
 - **Etiquetas:** `analysis-core`, `ui`, `producto`

@@ -1,6 +1,6 @@
 # DEC-034 · Vía de implementación del análisis por IA: features por repetición primero, esqueleto canónico COCO-17, modelos propios sin pesos contaminados
 
-- **Estado:** Propuesta; Fases 2 y 3 reemplazadas por DEC-055
+- **Estado:** Aceptada en lo vigente (2026-10-21, por el responsable del proyecto): Fase 1 y esqueleto COCO-17; Fases 2 y 3 reemplazadas por DEC-055
 - **Fecha:** 2026-09-22
 - **Decisores:** pendiente — aprueban los leads de los workstreams B (Análisis & Runtime) y C (ML Training)
 - **Etiquetas:** analysis-core, ml, ml-runtime, legal, arquitectura
