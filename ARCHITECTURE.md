@@ -217,7 +217,7 @@ PoseSource ──frame──► SkeletonRenderer.draw
 
 ### 2.6 Backend y nube
 
-Supabase `us-east-1` (`DEC-029`): Postgres con RLS, Auth, Storage (grabaciones de landmarks con consentimiento), Realtime (chat 1:1 por Broadcast desde trigger), Edge Functions (`coach` con Claude, webhooks de Recurrente/Paddle), `pg_cron` (rankings materializados, agregados nocturnos, ping anti-pausa). Solo `@movexnet/api-client` conoce al proveedor; `@movexnet/domain` define los puertos. Modelo de dominio en `docs/DOMAIN.md`.
+Supabase `us-east-1` (`DEC-029`): Postgres con RLS, Auth, Storage (grabaciones de landmarks con consentimiento), Realtime (chat 1:1 por Broadcast desde trigger), Edge Functions (`coach` con Claude, webhooks de Recurrente/Paddle, `send-reminders` para Web Push), `pg_cron` (rankings materializados, agregados nocturnos, ping anti-pausa y, cada 5 minutos, el envío de recordatorios). Recordatorios con la app cerrada (`DEC-080`): el cliente sube por suscripción los avisos de 14 días; `pg_cron` llama con `pg_net` a `send-reminders` (secreto en Vault) solo si hay avisos vencidos, y la función los cifra y los envía al servicio de push del navegador. Hoy `src/api-client/` ya tiene la cola offline de la sincronización (`DEC-079`) y el repositorio de push. Solo `@movexnet/api-client` conoce al proveedor; `@movexnet/domain` define los puertos. Modelo de dominio en `docs/DOMAIN.md`.
 
 ## 3. Decisiones de diseño que se mantienen del MVP
 

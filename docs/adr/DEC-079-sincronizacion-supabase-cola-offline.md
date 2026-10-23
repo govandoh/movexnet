@@ -1,10 +1,10 @@
 # DEC-079 · Sincronización con Supabase: cola offline, series inmutables, última escritura gana y datos de la cuenta fuera del dispositivo al cerrar sesión
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-23, por el responsable del proyecto)
 - **Fecha:** 2026-10-21
 - **Decisores:** @govandoh (D, responsable del proyecto); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `api-client`, `domain`, `datos`, `offline`
-- **Issue:** #87. Precisa `DEC-029` (patrones de acceso) y aplica `DEC-067` §3 y `DEC-074` (origen y duración de las series).
+- **Issue:** #87. Prueba en celulares reales: #108. Precisa `DEC-029` (patrones de acceso) y aplica `DEC-067` §3 y `DEC-074` (origen y duración de las series).
 
 ## Contexto y problema
 

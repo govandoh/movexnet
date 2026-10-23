@@ -105,10 +105,10 @@ En Claude Code, la skill `/adr` genera el borrador a partir de la conversación 
 | [DEC-074](DEC-074-antitrampa-v1-1.md) | Anti-trampa v1.1: `missing_duration` en series de cámara sin duración, día en hora de Guatemala y solapamiento en las dos sesiones con fin efectivo de 3 h | 2026-10-20 | Aceptada (2026-10-21) |
 | [DEC-075](DEC-075-codo-despegado-persistencia.md) | "Pega el codo" en el motor 3D: abducción aparte (35°) y despegue sostenido 400 ms (`issueHoldMs`) | 2026-10-20 | Aceptada (2026-10-21) |
 | [DEC-076](DEC-076-voz-aviso-tecnica-en-pico.md) | La voz dice el aviso de técnica en el pico en vez del elogio, solo para avisos validados (`VOICED_TECHNIQUE_ISSUES`) | 2026-10-20 | Aceptada (2026-10-21) |
-| [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Propuesta |
-| [DEC-078](DEC-078-motor-3d-por-defecto.md) | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo y golden 3D con grabaciones reales | 2026-10-21 | Propuesta |
-| [DEC-079](DEC-079-sincronizacion-supabase-cola-offline.md) | Sincronización con Supabase: cola offline, series inmutables con ids del cliente, última escritura gana en rutinas y objetivos, historial previo como `imported` y datos de la cuenta fuera del dispositivo al cerrar sesión | 2026-10-21 | Propuesta |
-| [DEC-080](DEC-080-web-push-recordatorios.md) | Recordatorios con la app cerrada: Web Push con VAPID propio sobre Web Crypto, avisos por suscripción calculados por el cliente (14 días) y envío como mucho una vez con `pg_cron`, `pg_net` y secreto en Vault | 2026-10-22 | Propuesta |
+| [DEC-077](DEC-077-avisos-press-curl-3d.md) | Avisos de técnica del press y del curl en 3D sin falsos positivos: arqueo relativo al reposo (`restBaseline`), asimetría del press a 0.35, sin asimetría en el curl | 2026-10-21 | Aceptada (2026-10-23) |
+| [DEC-078](DEC-078-motor-3d-por-defecto.md) | Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo y golden 3D con grabaciones reales | 2026-10-21 | Aceptada (2026-10-23) |
+| [DEC-079](DEC-079-sincronizacion-supabase-cola-offline.md) | Sincronización con Supabase: cola offline, series inmutables con ids del cliente, última escritura gana en rutinas y objetivos, historial previo como `imported` y datos de la cuenta fuera del dispositivo al cerrar sesión | 2026-10-21 | Aceptada (2026-10-23) |
+| [DEC-080](DEC-080-web-push-recordatorios.md) | Recordatorios con la app cerrada: Web Push con VAPID propio sobre Web Crypto, avisos por suscripción calculados por el cliente (14 días) y envío como mucho una vez con `pg_cron`, `pg_net` y secreto en Vault | 2026-10-22 | Aceptada (2026-10-23) |
 
 Próximo número libre: **DEC-081** (provisional hasta el merge, ver DEC-062).
 

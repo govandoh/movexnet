@@ -1,6 +1,6 @@
 # DEC-078 · Los siete ejercicios usan el motor 3D por defecto, con `?engine=2d` de respaldo
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-23, por el responsable del proyecto)
 - **Fecha:** 2026-10-21
 - **Decisores:** A (pose y captura, @ChejoUMG, por delegación de #33), B (análisis, @ecaldcc), D (@govandoh)
 - **Etiquetas:** `analysis-core`, `ui`, `producto`
