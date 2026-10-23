@@ -1,0 +1,51 @@
+{
+  "id": "fitness-aqa",
+  "status": "feasibility-documented-no-access",
+  "allowedFor": ["prototype"],
+  "citation": "Parmar, Gharat, Rhodin. 2022. Domain Knowledge-Informed Self-Supervised Representations for Workout Form Assessment. ECCV. arxiv.org/abs/2202.14019",
+  "verified": {
+    "officialSources": {
+      "github": "https://github.com/ParitoshParmar/Fitness-AQA",
+      "paper": "https://arxiv.org/abs/2202.14019",
+      "paperDoi": "https://doi.org/10.1007/978-3-031-19839-7_7",
+      "zenodo": "https://zenodo.org/records/7310289"
+    },
+    "datasetLicense": {
+      "url": "https://github.com/ParitoshParmar/Fitness-AQA/blob/main/fitness_aqa_dataset_license.pdf",
+      "license": "CC BY-NC 4.0",
+      "allowedFor": ["prototype"],
+      "note": "Licencia del PDF oficial de los autores (Creative Commons Attribution-NonCommercial 4.0 International), revisada por el equipo. Solo investigación no comercial; no se pueden transferir los datos a terceros sin permiso de los autores; se debe proteger la privacidad de las personas que aparecen en los videos; no se puede incorporar el dataset a productos comerciales. 'prototype' es una clasificación conservadora propuesta bajo DEC-065 y no equivale a una autorización comercial."
+    },
+    "access": {
+      "method": "Formulario de Google",
+      "url": "https://forms.gle/PbPTX1eVxGpa3QG88",
+      "status": "not-requested",
+      "note": "El acceso no es público y no se solicitó en esta etapa por falta de tiempo."
+    },
+    "knownContent": {
+      "exercises": ["BackSquat", "OverheadPress", "BarbellRow"],
+      "media": "Videos e imágenes con etiquetas de errores de ejecución (según la publicación y el README oficial).",
+      "note": "No se verificó contra los archivos reales: no hay acceso al dataset."
+    },
+    "movexnetOverlap": {
+      "squat": "BackSquat",
+      "press": "OverheadPress",
+      "withoutCorrespondence": ["curl", "pushup", "lunge", "bridge", "plank"]
+    }
+  },
+  "pending": {
+    "fileLayout": {
+      "status": "unknown",
+      "note": "Estructura, formatos y nombres de archivo sin verificar; requieren acceso al dataset."
+    },
+    "conversion": {
+      "status": "not-run",
+      "note": "No se descargó el dataset ni se convirtió ningún video a JSON v2 con MediaPipe; no hay resultados de conversión ni de validación."
+    },
+    "zenodoLicenseConflict": {
+      "status": "unresolved",
+      "note": "El metadato de Zenodo indica CC BY 4.0, mientras que el PDF de los autores indica CC BY-NC 4.0. Se aplica la más restrictiva (CC BY-NC 4.0) hasta que los autores aclaren."
+    },
+    "blockedBy": "Sin acceso al dataset (formulario no solicitado) y sin licencia que permita uso en producto; por eso no se incorpora al pipeline por ahora."
+  }
+}
