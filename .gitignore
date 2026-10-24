@@ -60,3 +60,7 @@ __pycache__/
 # Playwright
 test-results/
 playwright-report/
+
+# Videos de lanzamiento generados con /brag (render, audio y composición pesan decenas de MB)
+brag-output/
+brag-output-*/
