@@ -109,6 +109,8 @@ apps/web importa todo; nada importa apps/web
 | Entidades y glosario | `docs/DOMAIN.md` |
 | Datos, fixtures, entrenamiento, evaluación, promoción de modelos | `docs/ML-PIPELINE.md` |
 | Consentimiento, retención, RLS, licencias de datasets | `docs/DATA-GOVERNANCE.md` |
+| Plantilla de consentimiento para grabar con voluntarios | `docs/CONSENTIMIENTO-GRABACION.md` |
+| Hoja de registro de grabaciones (plantilla vacía) | `docs/REGISTRO-GRABACIONES.md` |
 | Quién posee qué, rituales, DoD | `docs/WORKSTREAMS.md` |
 | Estado actual, reparto del sprint y próximos pasos | `docs/STATUS.md` |
 | Lo ya entregado, por hito | `docs/CHANGELOG.md` |

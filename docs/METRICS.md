@@ -94,15 +94,17 @@ Ventana: todas las reps de un `Set` (para `rest_pause` y `dropset`, además por 
 |---|---|---|---|---|
 | `shallow_depth` | Profundidad insuficiente: ángulo de rodilla en el fondo > 100° | sentadilla | `minKneeAngle` | 0.4 |
 | `knee_valgus` | Rodillas colapsan hacia dentro: distancia entre rodillas / distancia entre tobillos < 0.85 en el fondo | sentadilla | `kneeAnkleRatio` | 0.6 |
-| `trunk_lean` | Inclinación de tronco > 55° respecto a la vertical durante la bajada y el fondo (`DEC-057`; antes 45°) | sentadilla | `trunkAngle` | 0.5 |
+| `trunk_lean` | Inclinación de tronco > 55° respecto a la vertical durante la bajada y el fondo (`DEC-057`; antes 45°). En la zancada el umbral es > 35° en la fase de esfuerzo (`LUNGE_MAX_TRUNK_LEAN_DEG`) | sentadilla, zancada | `trunkAngle` | 0.5 |
 | `partial_rom` | ROM < 70 % del ROM de referencia del ejercicio (curl: extensión inicial < 130° o contracción > 60°; press: lockout < 145°) | todos | `rom`, `refRom` | 0.4 |
 | `asymmetry` | `asymmetry_rep ≥ 15 %` sostenido (§4) | todos con ambos lados visibles | `asymmetry_rep` | 0.3 |
 | `unsafe_low_elbow` | Codo por debajo de la línea del hombro con carga: ángulo < 80° en fase `lowered` | press | `minElbowAngle` | 0.8 |
 | `excess_speed` | `peak_velocity` > percentil 95 del usuario o `concentric_ms < 300 ms` con carga | todos | `peak_velocity`, `concentric_ms` | 0.3 |
 | `elbow_drift` | El codo se adelanta: ángulo del brazo (hombro→codo) respecto a la vertical > 25°. Origen: reglas de fitnetv2 | curl | `upperArmAngle` | 0.4 (propuesto) |
 | `lumbar_arch` | Arqueo lumbar: inclinación del tronco respecto a la vertical > 25°, evaluada solo con cadera visible y en fase de empuje (fitnetv2 la mide sin esas condiciones; se corrige en I-2). Origen: reglas de fitnetv2 | press | `trunkAngle` | 0.6 (propuesto) |
+| `hip_sag` | Cadera caída: la recta hombro-cadera-tobillo (lado más visible) se desvía ≥ 8° hacia abajo (`HIP_SAG_MIN_DEG`, `DEC-071`). En flexiones solo en la fase de esfuerzo; en la plancha pausa el tiempo | flexiones, plancha | `deviationDeg` | por definir (B) |
+| `hip_pike` | Cadera levantada: la misma recta se desvía ≥ 18° hacia arriba (`HIP_PIKE_MIN_DEG`, `DEC-071`). Mismas condiciones que `hip_sag` | flexiones, plancha | `deviationDeg` | por definir (B) |
 
-Los umbrales de evidencia son los iniciales de la implementación por reglas y se ajustan con datos propios; cualquier cambio que altere golden exige DEC. Los dos últimos códigos entran con el paso I-2 de `DEC-054` y son clases del k-NN de `DEC-055`.
+Los umbrales de evidencia son los iniciales de la implementación por reglas y se ajustan con datos propios; cualquier cambio que altere golden exige DEC. `elbow_drift` y `lumbar_arch` entran con el paso I-2 de `DEC-054` y son clases del k-NN de `DEC-055`. `hip_sag` y `hip_pike` ya los emite el motor 3D y los aceptó `DEC-071`; se documentan aquí para etiquetar las grabaciones del sprint de datos (#16), y su peso lo fija el workstream B. El puente de glúteo no emite códigos de error (solo un aviso de extensión incompleta, sin código).
 
 **Resuelto en `DEC-057`:** `trunk_lean` pasa de 45° a **55°**, el valor que fitnetv2 ajustó en campo (45° marcaba como error sentadillas legítimas de barra baja o fémur largo). En el press, la inclinación del tronco se evalúa como `lumbar_arch` (> 25°). Los pesos de `elbow_drift` (0.4) y `lumbar_arch` (0.6) quedan aceptados.
 

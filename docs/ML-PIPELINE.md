@@ -9,7 +9,7 @@
 - Modo `/capture` en la app (PR 8), detrás de feature flag. Antes de grabar, pantalla de consentimiento que crea un `RecordingConsent` (texto versionado); sin consentimiento no se guarda nada.
 - Se graba `LandmarkFrame[]` (2D + 3D + `t`) y etiquetas: ejercicio, límites de rep propuestos por el tracker de reglas y corregidos a mano, tags de error de forma, RPE de la serie.
 - **Nunca video en servidor.** Opcionalmente se guarda video **local** en el dispositivo para etiquetar y se borra al terminar; no se sube.
-- Mientras no exista auth, el modo dev `?debug=record` (PR 1) descarga el JSON al dispositivo y el desarrollador lo copia a `fixtures/landmarks/` (guía `/fixture`, `CONTRIBUTING.md`).
+- Mientras no exista auth, el modo dev `?debug=record` (PR 1) descarga el JSON al dispositivo y el desarrollador lo copia a `fixtures/landmarks/` (guía `/fixture`, `CONTRIBUTING.md`). Esto vale para tomas propias del equipo; las grabaciones de voluntarios van solo al Drive privado, con su consentimiento (`CONSENTIMIENTO-GRABACION.md`), y nunca a `fixtures/landmarks/`, que es público.
 - Cada grabación guarda el **vector de gravedad** del dispositivo y la **corrección de calibración de pie** aplicada (`DEC-050`, `DEC-053`), para que el dataset no herede la inclinación del teléfono.
 
 ### Etiqueta por guion (`DEC-055`)
