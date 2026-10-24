@@ -1,6 +1,6 @@
 # DEC-077 · Avisos de técnica del press y del curl en 3D sin falsos positivos
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-23, por el responsable del proyecto)
 - **Fecha:** 2026-10-21
 - **Decisores:** A (pose y captura, @ChejoUMG), B (análisis, @ecaldcc)
 - **Etiquetas:** `analysis-core`

@@ -28,14 +28,13 @@ Sin asignar: #14 (PR 5, `AnalysisPipeline` y store; B y E), #37 (ST-GCN++, esper
 
 - **Merge (DEC-070):** sin aprobaciones obligatorias. CI en verde (build, commitlint y tests de RLS) y squash merge del líder. Antes de mergear PRs de auth, migraciones o varios workstreams: `architect-guardian`, y `/security-review` si toca seguridad.
 - `package.json` y `pnpm-lock.yaml`: dependencia nueva solo tras discutirla (regla dura 9).
-- `DEC-NNN`: el número es provisional hasta el merge; si choca, renumera quien mergea segundo. Próxima libre: DEC-079.
+- `DEC-NNN`: el número es provisional hasta el merge; si choca, renumera quien mergea segundo. Próxima libre: DEC-081.
 - Migraciones: nunca editar una ya aplicada en la nube; corregir con una nueva. Si entra una con fecha anterior a la última aplicada: `supabase db push --include-all`.
 
 ## Pendientes del líder
 
 | Pendiente | Dónde |
 |---|---|
-| Aceptar o pedir cambios en DEC-077 y DEC-078 | `docs/adr/` |
 | Activar el flujo "Item closed → Done" del tablero (no se puede por API) | GitHub Project → Workflows |
 
 ## Comportamiento congelado conocido

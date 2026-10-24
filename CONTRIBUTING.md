@@ -54,6 +54,20 @@ Sin variables, la app funciona sin cuentas, como en producción. Para probarlas:
 
 Todo lo que empieza por `VITE_` es público. Nunca pongas la `service_role` ni una clave `sb_secret_` en un `.env` del cliente: las cuentas no arrancan y `pnpm build` falla. Los ajustes de la nube (SMTP, captcha, URLs de redirección) están en la tabla de `DEC-069` y se cambian en el panel de Supabase.
 
+### Recordatorios por Web Push en local (issue #88, `DEC-080`)
+
+1. Genera, fuera del repo, un par VAPID (`npx web-push generate-vapid-keys`) y un secreto del cron. Ponlos en un archivo de entorno fuera del repo con `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:...` y `CRON_SECRET`.
+2. `pnpm exec supabase functions serve send-reminders --env-file <ese archivo>`.
+3. Guarda en Vault la URL de la función vista desde la base y el mismo secreto (SQL en Studio, `http://127.0.0.1:54323`):
+   ```sql
+   select vault.create_secret('http://supabase_kong_entrenador-personal-ia:8000/functions/v1/send-reminders', 'send_reminders_url');
+   select vault.create_secret('<CRON_SECRET>', 'send_reminders_secret');
+   ```
+4. Agrega `VITE_VAPID_PUBLIC_KEY=<la pública>` a `.env.local`, inicia sesión y activa Recordatorios en Perfil. El service worker no se registra con el certificado autofirmado de `pnpm dev`: para recibir el aviso, compila y sirve `dist` en `http://localhost`.
+5. Para no esperar la hora: mueve un aviso al pasado (`update push_reminders set send_at = now() - interval '1 minute' where ...`) y ejecuta `select private.dispatch_push_reminders();`. La respuesta de la función queda en `net._http_response`.
+
+Los tests no necesitan nada de esto: `pnpm test` cubre la función con Vitest, `pnpm db:test` las tablas y `pnpm e2e` simula el servicio de push.
+
 ## 2. Ramas y commits
 
 - Rama corta desde `main`: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`, `adr/<slug>`, `contracts/<slug>`. Nunca commits directos a `main`.

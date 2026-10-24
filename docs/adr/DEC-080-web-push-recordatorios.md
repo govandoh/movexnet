@@ -1,6 +1,6 @@
 # DEC-080 · Recordatorios con la app cerrada: Web Push con VAPID propio, avisos por suscripción y envío con pg_cron
 
-- **Estado:** Propuesta
+- **Estado:** Aceptada (2026-10-23, por el responsable del proyecto)
 - **Fecha:** 2026-10-22
 - **Decisores:** @govandoh (D, responsable del proyecto); el PR sigue las aprobaciones que exige `docs/adr/README.md`
 - **Etiquetas:** `backend`, `api-client`, `pwa`, `datos`, `seguridad`
