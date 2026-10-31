@@ -102,6 +102,8 @@ apps/web importa todo; nada importa apps/web
 | Necesito… | Archivo |
 |---|---|
 | Visión, alcance, freemium, roadmap | `docs/PRODUCT.md` |
+| Giro comercial, criterios de etiquetado, datos con derechos, fases del modelo propio | `docs/PLAN-COMERCIAL.md` |
+| La cola de tareas del giro comercial, una por sesión, con modelo y estado | `docs/ROADMAP-COMERCIAL.md` |
 | Identidad visual, tokens, componentes y movimiento | `docs/DESIGN.md` |
 | Pipeline actual y objetivo, contratos, tabla de migración por PR | `ARCHITECTURE.md` |
 | Por qué se decidió algo | `docs/adr/README.md` (índice), `DECISIONS.md` (acceso rápido) |
